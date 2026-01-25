@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Name</title>
+  <meta name="description" content="Personal website — hobbies, projects, and professional info." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top">Your Name</a>
+      <nav class="nav">
+        <a href="#personal">Personal</a>
+        <a href="#professional">Professional</a>
+        <a href="#hobbies">Hobbies</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <p class="kicker">Hi — I’m</p>
+        <h1>Your Name</h1>
+        <p class="subtitle">
+          A short one-liner about you. Example: “I build things with Python, enjoy fitness,
+          and like tinkering with side projects.”
+        </p>
+        <div class="cta-row">
+          <a class="btn" href="#professional">See my work</a>
+          <a class="btn btn-ghost" href="#hobbies">What I’m into</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="personal" class="section">
+      <div class="container">
+        <h2>Personal</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>About</h3>
+            <p>
+              A few sentences about where you’re based, what you value, and what you like doing
+              outside work.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Currently</h3>
+            <ul class="list">
+              <li>Reading: …</li>
+              <li>Learning: …</li>
+              <li>Building: …</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Highlights</h3>
+            <ul class="list">
+              <li>Recent win or milestone</li>
+              <li>Something you’re proud of</li>
+              <li>A fun personal fact</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="professional" class="section alt">
+      <div class="container">
+        <h2>Professional</h2>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>What I do</h3>
+            <p>
+              Your role + focus areas. Keep it concrete (tools, domains, outcomes).
+            </p>
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Analytics</span>
+              <span class="tag">…</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Experience</h3>
+            <ul class="list">
+              <li><strong>Company</strong> — Title (Year–Year): one-line impact</li>
+              <li><strong>Company</strong> — Title (Year–Year): one-line impact</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Projects</h3>
+          <div class="projects">
+            <a class="project" href="#" target="_blank" rel="noreferrer">
+              <h4>Project Name</h4>
+              <p>One sentence on what it is + what you used.</p>
+            </a>
+            <a class="project" href="#" target="_blank" rel="noreferrer">
+              <h4>Project Name</h4>
+              <p>One sentence on what it is + what you used.</p>
+            </a>
+            <a class="project" href="#" target="_blank" rel="noreferrer">
+              <h4>Project Name</h4>
+              <p>One sentence on what it is + what you used.</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="note">
+          Tip: link your PDF resume here if you want: <a href="resume.pdf">resume.pdf</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="hobbies" class="section">
+      <div class="container">
+        <h2>Hobbies</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Hobby #1</h3>
+            <p>What you like about it + what you’re doing lately.</p>
+          </div>
+          <div class="card">
+            <h3>Hobby #2</h3>
+            <p>What you like about it + what you’re doing lately.</p>
+          </div>
+          <div class="card">
+            <h3>Hobby #3</h3>
+            <p>What you like about it + what you’re doing lately.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section alt">
+      <div class="container">
+        <h2>Contact</h2>
+        <div class="two-col">
+          <div class="card">
+            <h3>Reach me</h3>
+            <ul class="list">
+              <li>Email: <a href="mailto:you@email.com">you@email.com</a></li>
+              <li>GitHub: <a href="https://github.com/yourhandle">@yourhandle</a></li>
+              <li>LinkedIn: <a href="#">Your LinkedIn</a></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Elsewhere</h3>
+            <p>
+              Add any links you want: blog, newsletter, Strava, photography, etc.
+            </p>
+          </div>
+        </div>
+        <footer class="footer">
+          <span>© <span id="year"></span> Your Name</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
