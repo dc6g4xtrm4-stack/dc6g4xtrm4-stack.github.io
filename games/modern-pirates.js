@@ -449,7 +449,7 @@ function generateHand(count = 3) {
     hand.push({
       type: cardName,
       ...CARDS[cardName],
-      id: Math.random()
+      id: Date.now() + Math.random() + i
     });
   }
   
@@ -1044,10 +1044,10 @@ function updateUI() {
   document.getElementById("playerId").textContent = currentPlayerId;
   
   // Update turn indicator
-  const isYourTurn = modernPiratesGame.currentPlayer === currentPlayerId;
+  const isYourTurn = currentPlayer.id === currentPlayerId;
   const turnText = isYourTurn 
     ? "✓ Your Turn" 
-    : `Opponent's Turn (Player ${modernPiratesGame.currentPlayer})`;
+    : `Opponent's Turn (Player ${currentPlayer.id})`;
   const turnIndicator = document.getElementById("turnIndicator");
   if (turnIndicator) {
     turnIndicator.textContent = turnText;
