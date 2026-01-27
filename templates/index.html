@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jack Koehler</title>
   <meta name="description" content="Jack Koehler - Developer, maker, thinker." />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 
 <body>
@@ -17,7 +17,7 @@
       </div>
       
       <nav class="sidebar-nav">
-        <button class="nav-btn active" data-page="about">
+        <button class="nav-btn {% if page == 'about' %}active{% endif %}" data-page="about">
           <span class="nav-icon">👤</span>
           <span class="nav-label">About</span>
         </button>
@@ -32,10 +32,6 @@
         
         <div class="nav-divider">Games</div>
         
-        <button class="nav-btn" data-page="catan">
-          <span class="nav-icon">🎲</span>
-          <span class="nav-label">Catan</span>
-        </button>
         <button class="nav-btn" data-page="pong">
           <span class="nav-icon">🏓</span>
           <span class="nav-label">Pong</span>
@@ -43,10 +39,6 @@
         <button class="nav-btn" data-page="drawing">
           <span class="nav-icon">🎨</span>
           <span class="nav-label">Drawing</span>
-        </button>
-        <button class="nav-btn" data-page="survival">
-          <span class="nav-icon">🏕️</span>
-          <span class="nav-label">Survival</span>
         </button>
         <button class="nav-btn" data-page="modern-pirates">
           <span class="nav-icon">🏴‍☠️</span>
@@ -62,7 +54,7 @@
     <!-- Main Content Area -->
     <main class="app-content">
       <!-- About -->
-      <div class="page active" id="about">
+      <div class="page {% if page == 'about' %}active{% endif %}" id="about">
         <div class="page-container">
           <h2>About</h2>
           <p>
@@ -103,20 +95,6 @@
             <p><a href="mailto:jack@jackkoehler.org">Email</a></p>
             <p><a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a></p>
             <p><a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Catan -->
-      <div class="page" id="catan">
-        <div class="page-container">
-          <h2>Catan-like Board Game</h2>
-          <div class="game-container">
-            <canvas id="catanCanvas" width="800" height="600"></canvas>
-            <div class="game-info">
-              <p>Board game similar to Catan. Click to build settlements, roads, and trade resources.</p>
-              <button id="catanResetBtn">Reset Game</button>
-            </div>
           </div>
         </div>
       </div>
@@ -165,28 +143,39 @@
         </div>
       </div>
 
-      <!-- Survival -->
-      <div class="page" id="survival">
-        <div class="page-container">
-          <h2>First-Person Survival Game</h2>
-          <div class="game-container">
-            <canvas id="survivalCanvas" width="800" height="600"></canvas>
-            <div class="game-info">
-              <p>Survival Game - Gather resources, build shelter, and survive. Use WASD to move, mouse to look around.</p>
-              <button id="survivalResetBtn">Reset Game</button>
-              <div id="survivalStats">
-                <span>Health: <span id="healthBar">100</span>%</span>
-                <span>Food: <span id="foodBar">100</span>%</span>
-                <span>Energy: <span id="energyBar">100</span>%</span>
-              </div>
+      <!-- Modern Pirates -->
+      <div class="page" id="modern-pirates">
+        <!-- Game Lobby Screen -->
+        <div id="piratesLobby" class="pirates-lobby">
+          <div class="lobby-container">
+            <h2>Modern Pirates</h2>
+            <p class="lobby-subtitle">Race to 25 points!</p>
+            
+            <div class="lobby-section">
+              <h3>Game ID: <span id="lobbyGameId">----</span></h3>
+              <p id="gameStatusText" style="margin: 10px 0 0 0; font-size: 13px; color: #a0a0a0;">Ready to play</p>
+            </div>
+            
+            <div class="lobby-buttons">
+              <button id="createGameBtn" class="btn-primary">Create New Game</button>
+              <button id="joinGameBtn" class="btn-secondary">Join Game</button>
+            </div>
+            
+            <div id="joinGameForm" class="lobby-form" style="display: none;">
+              <input type="text" id="gameIdInput" placeholder="Enter 4-digit game ID" maxlength="4" inputmode="numeric">
+              <button id="joinConfirmBtn" class="btn-primary">Join</button>
+              <button id="joinCancelBtn" class="btn-secondary">Cancel</button>
+            </div>
+            
+            <div id="recentGamesSection" style="margin-top: 30px; display: none;">
+              <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Recent Games:</p>
+              <div id="recentGamesList" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Modern Pirates -->
-      <div class="page" id="modern-pirates">
-        <div class="modern-pirates-wrapper">
+        
+        <!-- Game Screen -->
+        <div id="piratesGame" class="modern-pirates-wrapper" style="display: none;">
           <!-- Left Sidebar -->
           <div class="pirates-sidebar">
             <div class="pirates-actions" style="margin-bottom: 20px;">
@@ -195,8 +184,15 @@
             </div>
             
             <div class="pirates-sidebar-header">
-              <h2>Modern Pirates</h2>
+              <h2>Game: <span id="gameIdDisplay">0000</span></h2>
               <p>Race to 25 points!</p>
+            </div>
+            
+            <div class="pirates-section" style="background: rgba(79, 205, 196, 0.15); border-color: #4ECDC4;">
+              <h3 style="color: #4ECDC4; margin: 0 0 10px 0;">🎮 Player Info</h3>
+              <p style="margin: 4px 0;"><strong id="playerRole">Player 1</strong></p>
+              <p style="margin: 4px 0; font-size: 12px; color: var(--muted);">ID: <strong id="playerId">-</strong></p>
+              <p style="margin: 4px 0; font-size: 12px;" id="turnIndicator">Waiting to start...</p>
             </div>
             
             <div class="pirates-section">
@@ -248,16 +244,13 @@
             <canvas id="modernPiratesCanvas"></canvas>
           </div>
         </div>
-      </div>
     </main>
   </div>
 
   <!-- Scripts -->
-  <script src="games/catan.js"></script>
-  <script src="games/pong.js"></script>
-  <script src="games/drawing.js"></script>
-  <script src="games/survival.js"></script>
-  <script src="games/modern-pirates.js"></script>
+  <script src="{{ url_for('static', filename='games/pong.js') }}"></script>
+  <script src="{{ url_for('static', filename='games/drawing.js') }}"></script>
+  <script src="{{ url_for('static', filename='games/modern-pirates.js') }}"></script>
   
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -278,10 +271,8 @@
         document.getElementById(pageName).classList.add("active");
         
         // Initialize games when pages are switched
-        if (pageName === "catan") initCatan();
         if (pageName === "pong") initPong();
         if (pageName === "drawing") initDrawing();
-        if (pageName === "survival") initSurvival();
         if (pageName === "modern-pirates") initModernPirates();
       });
     });
