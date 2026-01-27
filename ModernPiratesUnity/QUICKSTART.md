@@ -246,6 +246,13 @@ All objects are color-coded for easy identification:
 - Reduce number of islands/loot in respective managers
 - This is expected with primitive shapes - use models for production
 
+**InvalidOperationException: Input System errors**
+- Error: "You are trying to read Input using the UnityEngine.Input class, but you have switched active Input handling to Input System package"
+- Solution: The project uses Unity's new Input System package, but the UI EventSystem requires legacy input support
+- Fix: In `ProjectSettings/ProjectSettings.asset`, ensure `activeInputHandler: 2` (Both mode)
+- This allows both the new Input System and legacy Input API to work together
+- Already configured in the project, but may need to be reset if you change input settings
+
 ### Benefits of Programmatic Approach
 
 **For Developers:**
