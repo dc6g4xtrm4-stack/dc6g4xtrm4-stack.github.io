@@ -236,7 +236,37 @@
 
       <!-- Modern Pirates -->
       <div class="page" id="modern-pirates">
-        <div class="modern-pirates-wrapper">
+        <!-- Game Lobby Screen -->
+        <div id="piratesLobby" class="pirates-lobby">
+          <div class="lobby-container">
+            <h2>Modern Pirates</h2>
+            <p class="lobby-subtitle">Race to 25 points!</p>
+            
+            <div class="lobby-section">
+              <h3>Game ID: <span id="lobbyGameId">----</span></h3>
+              <p id="gameStatusText" style="margin: 10px 0 0 0; font-size: 13px; color: #a0a0a0;">Ready to play</p>
+            </div>
+            
+            <div class="lobby-buttons">
+              <button id="createGameBtn" class="btn-primary">Create New Game</button>
+              <button id="joinGameBtn" class="btn-secondary">Join Game</button>
+            </div>
+            
+            <div id="joinGameForm" class="lobby-form" style="display: none;">
+              <input type="text" id="gameIdInput" placeholder="Enter 4-digit game ID" maxlength="4" inputmode="numeric">
+              <button id="joinConfirmBtn" class="btn-primary">Join</button>
+              <button id="joinCancelBtn" class="btn-secondary">Cancel</button>
+            </div>
+            
+            <div id="recentGamesSection" style="margin-top: 30px; display: none;">
+              <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Recent Games:</p>
+              <div id="recentGamesList" style="max-height: 150px; overflow-y: auto;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="piratesGame" class="modern-pirates-wrapper" style="display: none;">
           <!-- Left Sidebar -->
           <div class="pirates-sidebar">
             <div class="pirates-actions" style="margin-bottom: 20px;">
@@ -244,9 +274,21 @@
               <button id="piratesHelpBtn" class="btn-secondary">Help</button>
             </div>
             
+            <div class="pirates-actions" style="margin-bottom: 20px; display: flex; gap: 8px;">
+              <button id="piratesZoomInBtn" class="btn-secondary" style="flex: 1;">Zoom +</button>
+              <button id="piratesZoomOutBtn" class="btn-secondary" style="flex: 1;">Zoom -</button>
+            </div>
+            
             <div class="pirates-sidebar-header">
-              <h2>Modern Pirates</h2>
+              <h2>Game: <span id="gameIdDisplay">0000</span></h2>
               <p>Race to 25 points!</p>
+            </div>
+            
+            <div class="pirates-section" style="background: rgba(79, 205, 196, 0.15); border-color: #4ECDC4;">
+              <h3 style="color: #4ECDC4; margin: 0 0 10px 0;">🎮 Player Info</h3>
+              <p style="margin: 4px 0;"><strong id="playerRole">Player 1</strong></p>
+              <p style="margin: 4px 0; font-size: 12px; color: var(--muted);">ID: <strong id="playerId">-</strong></p>
+              <p style="margin: 4px 0; font-size: 12px;" id="turnIndicator">Waiting to start...</p>
             </div>
             
             <div class="pirates-section">
