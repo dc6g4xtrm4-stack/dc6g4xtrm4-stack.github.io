@@ -52,6 +52,10 @@
           <span class="nav-icon">🏴‍☠️</span>
           <span class="nav-label">Modern Pirates</span>
         </button>
+        <button class="nav-btn" data-page="fps">
+          <span class="nav-icon">🎯</span>
+          <span class="nav-label">FPS Shooter</span>
+        </button>
       </nav>
       
       <div class="sidebar-footer">
@@ -184,6 +188,64 @@
         </div>
       </div>
 
+      <!-- FPS Shooter -->
+      <div class="page" id="fps">
+        <div class="fps-wrapper">
+          <!-- HUD Overlay -->
+          <div class="fps-hud">
+            <div class="fps-hud-top">
+              <div class="fps-stat">
+                <span class="fps-stat-label">HEALTH</span>
+                <span class="fps-stat-value" id="fpsHealth">100</span>
+              </div>
+              <div class="fps-stat">
+                <span class="fps-stat-label">AMMO</span>
+                <span class="fps-stat-value" id="fpsAmmo">30/30</span>
+              </div>
+              <div class="fps-stat">
+                <span class="fps-stat-label">SCORE</span>
+                <span class="fps-stat-value" id="fpsScore">0</span>
+              </div>
+              <div class="fps-stat">
+                <span class="fps-stat-label">KILLS</span>
+                <span class="fps-stat-value" id="fpsKills">0</span>
+              </div>
+            </div>
+            
+            <div id="fpsCrosshair" class="fps-crosshair"></div>
+            
+            <div class="fps-hud-bottom">
+              <div id="fpsReload" class="fps-reload" style="display: none;">Reloading...</div>
+              <div class="fps-controls">
+                <span>WASD: Move | MOUSE: Look | CLICK: Shoot | R: Reload | SPACE: Jump</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Game Over Screen -->
+          <div id="fpsGameOver" class="fps-gameover" style="display: none;">
+            <div class="fps-gameover-content">
+              <h2>GAME OVER</h2>
+              <p>Final Score: <strong id="fpsFinalScore">0</strong></p>
+              <p>Total Kills: <strong id="fpsFinalKills">0</strong></p>
+              <button id="fpsResetBtn" class="btn-primary">Play Again</button>
+            </div>
+          </div>
+          
+          <!-- Click to Start Overlay -->
+          <div class="fps-start-overlay">
+            <div class="fps-start-content">
+              <h2>🎯 FPS SHOOTER</h2>
+              <p>Click anywhere to start playing</p>
+              <p class="fps-start-hint">Tip: Click to lock mouse and control camera</p>
+            </div>
+          </div>
+          
+          <!-- Canvas -->
+          <canvas id="fpsCanvas" width="1200" height="800"></canvas>
+        </div>
+      </div>
+
       <!-- Modern Pirates -->
       <div class="page" id="modern-pirates">
         <div class="modern-pirates-wrapper">
@@ -258,6 +320,7 @@
   <script src="games/drawing.js"></script>
   <script src="games/survival.js"></script>
   <script src="games/modern-pirates.js"></script>
+  <script src="games/fps.js"></script>
   
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
@@ -283,6 +346,7 @@
         if (pageName === "drawing") initDrawing();
         if (pageName === "survival") initSurvival();
         if (pageName === "modern-pirates") initModernPirates();
+        if (pageName === "fps") initFPS();
       });
     });
   </script>
