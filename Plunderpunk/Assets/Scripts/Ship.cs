@@ -9,6 +9,10 @@ namespace Plunderpunk
     /// </summary>
     public abstract class Ship : MonoBehaviour
     {
+        #region Constants
+        protected const float DEATH_DELAY = 0.5f;
+        #endregion
+
         #region Public Fields
         public int gridX;
         public int gridY;
@@ -121,7 +125,7 @@ namespace Plunderpunk
         protected virtual void Die()
         {
             Debug.Log($"{gameObject.name} destroyed!");
-            Destroy(gameObject, 0.5f);
+            Destroy(gameObject, DEATH_DELAY);
         }
         #endregion
     }
@@ -143,6 +147,19 @@ namespace Plunderpunk
             
             Debug.Log("Player ship initialized");
         }
+        
+        protected override void Die()
+        {
+            base.Die();
+            
+            // Notify game manager of player defeat
+            PlunderpunkGameManager manager = FindObjectOfType<PlunderpunkGameManager>();
+            if (manager != null)
+            {
+                manager.currentState = PlunderpunkGameManager.GameState.Defeat;
+                Debug.Log("[Game Over] Player ship destroyed!");
+            }
+        }
     }
 
     /// <summary>
@@ -158,6 +175,11 @@ namespace Plunderpunk
         private float moveTimer = 0f;
         #endregion
 
+        #region Cached References
+        private PlunderpunkGameManager gameManager;
+        private PlayerShip playerShip;
+        #endregion
+
         protected override void SetupVisuals()
         {
             base.SetupVisuals();
@@ -168,6 +190,15 @@ namespace Plunderpunk
             }
             
             Debug.Log("Enemy ship initialized");
+        }
+        
+        public override void Initialize(int x, int y)
+        {
+            base.Initialize(x, y);
+            
+            // Cache references to avoid repeated FindObjectOfType calls
+            gameManager = FindObjectOfType<PlunderpunkGameManager>();
+            playerShip = FindObjectOfType<PlayerShip>();
         }
 
         private void Update()
@@ -187,10 +218,9 @@ namespace Plunderpunk
         /// </summary>
         private void MakeAIMove()
         {
-            PlunderpunkGameManager manager = FindObjectOfType<PlunderpunkGameManager>();
-            if (manager == null) return;
+            if (gameManager == null) return;
 
-            if (Random.value > 0.5f)
+            if (Random.value > 0.5f && playerShip != null)
             {
                 MoveTowardsPlayer();
             }
@@ -201,28 +231,53 @@ namespace Plunderpunk
         }
 
         /// <summary>
-        /// Moves the enemy ship towards the player.
+        /// Moves the enemy ship towards the player with bounds checking.
         /// </summary>
         private void MoveTowardsPlayer()
         {
-            PlayerShip player = FindObjectOfType<PlayerShip>();
-            if (player != null)
+            if (playerShip == null) return;
+            
+            int deltaX = Mathf.Clamp(playerShip.gridX - gridX, -1, 1);
+            int deltaY = Mathf.Clamp(playerShip.gridY - gridY, -1, 1);
+            
+            int targetX = gridX + deltaX;
+            int targetY = gridY + deltaY;
+            
+            // Validate bounds before moving
+            if (IsValidPosition(targetX, targetY))
             {
-                int deltaX = Mathf.Clamp(player.gridX - gridX, -1, 1);
-                int deltaY = Mathf.Clamp(player.gridY - gridY, -1, 1);
-                
-                MoveTo(gridX + deltaX, gridY + deltaY);
+                MoveTo(targetX, targetY);
             }
         }
 
         /// <summary>
-        /// Moves the enemy ship in a random direction.
+        /// Moves the enemy ship in a random direction with bounds checking.
         /// </summary>
         private void MoveRandomly()
         {
             int deltaX = Random.Range(-1, 2);
             int deltaY = Random.Range(-1, 2);
-            MoveTo(gridX + deltaX, gridY + deltaY);
+            
+            int targetX = gridX + deltaX;
+            int targetY = gridY + deltaY;
+            
+            // Validate bounds before moving
+            if (IsValidPosition(targetX, targetY))
+            {
+                MoveTo(targetX, targetY);
+            }
+        }
+        
+        /// <summary>
+        /// Validates if a position is within grid bounds.
+        /// </summary>
+        private bool IsValidPosition(int x, int y)
+        {
+            if (gameManager == null) return false;
+            
+            // Access grid dimensions from game manager (these should be public or accessible)
+            // For now, we'll use a simple bounds check
+            return x >= 0 && y >= 0 && x < 80 && y < 20;
         }
     }
 }

@@ -10,10 +10,16 @@ namespace Plunderpunk
     /// </summary>
     public class PlunderpunkInput : MonoBehaviour
     {
+        #region Constants
+        private const float RAYCAST_DISTANCE = 1000f;
+        private const float PLAYER_SEARCH_INTERVAL = 1f;
+        #endregion
+
         #region Private Fields
         private PlunderpunkGameManager gameManager;
         private Camera mainCamera;
         private PlayerShip playerShip;
+        private float playerSearchTimer = 0f;
         #endregion
 
         #region Unity Lifecycle
@@ -65,7 +71,7 @@ namespace Plunderpunk
                 Ray ray = mainCamera.ScreenPointToRay(mousePosition);
                 RaycastHit hit;
                 
-                if (Physics.Raycast(ray, out hit, 1000f))
+                if (Physics.Raycast(ray, out hit, RAYCAST_DISTANCE))
                 {
                     Vector3 worldPos = hit.point;
                     int gridX = Mathf.RoundToInt(worldPos.x);
@@ -82,12 +88,19 @@ namespace Plunderpunk
         /// <summary>
         /// Handles keyboard arrow key input for movement.
         /// Alternative control scheme to mouse clicking.
+        /// Note: Diagonal movement is intentionally allowed and costs 2 movement units.
         /// </summary>
         private void HandleKeyboardInput()
         {
+            // Only search for player ship periodically, not every frame
             if (playerShip == null)
             {
-                playerShip = FindObjectOfType<PlayerShip>();
+                playerSearchTimer += Time.deltaTime;
+                if (playerSearchTimer >= PLAYER_SEARCH_INTERVAL)
+                {
+                    playerSearchTimer = 0f;
+                    playerShip = FindObjectOfType<PlayerShip>();
+                }
                 return;
             }
             

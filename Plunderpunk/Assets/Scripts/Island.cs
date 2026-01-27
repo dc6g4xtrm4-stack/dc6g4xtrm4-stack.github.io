@@ -9,6 +9,11 @@ namespace Plunderpunk
     /// </summary>
     public class Island : MonoBehaviour
     {
+        #region Constants
+        private const int DANGER_DAMAGE = 20;
+        private const int HARBOR_HEALING = 25;
+        #endregion
+
         #region Public Fields
         public int gridX;
         public int gridY;
@@ -125,39 +130,66 @@ namespace Plunderpunk
         /// </summary>
         public void Capture()
         {
+            Capture(null);
+        }
+        
+        /// <summary>
+        /// Captures the island and applies its effect to the specified player ship.
+        /// </summary>
+        public void Capture(PlayerShip player = null)
+        {
             if (captured) return;
             
             captured = true;
             UpdateCapturedVisuals();
-            ApplyIslandEffect();
+            ApplyIslandEffect(player);
         }
 
         /// <summary>
         /// Updates visuals to show island has been captured.
+        /// Enables transparency rendering mode for visual feedback.
         /// </summary>
         private void UpdateCapturedVisuals()
         {
             if (islandRenderer != null)
             {
-                Color color = islandRenderer.material.color;
+                Material material = islandRenderer.material;
+                
+                // Enable transparency rendering mode
+                material.SetFloat("_Mode", 3);
+                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                material.SetInt("_ZWrite", 0);
+                material.DisableKeyword("_ALPHATEST_ON");
+                material.EnableKeyword("_ALPHABLEND_ON");
+                material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                material.renderQueue = 3000;
+                
+                // Set alpha to show captured state
+                Color color = material.color;
                 color.a = 0.5f;
-                islandRenderer.material.color = color;
+                material.color = color;
             }
         }
 
         /// <summary>
         /// Applies the island's special effect to the player.
         /// </summary>
-        private void ApplyIslandEffect()
+        private void ApplyIslandEffect(PlayerShip player = null)
         {
-            PlayerShip player = FindObjectOfType<PlayerShip>();
+            // Find player if not provided
+            if (player == null)
+            {
+                player = FindObjectOfType<PlayerShip>();
+            }
+            
             if (player == null) return;
 
             switch (islandType)
             {
                 case IslandType.Danger:
-                    player.TakeDamage(20);
-                    Debug.Log("[Island Effect] Danger! Ship took 20 damage!");
+                    player.TakeDamage(DANGER_DAMAGE);
+                    Debug.Log($"[Island Effect] Danger! Ship took {DANGER_DAMAGE} damage!");
                     break;
                     
                 case IslandType.Treasure:
@@ -165,8 +197,8 @@ namespace Plunderpunk
                     break;
                     
                 case IslandType.Harbor:
-                    player.Heal(25);
-                    Debug.Log("[Island Effect] Harbor reached! Healed 25 HP!");
+                    player.Heal(HARBOR_HEALING);
+                    Debug.Log($"[Island Effect] Harbor reached! Healed {HARBOR_HEALING} HP!");
                     break;
                     
                 case IslandType.Resource:

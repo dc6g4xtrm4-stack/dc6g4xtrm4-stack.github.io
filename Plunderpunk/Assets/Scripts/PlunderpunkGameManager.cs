@@ -15,6 +15,8 @@ namespace Plunderpunk
     {
         #region Constants
         private const string GAME_TAGLINE = "Loot Louder. Sail Faster.";
+        private const int COMBAT_VICTORY_POINTS = 5;
+        private const int COMBAT_DEFEAT_PENALTY = -2;
         #endregion
 
         #region Inspector Fields
@@ -352,7 +354,7 @@ namespace Plunderpunk
             Island island = grid[x, y].island;
             if (island != null && !island.captured)
             {
-                island.Capture();
+                island.Capture(playerShip);
                 AddPoints(island.pointValue);
                 
                 Debug.Log($"[Loot] Captured {island.islandType}! +{island.pointValue} points");
@@ -365,13 +367,21 @@ namespace Plunderpunk
         /// </summary>
         private void CheckEnemyCollision(int x, int y)
         {
+            // Create a copy of the list to avoid modification during iteration
+            List<EnemyShip> enemiesAtPosition = new List<EnemyShip>();
+            
             foreach (var enemy in enemyShips)
             {
-                if (enemy.gridX == x && enemy.gridY == y)
+                if (enemy != null && enemy.gridX == x && enemy.gridY == y)
                 {
-                    InitiateCombat(enemy);
-                    break;
+                    enemiesAtPosition.Add(enemy);
                 }
+            }
+            
+            // Initiate combat with the first enemy found at this position
+            if (enemiesAtPosition.Count > 0)
+            {
+                InitiateCombat(enemiesAtPosition[0]);
             }
         }
 
@@ -381,6 +391,8 @@ namespace Plunderpunk
         /// </summary>
         private void InitiateCombat(EnemyShip enemy)
         {
+            if (enemy == null) return;
+            
             int playerRoll = RollDice(3);
             int enemyRoll = RollDice(2);
             
@@ -388,15 +400,18 @@ namespace Plunderpunk
             
             if (playerRoll > enemyRoll)
             {
+                // Clear grid cell before removing enemy
+                grid[enemy.gridX, enemy.gridY].occupied = false;
+                
                 enemyShips.Remove(enemy);
                 Destroy(enemy.gameObject);
-                AddPoints(5);
-                Debug.Log("[Combat] Victory! +5 points");
+                AddPoints(COMBAT_VICTORY_POINTS);
+                Debug.Log($"[Combat] Victory! +{COMBAT_VICTORY_POINTS} points");
             }
             else
             {
-                AddPoints(-2);
-                Debug.Log("[Combat] Defeat! -2 points");
+                AddPoints(COMBAT_DEFEAT_PENALTY);
+                Debug.Log($"[Combat] Defeat! {COMBAT_DEFEAT_PENALTY} points");
             }
         }
 
@@ -502,6 +517,9 @@ namespace Plunderpunk
             islands.Clear();
             enemyShips.Clear();
             playerPoints = 0;
+            
+            // Reset grid state
+            grid = null;
             
             InitializeGame();
         }
