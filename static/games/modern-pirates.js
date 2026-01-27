@@ -9,8 +9,8 @@ let currentPlayerId = null; // 1 or 2
 let gameStorage = {}; // In-memory storage for game states
 
 // Grid configuration
-const GRID_WIDTH = 80;
-const GRID_HEIGHT = 40;
+const GRID_WIDTH = 20;
+const GRID_HEIGHT = 80;
 
 // Wind direction in degrees (0=N, 90=E, 180=S, 270=W)
 const WIND_DIRECTIONS = {
@@ -35,6 +35,10 @@ const CARDS = {
 // Storage & persistence
 function saveGameToStorage(gameId, gameData) {
   try {
+    // Save the full game state
+    localStorage.setItem(`piratesGame_${gameId}`, JSON.stringify(gameData));
+    
+    // Update recent games list
     const recentGames = JSON.parse(localStorage.getItem("piratesRecentGames") || "[]");
     const existingIndex = recentGames.findIndex(g => g.id === gameId);
     
@@ -54,8 +58,24 @@ function saveGameToStorage(gameId, gameData) {
     
     // Keep only last 5 games
     localStorage.setItem("piratesRecentGames", JSON.stringify(recentGames.slice(0, 5)));
+    
+    return true;
   } catch (e) {
-    console.log("Storage not available");
+    console.error("Failed to save game to storage:", e);
+    return false;
+  }
+}
+
+function loadGameFromStorage(gameId) {
+  try {
+    const gameDataStr = localStorage.getItem(`piratesGame_${gameId}`);
+    if (!gameDataStr) {
+      return null;
+    }
+    return JSON.parse(gameDataStr);
+  } catch (e) {
+    console.error("Failed to load game from storage:", e);
+    return null;
   }
 }
 
@@ -167,43 +187,85 @@ function initPiratesLobby() {
 
 function createNewGame(gameId) {
   console.log("Creating game with ID:", gameId);
-  currentGameId = gameId;
-  currentPlayerId = 1; // You're Player 1 if you created
-  const gameData = {
-    id: gameId,
-    created: new Date().toISOString(),
-    players: 1,
-    playerIds: [1],
-    status: "waiting"
-  };
-  gameStorage[gameId] = gameData;
-  saveGameToStorage(gameId, gameData);
   
-  const lobbyEl = document.getElementById("piratesLobby");
-  const gameEl = document.getElementById("piratesGame");
-  const gameIdDisplay = document.getElementById("gameIdDisplay");
-  
-  if (lobbyEl) lobbyEl.style.display = "none";
-  if (gameEl) gameEl.style.display = "flex";
-  if (gameIdDisplay) gameIdDisplay.textContent = gameId;
-  
-  startGameInitialization();
+  try {
+    currentGameId = gameId;
+    currentPlayerId = 1; // You're Player 1 if you created
+    const gameData = {
+      id: gameId,
+      created: new Date().toISOString(),
+      players: 1,
+      playerIds: [1],
+      status: "waiting",
+      lastUpdate: new Date().toISOString()
+    };
+    
+    // Save to both in-memory and localStorage
+    gameStorage[gameId] = gameData;
+    if (!saveGameToStorage(gameId, gameData)) {
+      console.error("Failed to save game to localStorage");
+      alert("Warning: Game may not persist across browser windows");
+    }
+    
+    const lobbyEl = document.getElementById("piratesLobby");
+    const gameEl = document.getElementById("piratesGame");
+    const gameIdDisplay = document.getElementById("gameIdDisplay");
+    
+    if (lobbyEl) lobbyEl.style.display = "none";
+    if (gameEl) gameEl.style.display = "flex";
+    if (gameIdDisplay) gameIdDisplay.textContent = gameId;
+    
+    startGameInitialization();
+  } catch (e) {
+    console.error("Error creating game:", e);
+    alert("Failed to create game. Please try again.");
+  }
 }
 
 function joinGame(gameId) {
-  if (!gameStorage[gameId]) {
-    alert("Game ID not found");
-    return;
+  try {
+    // First check localStorage for the game
+    let gameData = loadGameFromStorage(gameId);
+    
+    // Fallback to in-memory storage
+    if (!gameData && gameStorage[gameId]) {
+      gameData = gameStorage[gameId];
+    }
+    
+    if (!gameData) {
+      alert("Game ID not found. Please check the ID and try again.");
+      return;
+    }
+    
+    // Check if game is already full
+    if (gameData.players >= 2) {
+      alert("This game is already full. Please create a new game or join a different one.");
+      return;
+    }
+    
+    currentGameId = gameId;
+    currentPlayerId = 2; // You're Player 2 if you joined
+    gameData.players = 2;
+    gameData.playerIds = [1, 2];
+    gameData.status = "active";
+    gameData.lastUpdate = new Date().toISOString();
+    
+    // Save to both storages
+    gameStorage[gameId] = gameData;
+    if (!saveGameToStorage(gameId, gameData)) {
+      console.error("Failed to save game to localStorage");
+      alert("Warning: Game may not persist across browser windows");
+    }
+    
+    const gameIdDisplay = document.getElementById("gameIdDisplay");
+    if (gameIdDisplay) gameIdDisplay.textContent = gameId;
+    
+    showPiratesGame();
+    startGameInitialization();
+  } catch (e) {
+    console.error("Error joining game:", e);
+    alert("Failed to join game. Please try again.");
   }
-  currentGameId = gameId;
-  currentPlayerId = 2; // You're Player 2 if you joined
-  gameStorage[gameId].players += 1;
-  gameStorage[gameId].playerIds = [1, 2];
-  gameStorage[gameId].status = "active";
-  saveGameToStorage(gameId, gameStorage[gameId]);
-  document.getElementById("gameIdDisplay").textContent = gameId;
-  showPiratesGame();
-  startGameInitialization();
 }
 
 function startGameInitialization() {
@@ -260,6 +322,13 @@ function setupGameCanvas() {
     cellWidth: canvas.width / GRID_WIDTH,
     cellHeight: canvas.height / GRID_HEIGHT,
     
+    // Zoom and camera system
+    zoomLevel: 1.0,
+    minZoom: 0.5,
+    maxZoom: 3.0,
+    cameraX: 0,
+    cameraY: 0,
+    
     // Wind system
     windDirection: WIND_DIRECTIONS.NW, // degrees
     windSpeed: 3, // 0-5 knots
@@ -278,8 +347,8 @@ function setupGameCanvas() {
         id: 1,
         name: "Player 1",
         color: "#FF6B6B",
-        gridX: 10,
-        gridY: 20,
+        gridX: 5,
+        gridY: 40,
         points: 0,
         pointsBreakdown: { islands: 0, battles: 0, upgrades: 0 },
         ships: 1,
@@ -288,13 +357,14 @@ function setupGameCanvas() {
         hand: generateHand(),
         usedCards: [],
         islandsClaimed: [],
+        activeCard: null
       },
       {
         id: 2,
         name: "Player 2",
         color: "#4ECDC4",
-        gridX: 70,
-        gridY: 20,
+        gridX: 15,
+        gridY: 40,
         points: 0,
         pointsBreakdown: { islands: 0, battles: 0, upgrades: 0 },
         ships: 1,
@@ -303,15 +373,14 @@ function setupGameCanvas() {
         hand: generateHand(),
         usedCards: [],
         islandsClaimed: [],
+        activeCard: null
       }
     ],
     
+    currentPlayerIndex: 0,
     islands: [],
     messages: [],
-    
-    // Game over condition
-    currentPlayer: 1,
-    islandsTileMap: {}
+    messageTimer: 0
   };
   
   // Generate islands
@@ -319,13 +388,44 @@ function setupGameCanvas() {
   
   // Event listeners
   canvas.addEventListener("click", handleCanvasClick);
+  canvas.addEventListener("wheel", handleCanvasWheel, { passive: false });
   const resetBtn = document.getElementById("piratesResetBtn");
   const helpBtn = document.getElementById("piratesHelpBtn");
+  const zoomInBtn = document.getElementById("piratesZoomInBtn");
+  const zoomOutBtn = document.getElementById("piratesZoomOutBtn");
   if (resetBtn) resetBtn.addEventListener("click", resetModernPirates);
   if (helpBtn) helpBtn.addEventListener("click", showGameHelp);
+  if (zoomInBtn) zoomInBtn.addEventListener("click", () => adjustZoom(0.2));
+  if (zoomOutBtn) zoomOutBtn.addEventListener("click", () => adjustZoom(-0.2));
+  
+  // Listen for storage events to sync game state across browser windows
+  window.addEventListener("storage", handleStorageChange);
   
   gameRunning = true;
   startGameLoop();
+}
+
+// Handle storage changes from other windows
+function handleStorageChange(e) {
+  if (!currentGameId || !e.key || !e.key.startsWith("piratesGame_")) {
+    return;
+  }
+  
+  const gameId = e.key.replace("piratesGame_", "");
+  if (gameId !== currentGameId) {
+    return;
+  }
+  
+  try {
+    console.log("Game state updated from another window");
+    const updatedGameData = JSON.parse(e.newValue);
+    if (updatedGameData) {
+      gameStorage[gameId] = updatedGameData;
+      // You could trigger a UI update here if needed
+    }
+  } catch (err) {
+    console.error("Error syncing game state:", err);
+  }
 }
 
 function initModernPirates() {
@@ -347,12 +447,12 @@ function generateHand(count = 3) {
   for (let i = 0; i < count; i++) {
     const cardName = cardNames[Math.floor(Math.random() * cardNames.length)];
     hand.push({
-      name: cardName,
-      cost: CARDS[cardName].cost,
-      effect: CARDS[cardName].effect,
-      used: false
+      type: cardName,
+      ...CARDS[cardName],
+      id: Date.now() + Math.random() + i
     });
   }
+  
   return hand;
 }
 
@@ -366,12 +466,31 @@ function generateIslandTiles(count) {
       x = Math.floor(Math.random() * GRID_WIDTH);
       y = Math.floor(Math.random() * GRID_HEIGHT);
       key = `${x},${y}`;
-    } while (placed.has(key) || (x < 5 && y < 5) || (x > GRID_WIDTH - 5 && y > GRID_HEIGHT - 5));
+    } while (placed.has(key) || 
+             (x < 3 && y > GRID_HEIGHT - 5) || 
+             (x > GRID_WIDTH - 3 && y > GRID_HEIGHT - 5));
     
     placed.add(key);
     
-    const types = Object.keys(ISLAND_TYPES);
-    const type = types[Math.floor(Math.random() * types.length)];
+    // Determine island type based on position (tougher islands near top = lower y values)
+    let type;
+    const topThird = GRID_HEIGHT / 3;
+    const middleThird = (GRID_HEIGHT * 2) / 3;
+    
+    if (y < topThird) {
+      // Top third: mostly TREASURE and DANGER
+      const toughTypes = ["TREASURE", "TREASURE", "DANGER", "HARBOR"];
+      type = toughTypes[Math.floor(Math.random() * toughTypes.length)];
+    } else if (y < middleThird) {
+      // Middle third: mix of all types
+      const types = Object.keys(ISLAND_TYPES);
+      type = types[Math.floor(Math.random() * types.length)];
+    } else {
+      // Bottom third: mostly RESOURCE and HARBOR
+      const easyTypes = ["RESOURCE", "RESOURCE", "HARBOR", "TREASURE"];
+      type = easyTypes[Math.floor(Math.random() * easyTypes.length)];
+    }
+    
     const islandInfo = ISLAND_TYPES[type];
     
     modernPiratesGame.islands.push({
@@ -393,14 +512,58 @@ function handleCanvasClick(e) {
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
   
-  // Convert pixel coords to grid coords
-  const gridX = Math.floor(mouseX / modernPiratesGame.cellWidth);
-  const gridY = Math.floor(mouseY / modernPiratesGame.cellHeight);
+  // Convert pixel coords to grid coords (accounting for zoom and camera)
+  const worldX = (mouseX / modernPiratesGame.zoomLevel) + modernPiratesGame.cameraX;
+  const worldY = (mouseY / modernPiratesGame.zoomLevel) + modernPiratesGame.cameraY;
+  const gridX = Math.floor(worldX / modernPiratesGame.cellWidth);
+  const gridY = Math.floor(worldY / modernPiratesGame.cellHeight);
   
   const currentPlayer = modernPiratesGame.players[modernPiratesGame.currentPlayerIndex];
   
   // Try to move player ship
   moveShip(currentPlayer, gridX, gridY);
+}
+
+function handleCanvasWheel(e) {
+  if (!modernPiratesGame) return;
+  e.preventDefault();
+  
+  // Zoom in or out based on wheel direction
+  const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
+  adjustZoom(zoomDelta);
+}
+
+function adjustZoom(delta) {
+  if (!modernPiratesGame) return;
+  
+  const oldZoom = modernPiratesGame.zoomLevel;
+  modernPiratesGame.zoomLevel = Math.max(
+    modernPiratesGame.minZoom,
+    Math.min(modernPiratesGame.maxZoom, modernPiratesGame.zoomLevel + delta)
+  );
+  
+  // Adjust camera to keep view centered
+  const zoomRatio = modernPiratesGame.zoomLevel / oldZoom;
+  const centerX = modernPiratesGame.cameraX + (modernPiratesGame.canvas.width / oldZoom) / 2;
+  const centerY = modernPiratesGame.cameraY + (modernPiratesGame.canvas.height / oldZoom) / 2;
+  
+  modernPiratesGame.cameraX = centerX - (modernPiratesGame.canvas.width / modernPiratesGame.zoomLevel) / 2;
+  modernPiratesGame.cameraY = centerY - (modernPiratesGame.canvas.height / modernPiratesGame.zoomLevel) / 2;
+  
+  // Clamp camera position
+  clampCamera();
+}
+
+function clampCamera() {
+  if (!modernPiratesGame) return;
+  
+  const worldWidth = GRID_WIDTH * modernPiratesGame.cellWidth;
+  const worldHeight = GRID_HEIGHT * modernPiratesGame.cellHeight;
+  const viewWidth = modernPiratesGame.canvas.width / modernPiratesGame.zoomLevel;
+  const viewHeight = modernPiratesGame.canvas.height / modernPiratesGame.zoomLevel;
+  
+  modernPiratesGame.cameraX = Math.max(0, Math.min(worldWidth - viewWidth, modernPiratesGame.cameraX));
+  modernPiratesGame.cameraY = Math.max(0, Math.min(worldHeight - viewHeight, modernPiratesGame.cameraY));
 }
 
 function moveShip(player, targetX, targetY) {
@@ -571,13 +734,22 @@ function showGameHelp() {
 
 OBJECTIVE: Reach 25 points first!
 
+BOARD:
+• 20 x 80 grid (wider than tall)
+• Tougher islands near the top
+• Use zoom controls to navigate
+
+CONTROLS:
+• Click to move ship (1-2 squares max)
+• Mouse wheel to zoom in/out
+• Zoom +/- buttons in sidebar
+
 POINTS:
 • Loot Islands: 1-3 points each
 • Win Battles: 1-3 points per victory
 • Upgrade Ships: 1 point per upgrade (max 3)
 
 SAILING:
-• Click a grid square to move there (1-2 squares max)
 • Can't sail directly INTO the wind
 • You must tack or gybe around wind
 • Wind changes every ~5 turns
@@ -595,8 +767,8 @@ ISLAND TYPES:
 
 TIPS:
 • Plan your route around wind direction
+• Treasure islands concentrate near the top
 • Check the wind compass (left sidebar)
-• Treasure islands are worth the risk
 • Block opponents from islands
 • First to 25 points wins!`);
 }
@@ -632,6 +804,11 @@ function drawGame() {
   ctx.fillStyle = "#0a1520";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
+  // Save context and apply zoom/camera transforms
+  ctx.save();
+  ctx.scale(modernPiratesGame.zoomLevel, modernPiratesGame.zoomLevel);
+  ctx.translate(-modernPiratesGame.cameraX, -modernPiratesGame.cameraY);
+  
   // Draw grid
   drawGrid();
   
@@ -640,6 +817,9 @@ function drawGame() {
   
   // Draw ships
   drawShips();
+  
+  // Restore context for UI overlays
+  ctx.restore();
   
   // Draw wind direction overlay
   drawWindIndicator();
@@ -858,6 +1038,22 @@ function drawGameOverlay() {
 
 function updateUI() {
   const currentPlayer = modernPiratesGame.players[modernPiratesGame.currentPlayerIndex];
+  
+  // Update player info
+  document.getElementById("playerRole").textContent = currentPlayerId === 1 ? "🔴 Player 1 (You)" : "🔵 Player 2 (You)";
+  document.getElementById("playerId").textContent = currentPlayerId;
+  
+  // Update turn indicator
+  const isYourTurn = currentPlayer.id === currentPlayerId;
+  const turnText = isYourTurn 
+    ? "✓ Your Turn" 
+    : `Opponent's Turn (Player ${currentPlayer.id})`;
+  const turnIndicator = document.getElementById("turnIndicator");
+  if (turnIndicator) {
+    turnIndicator.textContent = turnText;
+    turnIndicator.style.color = isYourTurn ? "#4ECDC4" : "#a0a0a0";
+    turnIndicator.style.fontWeight = isYourTurn ? "bold" : "normal";
+  }
   
   // Update sidebar stats
   document.getElementById("shipClass").textContent = `Ship (${currentPlayer.ships} ship${currentPlayer.ships > 1 ? 's' : ''})`;
