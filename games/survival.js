@@ -4,6 +4,17 @@
 
 let survivalGame = null;
 
+// Game Configuration
+const GAME_CONFIG = {
+  ENEMY_COUNT: 3,
+  ENEMY_SPAWN_AREA_X: 800,
+  ENEMY_SPAWN_AREA_Y_OFFSET: 200,
+  ENEMY_HEALTH: 50,
+  ENEMY_SPEED: 0.5,
+  ENEMY_DAMAGE: 2,
+  ENEMY_RESPAWN_DELAY: 5000
+};
+
 // Tech Tree Definition
 const TECH_TREE = {
   stone_tools: {
@@ -194,14 +205,34 @@ function initializeWorld() {
     });
   }
   
-  // Spawn some enemies
-  for (let i = 0; i < 3; i++) {
-    survivalGame.enemies.push({
+  // Add gunpowder deposits
+  for (let i = 0; i < 4; i++) {
+    survivalGame.world.push({
+      type: "gunpowder",
       x: Math.random() * 800,
-      y: Math.random() * 800 + 200, // Spawn farther away
-      health: 50,
-      speed: 0.5, // Slower enemies
-      damage: 2, // Less damage
+      y: Math.random() * 600,
+      health: 80
+    });
+  }
+  
+  // Add electronics deposits
+  for (let i = 0; i < 2; i++) {
+    survivalGame.world.push({
+      type: "electronics",
+      x: Math.random() * 800,
+      y: Math.random() * 600,
+      health: 120
+    });
+  }
+  
+  // Spawn some enemies
+  for (let i = 0; i < GAME_CONFIG.ENEMY_COUNT; i++) {
+    survivalGame.enemies.push({
+      x: Math.random() * GAME_CONFIG.ENEMY_SPAWN_AREA_X,
+      y: Math.random() * GAME_CONFIG.ENEMY_SPAWN_AREA_X + GAME_CONFIG.ENEMY_SPAWN_AREA_Y_OFFSET,
+      health: GAME_CONFIG.ENEMY_HEALTH,
+      speed: GAME_CONFIG.ENEMY_SPEED,
+      damage: GAME_CONFIG.ENEMY_DAMAGE,
       lastAttack: 0
     });
   }
@@ -310,6 +341,30 @@ function survivalGameLoop() {
       ctx.strokeStyle = "#333333";
       ctx.lineWidth = 2;
       ctx.stroke();
+    }
+  });
+  
+  // Draw gunpowder deposits
+  ctx.fillStyle = "#FFD700";
+  world.forEach(obj => {
+    if (obj.type === "gunpowder") {
+      ctx.beginPath();
+      ctx.arc(obj.x, obj.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#DAA520";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  });
+  
+  // Draw electronics deposits
+  ctx.fillStyle = "#00FFFF";
+  world.forEach(obj => {
+    if (obj.type === "electronics") {
+      ctx.fillRect(obj.x - 10, obj.y - 10, 20, 20);
+      ctx.strokeStyle = "#00CED1";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(obj.x - 10, obj.y - 10, 20, 20);
     }
   });
   
@@ -431,6 +486,16 @@ function gatherResources() {
         if (obj.health <= 0) {
           player.inventory.oil += 15;
         }
+      } else if (obj.type === "gunpowder" && obj.health > 0) {
+        obj.health -= 1;
+        if (obj.health <= 0) {
+          player.inventory.gunpowder += 12;
+        }
+      } else if (obj.type === "electronics" && obj.health > 0) {
+        obj.health -= 1;
+        if (obj.health <= 0) {
+          player.inventory.electronics += 8;
+        }
       }
     }
   });
@@ -472,14 +537,6 @@ function craftTech(techId) {
   
   player.unlockedTech.push(techId);
   player.currentWeapon = techId;
-  
-  // Add special resources for advanced tech
-  if (techId === "guns") {
-    player.inventory.gunpowder = 50;
-  }
-  if (techId === "machine_guns") {
-    player.inventory.electronics = 20;
-  }
 }
 
 // Weapon firing system
@@ -531,7 +588,9 @@ function updateSurvivalProjectiles() {
     proj.traveled += Math.hypot(proj.vx, proj.vy);
     
     // Remove if out of range
-    if (proj.traveled > proj.range || proj.x < 0 || proj.x > 800 || proj.y < 0 || proj.y > 600) {
+    if (proj.traveled > proj.range || 
+        proj.x < 0 || proj.x > survivalGame.width || 
+        proj.y < 0 || proj.y > survivalGame.height) {
       projectiles.splice(i, 1);
       continue;
     }
@@ -551,15 +610,15 @@ function updateSurvivalProjectiles() {
           setTimeout(() => {
             if (survivalGame) {
               survivalGame.enemies.push({
-                x: Math.random() * 800,
-                y: Math.random() * 800 + 200,
-                health: 50,
-                speed: 0.5,
-                damage: 2,
+                x: Math.random() * GAME_CONFIG.ENEMY_SPAWN_AREA_X,
+                y: Math.random() * GAME_CONFIG.ENEMY_SPAWN_AREA_X + GAME_CONFIG.ENEMY_SPAWN_AREA_Y_OFFSET,
+                health: GAME_CONFIG.ENEMY_HEALTH,
+                speed: GAME_CONFIG.ENEMY_SPEED,
+                damage: GAME_CONFIG.ENEMY_DAMAGE,
                 lastAttack: 0
               });
             }
-          }, 5000);
+          }, GAME_CONFIG.ENEMY_RESPAWN_DELAY);
         }
         break;
       }
