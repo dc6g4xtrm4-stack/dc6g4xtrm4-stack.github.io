@@ -282,6 +282,8 @@ function startGameInitialization() {
 }
 
 function setupGameCanvas() {
+  const canvas = document.getElementById("modernPiratesCanvas");
+  if (!canvas) return;
   
   const ctx = canvas.getContext("2d");
   const gameArea = canvas.parentElement;
@@ -548,10 +550,6 @@ function adjustZoom(delta) {
   modernPiratesGame.cameraX = centerX - (modernPiratesGame.canvas.width / modernPiratesGame.zoomLevel) / 2;
   modernPiratesGame.cameraY = centerY - (modernPiratesGame.canvas.height / modernPiratesGame.zoomLevel) / 2;
   
-  // Clamp camera position
-  clampCamera();
-}
-
   // Clamp camera position
   clampCamera();
 }
