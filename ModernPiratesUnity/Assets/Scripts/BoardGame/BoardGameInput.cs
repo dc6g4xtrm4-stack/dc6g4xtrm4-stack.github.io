@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ModernPirates.BoardGame
 {
@@ -38,9 +39,10 @@ namespace ModernPirates.BoardGame
 
         private void HandleMouseInput()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                Vector2 mousePosition = Mouse.current.position.ReadValue();
+                Ray ray = mainCamera.ScreenPointToRay(mousePosition);
                 RaycastHit hit;
                 
                 if (Physics.Raycast(ray, out hit, 1000f))
@@ -80,14 +82,18 @@ namespace ModernPirates.BoardGame
             int deltaX = 0;
             int deltaY = 0;
             
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-                deltaY = 1;
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-                deltaY = -1;
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-                deltaX = -1;
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-                deltaX = 1;
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
+            {
+                if (keyboard.upArrowKey.wasPressedThisFrame)
+                    deltaY = 1;
+                if (keyboard.downArrowKey.wasPressedThisFrame)
+                    deltaY = -1;
+                if (keyboard.leftArrowKey.wasPressedThisFrame)
+                    deltaX = -1;
+                if (keyboard.rightArrowKey.wasPressedThisFrame)
+                    deltaX = 1;
+            }
             
             if (deltaX != 0 || deltaY != 0)
             {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ModernPirates.Combat
 {
@@ -91,20 +92,30 @@ namespace ModernPirates.Combat
             float forward = 0f;
             float turn = 0f;
             
-            if (Input.GetKey(KeyCode.W))
-                forward = 1f;
-            if (Input.GetKey(KeyCode.S))
-                forward = -1f;
-            if (Input.GetKey(KeyCode.A))
-                turn = -1f;
-            if (Input.GetKey(KeyCode.D))
-                turn = 1f;
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
+            {
+                if (keyboard.wKey.isPressed)
+                    forward = 1f;
+                if (keyboard.sKey.isPressed)
+                    forward = -1f;
+                if (keyboard.aKey.isPressed)
+                    turn = -1f;
+                if (keyboard.dKey.isPressed)
+                    turn = 1f;
+            }
             
             // Apply movement
             MoveShip(forward, turn);
             
             // Fire cannons (Space or Left Click)
-            if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && Time.time >= nextFireTime)
+            bool firePressed = false;
+            if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
+                firePressed = true;
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                firePressed = true;
+                
+            if (firePressed && Time.time >= nextFireTime)
             {
                 FireCannons();
                 nextFireTime = Time.time + fireRate;
