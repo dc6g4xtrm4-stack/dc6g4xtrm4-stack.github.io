@@ -899,3 +899,94 @@ a:hover {
     font-size: 36px;
   }
 }
+
+/* Open World Mode Styles */
+.openworld-main {
+  flex: 1;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+#openWorldCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.openworld-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.openworld-hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+}
+
+.openworld-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.openworld-stat-label {
+  font-size: 11px;
+  color: #a0a0a0;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.openworld-stat-value {
+  font-size: 20px;
+  color: #FFD700;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.openworld-minimap {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #4ECDC4;
+  border-radius: 8px;
+  padding: 10px;
+  pointer-events: auto;
+}
+
+#minimapCanvas {
+  display: block;
+  border-radius: 4px;
+}
+
+.openworld-hud-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.openworld-controls {
+  text-align: center;
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.mode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}

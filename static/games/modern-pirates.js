@@ -7,6 +7,8 @@ let gameLoop = null;
 let currentGameId = null;
 let currentPlayerId = null; // 1 or 2
 let gameStorage = {}; // In-memory storage for game states
+let selectedGameMode = null; // 'standard' or 'openworld'
+let openWorldGame = null;
 
 // Grid configuration
 const GRID_WIDTH = 20;
@@ -114,18 +116,76 @@ function generateGameId() {
   return Math.floor(Math.random() * 10000).toString().padStart(4, '0');
 }
 
-function showPiratesLobby() {
+// Mode Selection functions
+function showModeSelection() {
+  const modeSelection = document.getElementById("piratesModeSelection");
   const lobby = document.getElementById("piratesLobby");
-  const game = document.getElementById("piratesGame");
+  const standardGame = document.getElementById("piratesGame");
+  const openWorldGame = document.getElementById("piratesOpenWorld");
+  
+  if (modeSelection) modeSelection.style.display = "flex";
+  if (lobby) lobby.style.display = "none";
+  if (standardGame) standardGame.style.display = "none";
+  if (openWorldGame) openWorldGame.style.display = "none";
+}
+
+function showPiratesLobby() {
+  const modeSelection = document.getElementById("piratesModeSelection");
+  const lobby = document.getElementById("piratesLobby");
+  const standardGame = document.getElementById("piratesGame");
+  const openWorldGame = document.getElementById("piratesOpenWorld");
+  
+  if (modeSelection) modeSelection.style.display = "none";
   if (lobby) lobby.style.display = "flex";
-  if (game) game.style.display = "none";
+  if (standardGame) standardGame.style.display = "none";
+  if (openWorldGame) openWorldGame.style.display = "none";
 }
 
 function showPiratesGame() {
+  const modeSelection = document.getElementById("piratesModeSelection");
   const lobby = document.getElementById("piratesLobby");
-  const game = document.getElementById("piratesGame");
+  const standardGame = document.getElementById("piratesGame");
+  const openWorldGame = document.getElementById("piratesOpenWorld");
+  
+  if (modeSelection) modeSelection.style.display = "none";
   if (lobby) lobby.style.display = "none";
-  if (game) game.style.display = "flex";
+  
+  if (selectedGameMode === 'openworld') {
+    if (standardGame) standardGame.style.display = "none";
+    if (openWorldGame) openWorldGame.style.display = "flex";
+  } else {
+    if (standardGame) standardGame.style.display = "flex";
+    if (openWorldGame) openWorldGame.style.display = "none";
+  }
+}
+
+function initModeSelection() {
+  const standardModeCard = document.getElementById("standardModeCard");
+  const openWorldModeCard = document.getElementById("openWorldModeCard");
+  
+  if (standardModeCard) {
+    standardModeCard.addEventListener("click", () => {
+      selectedGameMode = 'standard';
+      showPiratesLobby();
+      initPiratesLobby();
+      
+      // Update lobby subtitle
+      const subtitle = document.getElementById("lobbyModeSubtitle");
+      if (subtitle) subtitle.textContent = "Standard Play - Race to 25 points!";
+    });
+  }
+  
+  if (openWorldModeCard) {
+    openWorldModeCard.addEventListener("click", () => {
+      selectedGameMode = 'openworld';
+      showPiratesLobby();
+      initPiratesLobby();
+      
+      // Update lobby subtitle
+      const subtitle = document.getElementById("lobbyModeSubtitle");
+      if (subtitle) subtitle.textContent = "Open World - Explore the seas!";
+    });
+  }
 }
 
 function initPiratesLobby() {
@@ -181,6 +241,14 @@ function initPiratesLobby() {
       if (e.key === "Enter") {
         joinConfirmBtn?.click();
       }
+    });
+  }
+  
+  // Back to mode selection button
+  const backBtn = document.getElementById("backToModeSelectionBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      showModeSelection();
     });
   }
 }
@@ -269,16 +337,30 @@ function joinGame(gameId) {
 }
 
 function startGameInitialization() {
-  const canvas = document.getElementById("modernPiratesCanvas");
-  if (!canvas) {
-    console.error("Canvas not found");
-    return;
+  // Determine which mode to initialize
+  if (selectedGameMode === 'openworld') {
+    const canvas = document.getElementById("openWorldCanvas");
+    if (!canvas) {
+      console.error("Open World Canvas not found");
+      return;
+    }
+    
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+      setupOpenWorldGame();
+    }, 100);
+  } else {
+    const canvas = document.getElementById("modernPiratesCanvas");
+    if (!canvas) {
+      console.error("Canvas not found");
+      return;
+    }
+    
+    // Use setTimeout to ensure DOM is ready
+    setTimeout(() => {
+      setupGameCanvas();
+    }, 100);
   }
-  
-  // Use setTimeout to ensure DOM is ready
-  setTimeout(() => {
-    setupGameCanvas();
-  }, 100);
 }
 
 function setupGameCanvas() {
@@ -429,15 +511,9 @@ function handleStorageChange(e) {
 }
 
 function initModernPirates() {
-  // Show lobby if no game is in progress
-  if (!currentGameId) {
-    showPiratesLobby();
-    initPiratesLobby();
-    return;
-  }
-  
-  // Otherwise start the game
-  startGameInitialization();
+  // Show mode selection screen on initial load
+  showModeSelection();
+  initModeSelection();
 }
 
 function generateHand(count = 3) {
@@ -1177,6 +1253,415 @@ function resetModernPirates() {
   document.getElementById("piratesPlayerStats").innerHTML = "";
   document.getElementById("piratesGameStatus").innerHTML = "";
   
-  showPiratesLobby();
-  initModernPirates();
+  showModeSelection();
+  initModeSelection();
+}
+
+// ========== OPEN WORLD MODE IMPLEMENTATION ==========
+
+function setupOpenWorldGame() {
+  const canvas = document.getElementById("openWorldCanvas");
+  const minimapCanvas = document.getElementById("minimapCanvas");
+  
+  if (!canvas || !minimapCanvas) {
+    console.error("Open World canvases not found");
+    return;
+  }
+  
+  const ctx = canvas.getContext("2d");
+  const minimapCtx = minimapCanvas.getContext("2d");
+  const gameArea = canvas.parentElement;
+  
+  // Resize main canvas
+  function resizeCanvas() {
+    canvas.width = gameArea.clientWidth;
+    canvas.height = gameArea.clientHeight;
+  }
+  
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+  
+  // Initialize open world game state
+  openWorldGame = {
+    canvas: canvas,
+    ctx: ctx,
+    minimapCanvas: minimapCanvas,
+    minimapCtx: minimapCtx,
+    
+    // Player position in world coordinates (grid cells)
+    player: {
+      x: 10,
+      y: 40,
+      heading: 0, // degrees, 0 = North
+      points: 0,
+      islandsVisited: []
+    },
+    
+    // Camera/view
+    viewAngle: 0,
+    
+    // Keyboard state
+    keys: {},
+    
+    // Game state from standard mode
+    islands: [],
+    wind: {
+      direction: WIND_DIRECTIONS.NW,
+      speed: 3
+    }
+  };
+  
+  // Generate islands (reuse from standard mode)
+  generateIslandsForOpenWorld();
+  
+  // Setup event listeners
+  setupOpenWorldControls();
+  
+  // Setup UI buttons
+  const newGameBtn = document.getElementById("owNewGameBtn");
+  const toggleMapBtn = document.getElementById("owToggleMapBtn");
+  
+  if (newGameBtn) {
+    newGameBtn.addEventListener("click", resetModernPirates);
+  }
+  
+  if (toggleMapBtn) {
+    toggleMapBtn.addEventListener("click", () => {
+      // Could implement full map overlay here
+      alert("Full map view - Feature coming soon!");
+    });
+  }
+  
+  // Start game loop
+  openWorldGameLoop();
+}
+
+function generateIslandsForOpenWorld() {
+  if (!openWorldGame) return;
+  
+  openWorldGame.islands = [];
+  
+  // Generate 8-12 islands across the map
+  const islandCount = 8 + Math.floor(Math.random() * 5);
+  const islandTypeKeys = Object.keys(ISLAND_TYPES);
+  
+  for (let i = 0; i < islandCount; i++) {
+    let x, y;
+    let attempts = 0;
+    
+    // Find non-overlapping position
+    do {
+      x = Math.floor(Math.random() * GRID_WIDTH);
+      y = Math.floor(Math.random() * GRID_HEIGHT);
+      attempts++;
+    } while (attempts < 50 && openWorldGame.islands.some(island => 
+      Math.abs(island.x - x) < 3 && Math.abs(island.y - y) < 3
+    ));
+    
+    const typeKey = islandTypeKeys[Math.floor(Math.random() * islandTypeKeys.length)];
+    const islandType = ISLAND_TYPES[typeKey];
+    
+    openWorldGame.islands.push({
+      x: x,
+      y: y,
+      type: typeKey,
+      info: islandType,
+      visited: false
+    });
+  }
+}
+
+function setupOpenWorldControls() {
+  if (!openWorldGame) return;
+  
+  document.addEventListener("keydown", (e) => {
+    if (!openWorldGame) return;
+    openWorldGame.keys[e.key.toLowerCase()] = true;
+    
+    // Handle special keys
+    if (e.key === "Escape") {
+      resetModernPirates();
+    }
+  });
+  
+  document.addEventListener("keyup", (e) => {
+    if (!openWorldGame) return;
+    openWorldGame.keys[e.key.toLowerCase()] = false;
+  });
+}
+
+function openWorldGameLoop() {
+  if (!openWorldGame) return;
+  
+  updateOpenWorld();
+  renderOpenWorld();
+  renderMinimap();
+  
+  requestAnimationFrame(openWorldGameLoop);
+}
+
+function updateOpenWorld() {
+  if (!openWorldGame) return;
+  
+  const { player, keys } = openWorldGame;
+  const moveSpeed = 0.3; // cells per frame
+  const turnSpeed = 3; // degrees per frame
+  
+  // Rotation
+  if (keys['a'] || keys['arrowleft']) {
+    player.heading -= turnSpeed;
+  }
+  if (keys['d'] || keys['arrowright']) {
+    player.heading += turnSpeed;
+  }
+  
+  // Movement (forward/backward)
+  if (keys['w'] || keys['arrowup']) {
+    const rad = (player.heading * Math.PI) / 180;
+    player.x += Math.sin(rad) * moveSpeed;
+    player.y -= Math.cos(rad) * moveSpeed;
+  }
+  if (keys['s'] || keys['arrowdown']) {
+    const rad = (player.heading * Math.PI) / 180;
+    player.x -= Math.sin(rad) * moveSpeed * 0.5;
+    player.y += Math.cos(rad) * moveSpeed * 0.5;
+  }
+  
+  // Clamp to grid bounds
+  player.x = Math.max(0, Math.min(GRID_WIDTH - 1, player.x));
+  player.y = Math.max(0, Math.min(GRID_HEIGHT - 1, player.y));
+  
+  // Normalize heading
+  if (player.heading < 0) player.heading += 360;
+  if (player.heading >= 360) player.heading -= 360;
+  
+  // Check for island visits
+  openWorldGame.islands.forEach(island => {
+    const dist = Math.sqrt(
+      Math.pow(island.x - player.x, 2) + 
+      Math.pow(island.y - player.y, 2)
+    );
+    
+    if (dist < 1.5 && !island.visited) {
+      island.visited = true;
+      player.islandsVisited.push(island);
+      player.points += island.info.points || 0;
+      
+      // Show notification
+      updateOpenWorldUI();
+    }
+  });
+  
+  // Update UI
+  updateOpenWorldUI();
+}
+
+function updateOpenWorldUI() {
+  if (!openWorldGame) return;
+  
+  const { player, wind } = openWorldGame;
+  
+  // Update HUD
+  document.getElementById("owPosition").textContent = 
+    `${Math.floor(player.x)}, ${Math.floor(player.y)}`;
+  document.getElementById("owPoints").textContent = 
+    `${player.points}/25`;
+  
+  const windDir = Object.keys(WIND_DIRECTIONS).find(
+    k => WIND_DIRECTIONS[k] === wind.direction
+  ) || "N";
+  document.getElementById("owWind").textContent = 
+    `${windDir} ${wind.speed}kt`;
+  
+  // Update sidebar
+  document.getElementById("owShipPos").textContent = 
+    `(${Math.floor(player.x)}, ${Math.floor(player.y)})`;
+  
+  const headingDir = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][
+    Math.floor((player.heading + 22.5) / 45) % 8
+  ];
+  document.getElementById("owHeading").textContent = headingDir;
+  
+  document.getElementById("owPlayerPoints").textContent = player.points;
+  document.getElementById("owIslandsVisited").textContent = player.islandsVisited.length;
+  
+  // Show nearby islands
+  const nearbyDiv = document.getElementById("owNearbyInfo");
+  const nearbyIslands = openWorldGame.islands.filter(island => {
+    const dist = Math.sqrt(
+      Math.pow(island.x - player.x, 2) + 
+      Math.pow(island.y - player.y, 2)
+    );
+    return dist < 5;
+  });
+  
+  if (nearbyIslands.length > 0) {
+    nearbyDiv.innerHTML = nearbyIslands.map(island => {
+      const dist = Math.sqrt(
+        Math.pow(island.x - player.x, 2) + 
+        Math.pow(island.y - player.y, 2)
+      ).toFixed(1);
+      return `<p style="font-size: 11px; margin: 3px 0;">${island.info.symbol} ${island.info.name} (${dist} away)</p>`;
+    }).join("");
+  } else {
+    nearbyDiv.innerHTML = '<p style="font-size: 12px; color: #a0a0a0;">Nothing nearby...</p>';
+  }
+}
+
+function renderOpenWorld() {
+  if (!openWorldGame) return;
+  
+  const { ctx, canvas, player, islands } = openWorldGame;
+  
+  // Clear canvas with ocean color
+  ctx.fillStyle = "#0a4d68";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw sky gradient
+  const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.5);
+  skyGradient.addColorStop(0, "#1a5f7a");
+  skyGradient.addColorStop(1, "#0a4d68");
+  ctx.fillStyle = skyGradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height * 0.5);
+  
+  // Draw ocean gradient
+  const oceanGradient = ctx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
+  oceanGradient.addColorStop(0, "#0a4d68");
+  oceanGradient.addColorStop(1, "#073b4c");
+  ctx.fillStyle = oceanGradient;
+  ctx.fillRect(0, canvas.height * 0.5, canvas.width, canvas.height * 0.5);
+  
+  // Draw horizon line
+  ctx.strokeStyle = "#0d5c75";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height * 0.5);
+  ctx.lineTo(canvas.width, canvas.height * 0.5);
+  ctx.stroke();
+  
+  // Simple 3D-ish rendering of islands
+  islands.forEach(island => {
+    // Calculate relative position to player
+    const dx = island.x - player.x;
+    const dy = island.y - player.y;
+    
+    // Convert to polar coordinates relative to player heading
+    const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
+    const relativeAngle = angle - player.heading;
+    
+    // Only draw if in front of player (roughly 120 degree FOV)
+    if (Math.abs(relativeAngle) < 60) {
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < 15) { // Only render nearby islands
+        // Calculate screen position
+        const screenX = canvas.width / 2 + (relativeAngle / 60) * (canvas.width / 2);
+        const scale = Math.max(0.1, 1 / (distance * 0.5));
+        const screenY = canvas.height * 0.5 - (scale * 30);
+        const size = 60 * scale;
+        
+        // Draw island
+        ctx.fillStyle = island.info.color;
+        ctx.beginPath();
+        ctx.ellipse(screenX, screenY, size, size * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw symbol
+        ctx.font = `${24 * scale}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(island.info.symbol, screenX, screenY - size * 0.3);
+        
+        // Draw label if close
+        if (distance < 5) {
+          ctx.fillStyle = "#fff";
+          ctx.font = `${12 * scale}px Arial`;
+          ctx.fillText(island.info.name, screenX, screenY + size);
+        }
+      }
+    }
+  });
+  
+  // Draw compass/direction indicator
+  ctx.save();
+  ctx.translate(canvas.width - 60, 60);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+  ctx.beginPath();
+  ctx.arc(0, 0, 40, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.strokeStyle = "#FFD700";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.rotate((player.heading * Math.PI) / 180);
+  ctx.moveTo(0, -25);
+  ctx.lineTo(-8, 5);
+  ctx.lineTo(8, 5);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fillStyle = "#FFD700";
+  ctx.fill();
+  
+  ctx.restore();
+}
+
+function renderMinimap() {
+  if (!openWorldGame) return;
+  
+  const { minimapCtx, minimapCanvas, player, islands } = openWorldGame;
+  const ctx = minimapCtx;
+  
+  // Clear
+  ctx.fillStyle = "#001a20";
+  ctx.fillRect(0, 0, minimapCanvas.width, minimapCanvas.height);
+  
+  // Draw grid
+  ctx.strokeStyle = "#0a4d68";
+  ctx.lineWidth = 1;
+  
+  const cellWidth = minimapCanvas.width / GRID_WIDTH;
+  const cellHeight = minimapCanvas.height / GRID_HEIGHT;
+  
+  // Vertical lines
+  for (let x = 0; x <= GRID_WIDTH; x++) {
+    ctx.beginPath();
+    ctx.moveTo(x * cellWidth, 0);
+    ctx.lineTo(x * cellWidth, minimapCanvas.height);
+    ctx.stroke();
+  }
+  
+  // Horizontal lines (every 10 to avoid clutter)
+  for (let y = 0; y <= GRID_HEIGHT; y += 10) {
+    ctx.beginPath();
+    ctx.moveTo(0, y * cellHeight);
+    ctx.lineTo(minimapCanvas.width, y * cellHeight);
+    ctx.stroke();
+  }
+  
+  // Draw islands
+  islands.forEach(island => {
+    const x = island.x * cellWidth;
+    const y = island.y * cellHeight;
+    
+    ctx.fillStyle = island.visited ? island.info.color : "#555";
+    ctx.fillRect(x - 2, y - 2, 4, 4);
+  });
+  
+  // Draw player
+  const px = player.x * cellWidth;
+  const py = player.y * cellHeight;
+  
+  ctx.fillStyle = "#FFD700";
+  ctx.beginPath();
+  ctx.arc(px, py, 3, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Draw heading indicator
+  ctx.strokeStyle = "#FFD700";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const rad = (player.heading * Math.PI) / 180;
+  ctx.moveTo(px, py);
+  ctx.lineTo(px + Math.sin(rad) * 10, py - Math.cos(rad) * 10);
+  ctx.stroke();
 }
