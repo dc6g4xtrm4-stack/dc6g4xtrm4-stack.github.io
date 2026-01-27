@@ -3,7 +3,8 @@ using UnityEngine;
 namespace ModernPirates.Combat
 {
     /// <summary>
-    /// Controls ship behavior in combat mode
+    /// Controls ship behavior in combat mode.
+    /// All projectiles and effects are created programmatically - no prefabs needed.
     /// </summary>
     public class CombatShip : MonoBehaviour
     {
@@ -17,11 +18,6 @@ namespace ModernPirates.Combat
         public int cannonDamage = 15;
         public float fireRate = 1f;
         public float cannonRange = 50f;
-        
-        [Header("Prefabs")]
-        public GameObject cannonballPrefab;
-        public Transform leftCannonPosition;
-        public Transform rightCannonPosition;
         
         public bool isPlayer;
         private float nextFireTime = 0f;
@@ -42,21 +38,39 @@ namespace ModernPirates.Combat
             rb.useGravity = false;
         }
 
+        /// <summary>
+        /// Initializes the combat ship with programmatically created materials.
+        /// Player ships are blue, enemy ships are red.
+        /// </summary>
         public void Initialize(bool player)
         {
             isPlayer = player;
             health = maxHealth;
             
-            // Setup visual differences
-            if (!isPlayer)
+            // Setup visual differences programmatically
+            Renderer renderer = GetComponent<Renderer>();
+            if (renderer != null)
             {
-                // Enemy ships are slightly different color
-                Renderer[] renderers = GetComponentsInChildren<Renderer>();
-                foreach (var renderer in renderers)
+                Material shipMaterial = new Material(Shader.Find("Standard"));
+                
+                if (isPlayer)
                 {
-                    renderer.material.color = new Color(0.8f, 0.2f, 0.2f);
+                    // Player ship is blue
+                    shipMaterial.color = new Color(0.2f, 0.4f, 0.9f);
                 }
+                else
+                {
+                    // Enemy ship is red
+                    shipMaterial.color = new Color(0.8f, 0.2f, 0.2f);
+                }
+                
+                shipMaterial.SetFloat("_Metallic", 0.5f);
+                shipMaterial.SetFloat("_Glossiness", 0.6f);
+                
+                renderer.material = shipMaterial;
             }
+            
+            Debug.Log($"{(isPlayer ? "Player" : "Enemy")} combat ship initialized");
         }
 
         private void Update()
@@ -141,58 +155,56 @@ namespace ModernPirates.Combat
             rb.MoveRotation(rb.rotation * turnRotation);
         }
 
+        /// <summary>
+        /// Fires cannons from the ship.
+        /// Creates cannonball projectiles programmatically using Unity primitives.
+        /// No prefabs or pre-created assets needed.
+        /// </summary>
         private void FireCannons()
         {
-            // Fire from both sides
-            if (leftCannonPosition != null)
-            {
-                FireCannonball(leftCannonPosition, -transform.right);
-            }
-            if (rightCannonPosition != null)
-            {
-                FireCannonball(rightCannonPosition, transform.right);
-            }
+            // Fire from left, right, and forward positions
+            Vector3 leftOffset = -transform.right * 1.5f + transform.forward * 2f;
+            Vector3 rightOffset = transform.right * 1.5f + transform.forward * 2f;
+            Vector3 forwardOffset = transform.forward * 3f;
             
-            // Fire forward cannons
-            FireCannonball(transform, transform.forward);
+            FireCannonball(transform.position + leftOffset, -transform.right + transform.forward);
+            FireCannonball(transform.position + rightOffset, transform.right + transform.forward);
+            FireCannonball(transform.position + forwardOffset, transform.forward);
         }
 
-        private void FireCannonball(Transform spawnPoint, Vector3 direction)
+        /// <summary>
+        /// Creates and launches a cannonball projectile programmatically.
+        /// Uses a sphere primitive with physics-based motion.
+        /// </summary>
+        private void FireCannonball(Vector3 spawnPosition, Vector3 direction)
         {
-            if (cannonballPrefab == null)
-            {
-                // Create a simple sphere as cannonball if prefab not assigned
-                GameObject ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                ball.transform.position = spawnPoint.position;
-                ball.transform.localScale = Vector3.one * 0.5f;
-                
-                Rigidbody ballRb = ball.AddComponent<Rigidbody>();
-                ballRb.linearVelocity = direction * 30f;
-                
-                Cannonball cannonball = ball.AddComponent<Cannonball>();
-                cannonball.damage = cannonDamage;
-                cannonball.owner = this;
-                
-                Destroy(ball, 5f);
-            }
-            else
-            {
-                GameObject ball = Instantiate(cannonballPrefab, spawnPoint.position, Quaternion.identity);
-                Rigidbody ballRb = ball.GetComponent<Rigidbody>();
-                if (ballRb != null)
-                {
-                    ballRb.linearVelocity = direction * 30f;
-                }
-                
-                Cannonball cannonball = ball.GetComponent<Cannonball>();
-                if (cannonball != null)
-                {
-                    cannonball.damage = cannonDamage;
-                    cannonball.owner = this;
-                }
-                
-                Destroy(ball, 5f);
-            }
+            // Create cannonball sphere programmatically
+            GameObject ball = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            ball.name = "Cannonball";
+            ball.transform.position = spawnPosition;
+            ball.transform.localScale = Vector3.one * 0.5f;
+            
+            // Create dark material for cannonball
+            Material ballMaterial = new Material(Shader.Find("Standard"));
+            ballMaterial.color = new Color(0.1f, 0.1f, 0.1f); // Dark gray/black
+            ballMaterial.SetFloat("_Metallic", 0.8f);
+            ballMaterial.SetFloat("_Glossiness", 0.4f);
+            Renderer ballRenderer = ball.GetComponent<Renderer>();
+            ballRenderer.material = ballMaterial;
+            
+            // Add physics
+            Rigidbody ballRb = ball.AddComponent<Rigidbody>();
+            ballRb.mass = 10f;
+            ballRb.linearVelocity = direction.normalized * 30f;
+            ballRb.useGravity = true;
+            
+            // Add cannonball component
+            Cannonball cannonball = ball.AddComponent<Cannonball>();
+            cannonball.damage = cannonDamage;
+            cannonball.owner = this;
+            
+            // Destroy after 5 seconds
+            Destroy(ball, 5f);
         }
 
         public void TakeDamage(int damage)

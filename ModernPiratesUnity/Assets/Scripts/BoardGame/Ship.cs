@@ -3,7 +3,8 @@ using UnityEngine;
 namespace ModernPirates.BoardGame
 {
     /// <summary>
-    /// Represents a ship on the board game grid
+    /// Represents a ship on the board game grid.
+    /// All visuals are created programmatically - no materials or prefabs needed from Unity Editor.
     /// </summary>
     public class Ship : MonoBehaviour
     {
@@ -18,12 +19,13 @@ namespace ModernPirates.BoardGame
         public int defense = 5;
         public int movementRange = 3;
         
-        [Header("Visual")]
-        public Material playerMaterial;
-        public Material enemyMaterial;
-        
         private Renderer shipRenderer;
 
+        /// <summary>
+        /// Initializes the ship with position and team.
+        /// Creates materials programmatically based on whether it's a player or enemy ship.
+        /// No Inspector-assigned materials needed.
+        /// </summary>
         public void Initialize(int x, int y, bool player)
         {
             gridX = x;
@@ -33,11 +35,31 @@ namespace ModernPirates.BoardGame
             shipRenderer = GetComponent<Renderer>();
             if (shipRenderer != null)
             {
-                shipRenderer.material = isPlayer ? playerMaterial : enemyMaterial;
+                // Create material programmatically based on ship type
+                Material shipMaterial = new Material(Shader.Find("Standard"));
+                
+                if (isPlayer)
+                {
+                    // Player ship is blue
+                    shipMaterial.color = new Color(0.2f, 0.4f, 0.9f); // Bright blue
+                }
+                else
+                {
+                    // Enemy ship is red
+                    shipMaterial.color = new Color(0.9f, 0.2f, 0.2f); // Bright red
+                }
+                
+                // Make it slightly shiny
+                shipMaterial.SetFloat("_Metallic", 0.3f);
+                shipMaterial.SetFloat("_Glossiness", 0.5f);
+                
+                shipRenderer.material = shipMaterial;
             }
             
-            // Set visual appearance
+            // Set visual appearance (ship-like proportions)
             transform.localScale = new Vector3(0.8f, 0.5f, 1.2f);
+            
+            Debug.Log($"{(isPlayer ? "Player" : "Enemy")} ship initialized at ({x}, {y})");
         }
 
         public void MoveTo(int x, int y)

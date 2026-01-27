@@ -4,7 +4,9 @@ using System.Collections.Generic;
 namespace ModernPirates.OpenWorld
 {
     /// <summary>
-    /// Manages the open world mode where players can sail, gather loot, and build bases
+    /// Manages the open world mode where players can sail, gather loot, and build bases.
+    /// Fully programmatic - all islands, loot, ships, camera, and lighting created via code.
+    /// No Unity Editor setup or prefabs required.
     /// </summary>
     public class OpenWorldManager : MonoBehaviour
     {
@@ -12,17 +14,12 @@ namespace ModernPirates.OpenWorld
         [SerializeField] private float worldSize = 1000f;
         [SerializeField] private float waterLevel = 0f;
         
-        [Header("Player")]
-        [SerializeField] private GameObject playerShipPrefab;
-        private OpenWorldShip playerShip;
-        
-        [Header("Islands")]
-        [SerializeField] private GameObject islandPrefab;
+        [Header("Island Settings")]
         [SerializeField] private int numberOfIslands = 20;
         private List<GameObject> islands = new List<GameObject>();
         
-        [Header("Loot")]
-        [SerializeField] private GameObject lootPrefab;
+        [Header("Loot Settings")]
+        [SerializeField] private int initialLootCount = 30;
         private List<LootItem> activeLoot = new List<LootItem>();
         
         [Header("Bases")]
@@ -32,6 +29,8 @@ namespace ModernPirates.OpenWorld
         [SerializeField] private CameraMode cameraMode = CameraMode.ThirdPerson;
         private Camera mainCamera;
         
+        private OpenWorldShip playerShip;
+        
         public enum CameraMode
         {
             FirstPerson,
@@ -40,10 +39,83 @@ namespace ModernPirates.OpenWorld
 
         private void Start()
         {
+            // Ensure scene has required components
+            EnsureSceneSetup();
+            
             mainCamera = Camera.main;
             InitializeWorld();
         }
 
+        /// <summary>
+        /// Ensures the scene has all required components (camera, lighting, ocean).
+        /// Creates them programmatically if they don't exist.
+        /// This eliminates the need for any manual Unity Editor setup.
+        /// </summary>
+        private void EnsureSceneSetup()
+        {
+            // Check for camera - create one if none exists
+            if (Camera.main == null)
+            {
+                GameObject cameraObj = new GameObject("Main Camera");
+                mainCamera = cameraObj.AddComponent<Camera>();
+                cameraObj.tag = "MainCamera";
+                
+                // Position camera for open world view
+                cameraObj.transform.position = new Vector3(0f, 30f, -30f);
+                cameraObj.transform.rotation = Quaternion.Euler(30f, 0f, 0f);
+                
+                // Add audio listener
+                cameraObj.AddComponent<AudioListener>();
+                
+                Debug.Log("Created main camera programmatically for open world mode");
+            }
+            
+            // Check for directional light - create one if none exists
+            Light[] lights = FindObjectsOfType<Light>();
+            bool hasDirectionalLight = false;
+            foreach (var light in lights)
+            {
+                if (light.type == LightType.Directional)
+                {
+                    hasDirectionalLight = true;
+                    break;
+                }
+            }
+            
+            if (!hasDirectionalLight)
+            {
+                GameObject lightObj = new GameObject("Directional Light");
+                Light light = lightObj.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.color = new Color(1f, 0.95f, 0.8f); // Slightly warm sunlight
+                light.intensity = 1f;
+                lightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+                
+                Debug.Log("Created directional light programmatically for open world mode");
+            }
+            
+            // Create ocean plane for visual reference
+            GameObject ocean = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ocean.name = "Ocean";
+            ocean.transform.position = new Vector3(0, waterLevel, 0);
+            ocean.transform.localScale = new Vector3(worldSize / 10f, 1f, worldSize / 10f);
+            
+            // Create ocean material
+            Material oceanMaterial = new Material(Shader.Find("Standard"));
+            oceanMaterial.color = new Color(0.1f, 0.4f, 0.6f); // Ocean blue
+            oceanMaterial.SetFloat("_Metallic", 0.7f);
+            oceanMaterial.SetFloat("_Glossiness", 0.85f);
+            Renderer oceanRenderer = ocean.GetComponent<Renderer>();
+            oceanRenderer.material = oceanMaterial;
+            
+            // Remove collider from ocean
+            Destroy(ocean.GetComponent<Collider>());
+        }
+
+        /// <summary>
+        /// Initializes the open world by generating islands, spawning player ship, and creating loot.
+        /// All objects are created programmatically using Unity primitives.
+        /// </summary>
         private void InitializeWorld()
         {
             // Generate islands
@@ -53,9 +125,15 @@ namespace ModernPirates.OpenWorld
             SpawnPlayerShip();
             
             // Generate initial loot
-            GenerateLoot(30);
+            GenerateLoot(initialLootCount);
+            
+            Debug.Log("Open world initialized - all objects created programmatically");
         }
 
+        /// <summary>
+        /// Generates islands programmatically using cylinder primitives.
+        /// Islands are randomly sized and colored to look like land masses.
+        /// </summary>
         private void GenerateIslands()
         {
             for (int i = 0; i < numberOfIslands; i++)
@@ -65,65 +143,75 @@ namespace ModernPirates.OpenWorld
                 float z = Random.Range(-worldSize / 2, worldSize / 2);
                 Vector3 position = new Vector3(x, waterLevel, z);
                 
-                // Create island
+                // Create island programmatically
                 GameObject island = CreateIsland(position);
                 islands.Add(island);
             }
+            
+            Debug.Log($"Generated {numberOfIslands} islands programmatically");
         }
 
+        /// <summary>
+        /// Creates an island GameObject programmatically using a cylinder primitive.
+        /// Applies a green/brown material to simulate land.
+        /// </summary>
         private GameObject CreateIsland(Vector3 position)
         {
-            GameObject island;
+            // Create island using cylinder primitive
+            GameObject island = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            island.name = "Island";
+            island.transform.position = position;
             
-            if (islandPrefab != null)
+            // Random size
+            float scaleX = Random.Range(10f, 30f);
+            float scaleY = Random.Range(5f, 15f);
+            float scaleZ = Random.Range(10f, 30f);
+            island.transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
+            
+            // Create land material
+            Renderer renderer = island.GetComponent<Renderer>();
+            if (renderer != null)
             {
-                island = Instantiate(islandPrefab, position, Quaternion.identity);
-            }
-            else
-            {
-                // Create simple island if no prefab
-                island = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                island.transform.position = position;
-                island.transform.localScale = new Vector3(
-                    Random.Range(10f, 30f), 
-                    Random.Range(5f, 15f), 
-                    Random.Range(10f, 30f)
-                );
-                
-                // Set material to look like land
-                Renderer renderer = island.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = new Color(0.4f, 0.6f, 0.2f);
-                }
+                Material landMaterial = new Material(Shader.Find("Standard"));
+                // Vary the green/brown color for each island
+                float greenTint = Random.Range(0.5f, 0.7f);
+                landMaterial.color = new Color(0.4f, greenTint, 0.2f); // Greenish-brown
+                landMaterial.SetFloat("_Metallic", 0.0f);
+                landMaterial.SetFloat("_Glossiness", 0.2f);
+                renderer.material = landMaterial;
             }
             
             island.transform.parent = transform;
             return island;
         }
 
+        /// <summary>
+        /// Spawns the player ship programmatically using a cube primitive.
+        /// Creates all necessary components (Rigidbody, Collider, OpenWorldShip script).
+        /// </summary>
         private void SpawnPlayerShip()
         {
-            Vector3 spawnPos = new Vector3(0, waterLevel, 0);
+            Vector3 spawnPos = new Vector3(0, waterLevel + 0.5f, 0);
             
-            if (playerShipPrefab != null)
+            // Create ship GameObject programmatically
+            GameObject shipObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            shipObj.name = "PlayerShip";
+            shipObj.transform.position = spawnPos;
+            shipObj.transform.localScale = new Vector3(2f, 1f, 4f); // Ship-like proportions
+            
+            // Create ship material
+            Renderer renderer = shipObj.GetComponent<Renderer>();
+            if (renderer != null)
             {
-                GameObject shipObj = Instantiate(playerShipPrefab, spawnPos, Quaternion.identity);
-                playerShip = shipObj.GetComponent<OpenWorldShip>();
-                if (playerShip == null)
-                {
-                    playerShip = shipObj.AddComponent<OpenWorldShip>();
-                }
-            }
-            else
-            {
-                // Create simple ship
-                GameObject shipObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                shipObj.transform.position = spawnPos;
-                shipObj.transform.localScale = new Vector3(2f, 1f, 4f);
-                playerShip = shipObj.AddComponent<OpenWorldShip>();
+                Material shipMaterial = new Material(Shader.Find("Standard"));
+                shipMaterial.color = new Color(0.6f, 0.4f, 0.2f); // Brown wood
+                shipMaterial.SetFloat("_Metallic", 0.1f);
+                shipMaterial.SetFloat("_Glossiness", 0.3f);
+                renderer.material = shipMaterial;
             }
             
+            // Add ship component
+            playerShip = shipObj.AddComponent<OpenWorldShip>();
             playerShip.Initialize();
             
             // Load saved position if exists
@@ -135,8 +223,14 @@ namespace ModernPirates.OpenWorld
                     playerShip.transform.position = savedPos;
                 }
             }
+            
+            Debug.Log("Player ship spawned programmatically");
         }
 
+        /// <summary>
+        /// Generates loot items programmatically scattered across the world.
+        /// Uses sphere primitives with yellow materials to represent collectible treasure.
+        /// </summary>
         private void GenerateLoot(int count)
         {
             for (int i = 0; i < count; i++)
@@ -148,36 +242,47 @@ namespace ModernPirates.OpenWorld
                 
                 CreateLoot(position);
             }
+            
+            Debug.Log($"Generated {count} loot items programmatically");
         }
 
+        /// <summary>
+        /// Creates a loot item programmatically using a sphere primitive.
+        /// Applies a yellow/gold material and adds collision detection.
+        /// </summary>
         private void CreateLoot(Vector3 position)
         {
-            GameObject lootObj;
+            // Create loot sphere programmatically
+            GameObject lootObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            lootObj.name = "Loot";
+            lootObj.transform.position = position;
+            lootObj.transform.localScale = Vector3.one * 0.5f;
             
-            if (lootPrefab != null)
+            // Create gold material
+            Renderer renderer = lootObj.GetComponent<Renderer>();
+            if (renderer != null)
             {
-                lootObj = Instantiate(lootPrefab, position, Quaternion.identity);
-            }
-            else
-            {
-                // Create simple loot sphere
-                lootObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                lootObj.transform.position = position;
-                lootObj.transform.localScale = Vector3.one * 0.5f;
+                Material lootMaterial = new Material(Shader.Find("Standard"));
+                lootMaterial.color = new Color(1f, 0.85f, 0.1f); // Gold color
+                lootMaterial.SetFloat("_Metallic", 0.8f);
+                lootMaterial.SetFloat("_Glossiness", 0.9f);
                 
-                Renderer renderer = lootObj.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.yellow;
-                }
+                // Make it emit light for visibility
+                lootMaterial.EnableKeyword("_EMISSION");
+                lootMaterial.SetColor("_EmissionColor", new Color(0.8f, 0.7f, 0.1f) * 0.3f);
+                
+                renderer.material = lootMaterial;
             }
             
-            LootItem loot = lootObj.GetComponent<LootItem>();
-            if (loot == null)
+            // Make collider a trigger
+            SphereCollider collider = lootObj.GetComponent<SphereCollider>();
+            if (collider != null)
             {
-                loot = lootObj.AddComponent<LootItem>();
+                collider.isTrigger = true;
             }
             
+            // Add loot component
+            LootItem loot = lootObj.AddComponent<LootItem>();
             loot.value = Random.Range(10, 100);
             activeLoot.Add(loot);
             
