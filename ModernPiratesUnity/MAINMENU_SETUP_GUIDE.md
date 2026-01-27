@@ -2,6 +2,12 @@
 
 This guide provides step-by-step instructions for setting up a simple main menu scene in Unity for the Modern Pirates game project.
 
+## About This Guide
+
+This guide shows you how to manually create and configure the MainMenu scene in Unity. A template scene file (`Assets/Scenes/MainMenu.unity`) is provided as a starting point with the basic GameObjects already created, but **you will need to attach the scripts yourself** by following the instructions below.
+
+Alternatively, you can create a new scene from scratch and follow all the steps to set it up manually.
+
 ## Prerequisites
 
 Before starting, ensure you have:
@@ -13,6 +19,15 @@ Before starting, ensure you have:
   - `MainMenuUI.cs` (in `Scripts/UI/`)
 
 ## Step-by-Step Setup Guide
+
+You have two options for setting up the MainMenu scene:
+
+**Option A: Use the Template Scene (Recommended)**
+1. Open the existing `Assets/Scenes/MainMenu.unity` scene in Unity
+2. Skip to step 2 below to attach the required scripts to the existing GameObjects
+
+**Option B: Create a New Scene from Scratch**
+1. Follow all steps below starting from step 1
 
 ### 1. Create a New Scene
 
@@ -82,10 +97,18 @@ Before starting, ensure you have:
 
 After completing the steps above, your Hierarchy window should contain:
 - Main Camera (created automatically with new scene)
-- GameManager (with GameManager.cs script attached)
-- SteamManager (with SteamManager.cs script attached)
-- Canvas (with MainMenuUI.cs script attached)
+- GameManager (with GameManager.cs script attached) ✓
+- SteamManager (with SteamManager.cs script attached) ✓
+- Canvas (with MainMenuUI.cs script attached) ✓
 - EventSystem (created automatically with Canvas)
+
+**Important**: If you opened the template scene, make sure you have completed steps 2-4 above to attach the scripts to the GameObjects. The template scene provides the GameObject structure but does **not** include the script attachments - you must add them manually.
+
+To verify scripts are attached:
+1. Select each GameObject in the Hierarchy
+2. Look at the Inspector panel
+3. You should see the corresponding script component listed
+4. If a script is missing, drag and drop it from the Project window as described in steps 2-4
 
 ## Additional Notes
 
