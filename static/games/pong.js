@@ -43,6 +43,7 @@ function initPong() {
     aiScore: 0,
     gameRunning: false,
     gameTime: 0,
+    bounceCount: 0,
     difficulty: 1
   };
   
@@ -91,8 +92,8 @@ function pongGameLoop() {
   if (gameRunning) {
     pongGame.gameTime += 1;
     
-    // Increase difficulty: every 300 frames, increase speed
-    pongGame.difficulty = 1 + Math.floor(pongGame.gameTime / 300) * 0.15;
+    // Increase difficulty: 1.2x speed after each bounce
+    pongGame.difficulty = Math.pow(1.2, pongGame.bounceCount);
     
     // Update AI difficulty
     aiPaddle.difficulty = Math.min(pongGame.difficulty * 0.8, 2);
@@ -151,7 +152,7 @@ function pongGameLoop() {
       const speed = Math.sqrt(ball.speedX ** 2 + ball.speedY ** 2);
       ball.speedY = Math.sin(angle) * speed * 0.8;
       
-      pongGame.playerScore++;
+      pongGame.bounceCount++;
     }
     
     // Ball collision with AI paddle (left)
@@ -167,16 +168,16 @@ function pongGameLoop() {
       const speed = Math.sqrt(ball.speedX ** 2 + ball.speedY ** 2);
       ball.speedY = Math.sin(angle) * speed * 0.8;
       
-      pongGame.aiScore++;
+      pongGame.bounceCount++;
     }
     
     // Scoring - miss on left or right
     if (ball.x < 0) {
-      pongGame.aiScore++;
+      pongGame.playerScore++;
       resetBall();
     }
     if (ball.x > width) {
-      pongGame.playerScore++;
+      pongGame.aiScore++;
       resetBall();
     }
   }
@@ -239,6 +240,7 @@ function resetBall() {
   pongGame.ball.y = pongGame.height / 2;
   pongGame.ball.speedX = (Math.random() > 0.5 ? 1 : -1) * pongGame.ball.baseSpeed;
   pongGame.ball.speedY = (Math.random() - 0.5) * pongGame.ball.baseSpeed;
+  pongGame.bounceCount = 0;
 }
 
 function resetPong() {
