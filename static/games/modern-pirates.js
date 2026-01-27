@@ -275,13 +275,11 @@ function createNewGame(gameId) {
       alert("Warning: Game may not persist across browser windows");
     }
     
-    const lobbyEl = document.getElementById("piratesLobby");
-    const gameEl = document.getElementById("piratesGame");
     const gameIdDisplay = document.getElementById("gameIdDisplay");
-    
-    if (lobbyEl) lobbyEl.style.display = "none";
-    if (gameEl) gameEl.style.display = "flex";
     if (gameIdDisplay) gameIdDisplay.textContent = gameId;
+    
+    showPiratesGame();
+    startGameInitialization();
     
     startGameInitialization();
   } catch (e) {
@@ -1250,8 +1248,11 @@ function resetModernPirates() {
   gameRunning = false;
   currentGameId = null;
   
-  document.getElementById("piratesPlayerStats").innerHTML = "";
-  document.getElementById("piratesGameStatus").innerHTML = "";
+  const playerStats = document.getElementById("piratesPlayerStats");
+  const gameStatus = document.getElementById("piratesGameStatus");
+  
+  if (playerStats) playerStats.innerHTML = "";
+  if (gameStatus) gameStatus.innerHTML = "";
   
   showModeSelection();
   initModeSelection();
