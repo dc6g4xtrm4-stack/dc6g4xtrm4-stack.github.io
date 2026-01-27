@@ -44,14 +44,9 @@ namespace ModernPirates.OpenWorld
             rb.angularDamping = 2f;
             rb.useGravity = false;
             
-            // Add collider if not present (should exist from CreatePrimitive, but make trigger)
+            // Get existing collider from CreatePrimitive (Cube) and set to trigger
             Collider collider = GetComponent<Collider>();
-            if (collider == null)
-            {
-                BoxCollider box = gameObject.AddComponent<BoxCollider>();
-                box.isTrigger = true;
-            }
-            else
+            if (collider != null)
             {
                 collider.isTrigger = true;
             }

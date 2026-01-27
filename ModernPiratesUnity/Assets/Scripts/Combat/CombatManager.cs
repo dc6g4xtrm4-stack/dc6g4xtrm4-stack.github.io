@@ -98,8 +98,8 @@ namespace ModernPirates.Combat
             Renderer oceanRenderer = ocean.GetComponent<Renderer>();
             oceanRenderer.material = oceanMaterial;
             
-            // Remove collider from ocean
-            Destroy(ocean.GetComponent<Collider>());
+            // Keep collider for physics - objects rest on ocean surface
+            // No need to remove collider as it provides the ocean "floor"
         }
 
         /// <summary>

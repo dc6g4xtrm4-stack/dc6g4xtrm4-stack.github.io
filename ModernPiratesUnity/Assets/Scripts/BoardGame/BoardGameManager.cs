@@ -121,8 +121,8 @@ namespace ModernPirates.BoardGame
                         Material cellMaterial = new Material(Shader.Find("Standard"));
                         cellMaterial.color = new Color(0.3f, 0.5f, 0.7f, 0.3f); // Semi-transparent blue
                         
-                        // Enable transparency
-                        cellMaterial.SetFloat("_Mode", 3); // Transparent mode
+                        // Enable transparency (3 = Transparent rendering mode)
+                        cellMaterial.SetFloat("_Mode", 3);
                         cellMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                         cellMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                         cellMaterial.SetInt("_ZWrite", 0);
@@ -134,8 +134,13 @@ namespace ModernPirates.BoardGame
                         Renderer renderer = cell.GetComponent<Renderer>();
                         renderer.material = cellMaterial;
                         
-                        // Remove collider since grid cells don't need physics
-                        Destroy(cell.GetComponent<Collider>());
+                        // Keep collider for raycasting/interaction but make it a trigger
+                        // This allows mouse clicks to detect grid cells for movement
+                        Collider cellCollider = cell.GetComponent<Collider>();
+                        if (cellCollider != null)
+                        {
+                            cellCollider.isTrigger = true;
+                        }
                     }
                     
                     grid[x, y] = new GridCell(x, y, worldPos);

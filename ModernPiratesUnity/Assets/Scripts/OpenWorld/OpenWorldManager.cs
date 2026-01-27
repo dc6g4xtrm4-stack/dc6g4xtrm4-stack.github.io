@@ -108,8 +108,8 @@ namespace ModernPirates.OpenWorld
             Renderer oceanRenderer = ocean.GetComponent<Renderer>();
             oceanRenderer.material = oceanMaterial;
             
-            // Remove collider from ocean
-            Destroy(ocean.GetComponent<Collider>());
+            // Keep collider for physics - ships float on ocean surface
+            // No need to remove collider as it provides the water "surface"
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace ModernPirates.OpenWorld
             island.name = "Island";
             island.transform.position = position;
             
-            // Random size
+            // Randomize green component for color variation
             float scaleX = Random.Range(10f, 30f);
             float scaleY = Random.Range(5f, 15f);
             float scaleZ = Random.Range(10f, 30f);
@@ -173,9 +173,9 @@ namespace ModernPirates.OpenWorld
             if (renderer != null)
             {
                 Material landMaterial = new Material(Shader.Find("Standard"));
-                // Vary the green/brown color for each island
-                float greenTint = Random.Range(0.5f, 0.7f);
-                landMaterial.color = new Color(0.4f, greenTint, 0.2f); // Greenish-brown
+                // Randomize green component for color variation (greenish-brown islands)
+                float greenIntensity = Random.Range(0.5f, 0.7f);
+                landMaterial.color = new Color(0.4f, greenIntensity, 0.2f); // Greenish-brown
                 landMaterial.SetFloat("_Metallic", 0.0f);
                 landMaterial.SetFloat("_Glossiness", 0.2f);
                 renderer.material = landMaterial;

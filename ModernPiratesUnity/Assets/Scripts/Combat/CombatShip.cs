@@ -163,12 +163,13 @@ namespace ModernPirates.Combat
         private void FireCannons()
         {
             // Fire from left, right, and forward positions
+            // Broadside left, broadside right, and forward cannon pattern
             Vector3 leftOffset = -transform.right * 1.5f + transform.forward * 2f;
             Vector3 rightOffset = transform.right * 1.5f + transform.forward * 2f;
             Vector3 forwardOffset = transform.forward * 3f;
             
-            FireCannonball(transform.position + leftOffset, -transform.right + transform.forward);
-            FireCannonball(transform.position + rightOffset, transform.right + transform.forward);
+            FireCannonball(transform.position + leftOffset, (-transform.right + transform.forward).normalized);
+            FireCannonball(transform.position + rightOffset, (transform.right + transform.forward).normalized);
             FireCannonball(transform.position + forwardOffset, transform.forward);
         }
 
