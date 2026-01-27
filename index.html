@@ -160,16 +160,25 @@
       <!-- Survival -->
       <div class="page" id="survival">
         <div class="page-container">
-          <h2>First-Person Survival Game</h2>
+          <h2>First-Person Survival Game with Tech Tree</h2>
           <div class="game-container">
             <canvas id="survivalCanvas" width="800" height="600"></canvas>
             <div class="game-info">
-              <p>Survival Game - Gather resources, build shelter, and survive. Use WASD to move, mouse to look around.</p>
+              <p><strong>Controls:</strong> WASD to move | E to gather | 1-6 to craft | Click to attack</p>
               <button id="survivalResetBtn">Reset Game</button>
               <div id="survivalStats">
                 <span>Health: <span id="healthBar">100</span>%</span>
                 <span>Food: <span id="foodBar">100</span>%</span>
                 <span>Energy: <span id="energyBar">100</span>%</span>
+              </div>
+              <div style="margin-top: 10px; font-size: 12px;">
+                <p><strong>Tech Tree Progression:</strong></p>
+                <p>1: Stone Tools (5 wood, 10 stone)</p>
+                <p>2: Metal Tools (10 wood, 20 stone, 15 metal)</p>
+                <p>3: Guns (15 wood, 30 metal, 20 gunpowder)</p>
+                <p>4: Cannons (50 metal, 40 gunpowder)</p>
+                <p>5: Machine Guns (60 metal, 50 gunpowder, 30 oil)</p>
+                <p>6: Vehicles (100 metal, 80 oil, 40 electronics)</p>
               </div>
             </div>
           </div>
