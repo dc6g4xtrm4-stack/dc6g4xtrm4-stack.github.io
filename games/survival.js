@@ -198,10 +198,10 @@ function initializeWorld() {
   for (let i = 0; i < 3; i++) {
     survivalGame.enemies.push({
       x: Math.random() * 800,
-      y: Math.random() * 600,
+      y: Math.random() * 800 + 200, // Spawn farther away
       health: 50,
-      speed: 1,
-      damage: 5,
+      speed: 0.5, // Slower enemies
+      damage: 2, // Less damage
       lastAttack: 0
     });
   }
@@ -241,10 +241,10 @@ function survivalGameLoop() {
   player.y = Math.max(0, Math.min(height, player.y));
   
   // Update enemy AI
-  updateEnemies();
+  updateSurvivalEnemies();
   
   // Update projectiles
-  updateProjectiles();
+  updateSurvivalProjectiles();
   
   // Update stats
   player.energy -= 0.1;
@@ -381,13 +381,16 @@ function survivalGameLoop() {
   
   // Game over check
   if (player.health <= 0) {
+    player.health = 0;
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = "#FF6B6B";
     ctx.font = "32px Arial";
     ctx.textAlign = "center";
     ctx.fillText("GAME OVER", width / 2, height / 2);
-    return;
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("Click Reset to try again", width / 2, height / 2 + 40);
   }
   
   requestAnimationFrame(survivalGameLoop);
@@ -515,7 +518,7 @@ function fireWeapon() {
 }
 
 // Update projectiles
-function updateProjectiles() {
+function updateSurvivalProjectiles() {
   if (!survivalGame) return;
   
   const { projectiles, enemies } = survivalGame;
@@ -549,10 +552,10 @@ function updateProjectiles() {
             if (survivalGame) {
               survivalGame.enemies.push({
                 x: Math.random() * 800,
-                y: Math.random() * 600,
+                y: Math.random() * 800 + 200,
                 health: 50,
-                speed: 1,
-                damage: 5,
+                speed: 0.5,
+                damage: 2,
                 lastAttack: 0
               });
             }
@@ -565,7 +568,7 @@ function updateProjectiles() {
 }
 
 // Update enemy AI
-function updateEnemies() {
+function updateSurvivalEnemies() {
   if (!survivalGame) return;
   
   const { player, enemies } = survivalGame;
