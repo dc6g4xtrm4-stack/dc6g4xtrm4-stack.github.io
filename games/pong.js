@@ -173,11 +173,11 @@ function pongGameLoop() {
     
     // Scoring - miss on left or right
     if (ball.x < 0) {
-      pongGame.aiScore++;
+      pongGame.playerScore++;
       resetBall();
     }
     if (ball.x > width) {
-      pongGame.playerScore++;
+      pongGame.aiScore++;
       resetBall();
     }
   }
@@ -240,6 +240,7 @@ function resetBall() {
   pongGame.ball.y = pongGame.height / 2;
   pongGame.ball.speedX = (Math.random() > 0.5 ? 1 : -1) * pongGame.ball.baseSpeed;
   pongGame.ball.speedY = (Math.random() - 0.5) * pongGame.ball.baseSpeed;
+  pongGame.bounceCount = 0;
 }
 
 function resetPong() {
