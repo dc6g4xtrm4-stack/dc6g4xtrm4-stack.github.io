@@ -184,6 +184,90 @@ p {
   margin: 0;
 }
 
+/* Game Styles */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+canvas {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #1a1a1a;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.game-info {
+  width: 100%;
+  text-align: center;
+}
+
+.game-info p {
+  margin: 0 0 12px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.game-info button,
+.game-controls button {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #0f0f0f;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin: 0 4px;
+}
+
+.game-info button:hover,
+.game-controls button:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.game-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.game-controls input[type="color"] {
+  width: 50px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.game-controls input[type="range"] {
+  width: 150px;
+}
+
+#survivalStats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+#survivalStats span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 @media (max-width: 600px) {
   .main-container {
     padding: 20px 16px;

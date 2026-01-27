@@ -19,6 +19,10 @@
         <button class="tab-btn active" data-tab="about">About</button>
         <button class="tab-btn" data-tab="projects">Projects</button>
         <button class="tab-btn" data-tab="contact">Contact</button>
+        <button class="tab-btn" data-tab="catan">Catan</button>
+        <button class="tab-btn" data-tab="pong">Pong</button>
+        <button class="tab-btn" data-tab="drawing">Drawing</button>
+        <button class="tab-btn" data-tab="survival">Survival</button>
       </div>
     </div>
 
@@ -59,6 +63,57 @@
           <p><a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></p>
         </div>
       </div>
+
+      <div class="tab-pane" id="catan">
+        <h2>Catan-like Board Game</h2>
+        <div class="game-container">
+          <canvas id="catanCanvas" width="800" height="600"></canvas>
+          <div class="game-info">
+            <p>Board game similar to Catan. Click to build settlements, roads, and trade resources.</p>
+            <button id="catanResetBtn">Reset Game</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="pong">
+        <h2>Pong Game</h2>
+        <div class="game-container">
+          <canvas id="pongCanvas" width="800" height="400"></canvas>
+          <div class="game-info">
+            <p>Classic Pong - Use W/S keys or UP/DOWN arrows to control paddles. Press SPACE to start.</p>
+            <button id="pongResetBtn">Reset Game</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="drawing">
+        <h2>Persistent Drawing Board</h2>
+        <div class="game-container">
+          <canvas id="drawingCanvas" width="800" height="600"></canvas>
+          <div class="game-controls">
+            <button id="drawClearBtn">Clear Canvas</button>
+            <input type="color" id="drawColorPicker" value="#ffffff" title="Brush Color">
+            <input type="range" id="drawBrushSize" min="1" max="50" value="5" title="Brush Size">
+          </div>
+          <p>Draw on the canvas. Your drawings are saved locally in your browser.</p>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="survival">
+        <h2>First-Person Survival Game</h2>
+        <div class="game-container">
+          <canvas id="survivalCanvas" width="800" height="600"></canvas>
+          <div class="game-info">
+            <p>Survival Game - Gather resources, build shelter, and survive. Use WASD to move, mouse to look around.</p>
+            <button id="survivalResetBtn">Reset Game</button>
+            <div id="survivalStats">
+              <span>Health: <span id="healthBar">100</span>%</span>
+              <span>Food: <span id="foodBar">100</span>%</span>
+              <span>Energy: <span id="energyBar">100</span>%</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <footer class="app-footer">
@@ -66,6 +121,10 @@
     </footer>
   </div>
 
+  <script src="games/catan.js"></script>
+  <script src="games/pong.js"></script>
+  <script src="games/drawing.js"></script>
+  <script src="games/survival.js"></script>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -81,6 +140,12 @@
         
         btn.classList.add("active");
         document.getElementById(tabName).classList.add("active");
+        
+        // Initialize games when tabs are switched
+        if (tabName === "catan") initCatan();
+        if (tabName === "pong") initPong();
+        if (tabName === "drawing") initDrawing();
+        if (tabName === "survival") initSurvival();
       });
     });
   </script>
