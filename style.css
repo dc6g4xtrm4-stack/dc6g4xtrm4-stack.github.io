@@ -1,141 +1,204 @@
-:root{
-  --bg:#0b0d12;
-  --bg2:#0f1220;
-  --card:#12162a;
-  --text:#e9ecf5;
-  --muted:#a8b0c3;
-  --accent:#7aa2ff;
-  --border:rgba(255,255,255,.08);
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
+﻿:root {
+  --bg: #0f0f0f;
+  --text: #f5f5f5;
+  --muted: #a0a0a0;
+  --accent: #3b82f6;
+  --border: rgba(255, 255, 255, 0.1);
 }
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  background: radial-gradient(1200px 600px at 20% 0%, rgba(122,162,255,.18), transparent 60%),
-              radial-gradient(900px 500px at 80% 10%, rgba(122,162,255,.12), transparent 60%),
-              var(--bg);
-  color:var(--text);
-  line-height:1.6;
+* {
+  box-sizing: border-box;
 }
 
-a{color:inherit}
-.container{max-width:1100px; margin:0 auto; padding:0 20px}
+html {
+  scroll-behavior: smooth;
+}
 
-.site-header{
-  position:sticky; top:0; z-index:10;
-  backdrop-filter: blur(10px);
-  background: rgba(11,13,18,.65);
+body {
+  margin: 0;
+  padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.main-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.tabs-container {
+  margin-bottom: 32px;
   border-bottom: 1px solid var(--border);
 }
-.header-inner{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 0;
-}
-.brand{
-  font-weight:700;
-  letter-spacing:.2px;
-  text-decoration:none;
-}
-.nav a{
-  text-decoration:none;
-  color:var(--muted);
-  margin-left:14px;
-  padding:8px 10px;
-  border-radius:10px;
-}
-.nav a:hover{
-  color:var(--text);
-  background: rgba(255,255,255,.06);
+
+.tab-buttons {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.hero{
-  padding:72px 0 42px;
-}
-.kicker{color:var(--muted); margin:0 0 6px}
-h1{font-size:44px; line-height:1.1; margin:0 0 10px}
-.subtitle{max-width:700px; color:var(--muted); margin:0 0 22px}
-
-.cta-row{display:flex; gap:12px; flex-wrap:wrap}
-.btn{
-  display:inline-block;
-  text-decoration:none;
-  padding:10px 14px;
-  border-radius:14px;
-  background: var(--accent);
-  color:#0b0d12;
-  font-weight:700;
-  box-shadow: var(--shadow);
-}
-.btn-ghost{
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow:none;
-}
-
-.section{padding:56px 0}
-.section.alt{background: rgba(255,255,255,.03); border-top:1px solid var(--border); border-bottom:1px solid var(--border)}
-h2{margin:0 0 18px; font-size:28px}
-
-.grid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:16px;
-}
-.two-col{
-  display:grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap:16px;
-  margin-bottom:16px;
-}
-
-.card{
-  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  border: 1px solid var(--border);
-  border-radius:18px;
-  padding:16px;
-  box-shadow: var(--shadow);
-}
-.card h3{margin:0 0 8px}
-.list{margin:0; padding-left:18px; color:var(--muted)}
-.list li{margin:6px 0}
-
-.tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-.tag{
-  font-size:12px;
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
   color: var(--muted);
-  padding:6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tab-content {
+  flex: 1;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+h3 {
+  margin: 16px 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+p {
+  margin: 12px 0;
+  color: var(--muted);
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-item {
+  padding: 16px;
   border: 1px solid var(--border);
-  border-radius:999px;
-  background: rgba(255,255,255,.03);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s;
 }
 
-.projects{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:12px;
+.project-item:hover {
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.05);
 }
-.project{
-  display:block;
-  text-decoration:none;
-  border: 1px solid var(--border);
-  border-radius:16px;
-  padding:12px;
-  background: rgba(255,255,255,.03);
+
+.project-item h3 {
+  margin-top: 0;
 }
-.project:hover{border-color: rgba(122,162,255,.45)}
-.project h4{margin:0 0 6px}
-.project p{margin:0; color:var(--muted); font-size:14px}
 
-.note{color:var(--muted); margin-top:10px}
-.footer{margin-top:16px; color:var(--muted); padding:10px 0}
+.project-item p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
 
-@media (max-width: 900px){
-  .grid{grid-template-columns:1fr}
-  .projects{grid-template-columns:1fr}
-  .two-col{grid-template-columns:1fr}
-  h1{font-size:36px}
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-links p {
+  margin: 0;
+}
+
+.contact-links a {
+  font-weight: 500;
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .main-container {
+    padding: 20px 16px;
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  .tab-btn {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
 }
