@@ -14,10 +14,6 @@ def about():
 def projects():
     return render_template('index.html', page='projects')
 
-@app.route('/contact')
-def contact():
-    return render_template('index.html', page='contact')
-
 @app.route('/pong')
 def pong():
     return render_template('index.html', page='pong')
