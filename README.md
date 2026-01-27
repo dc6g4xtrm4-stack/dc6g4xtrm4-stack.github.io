@@ -10,7 +10,7 @@ Welcome to my portfolio website and game development projects!
 
 ## 📁 What's Inside
 
-This repository contains two main projects:
+This repository contains three main projects:
 
 ### 1. Flask Portfolio Website
 A Python Flask web application featuring:
@@ -28,14 +28,28 @@ A standalone Unity game with multiple game modes:
 - Open world exploration mode
 - Fully programmatic setup (no Unity Editor configuration needed!)
 
-**Tech Stack**: Unity 2022.3 LTS, C#
+**Tech Stack**: Unity 6000.3.5f2, C#
+
+**Location**: `ModernPiratesUnity/`
+
+### 3. Unity Demo App
+A minimal Unity project for testing and pipeline validation:
+- Simple rotating cube demonstration
+- Minimal dependencies
+- Clean baseline for Unity development
+- Perfect for testing CI/CD pipelines
+
+**Tech Stack**: Unity 6000.3.5f2, C#
+
+**Location**: `DemoUnity/`
 
 ## 📖 Documentation
 
 - **[QUICKSTART.md](QUICKSTART.md)** - Get started in minutes!
 - **[FLASK_README.md](FLASK_README.md)** - Detailed Flask app documentation
-- **[ModernPiratesUnity/README.md](ModernPiratesUnity/README.md)** - Unity game documentation
-- **[ModernPiratesUnity/QUICKSTART.md](ModernPiratesUnity/QUICKSTART.md)** - Unity setup guide
+- **[ModernPiratesUnity/README.md](ModernPiratesUnity/README.md)** - Modern Pirates Unity game documentation
+- **[ModernPiratesUnity/QUICKSTART.md](ModernPiratesUnity/QUICKSTART.md)** - Modern Pirates Unity setup guide
+- **[DemoUnity/README.md](DemoUnity/README.md)** - Unity Demo project documentation
 
 ## 🎮 Play Now
 
