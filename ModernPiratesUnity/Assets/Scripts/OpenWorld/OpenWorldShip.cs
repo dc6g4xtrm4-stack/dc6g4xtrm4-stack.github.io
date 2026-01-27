@@ -33,8 +33,8 @@ namespace ModernPirates.OpenWorld
             
             // Configure rigidbody
             rb.mass = 1000f;
-            rb.drag = 1f;
-            rb.angularDrag = 2f;
+            rb.linearDamping = 1f;
+            rb.angularDamping = 2f;
             rb.useGravity = false;
             
             // Add collider if not present
@@ -79,9 +79,9 @@ namespace ModernPirates.OpenWorld
             rb.MovePosition(rb.position + movement);
             
             // Limit max speed
-            if (rb.velocity.magnitude > maxSpeed)
+            if (rb.linearVelocity.magnitude > maxSpeed)
             {
-                rb.velocity = rb.velocity.normalized * maxSpeed;
+                rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
             }
             
             // Rotation

@@ -37,8 +37,8 @@ namespace ModernPirates.Combat
             
             // Configure rigidbody for ship physics
             rb.mass = 1000f;
-            rb.drag = 2f;
-            rb.angularDrag = 3f;
+            rb.linearDamping = 2f;
+            rb.angularDamping = 3f;
             rb.useGravity = false;
         }
 
@@ -167,7 +167,7 @@ namespace ModernPirates.Combat
                 ball.transform.localScale = Vector3.one * 0.5f;
                 
                 Rigidbody ballRb = ball.AddComponent<Rigidbody>();
-                ballRb.velocity = direction * 30f;
+                ballRb.linearVelocity = direction * 30f;
                 
                 Cannonball cannonball = ball.AddComponent<Cannonball>();
                 cannonball.damage = cannonDamage;
@@ -181,7 +181,7 @@ namespace ModernPirates.Combat
                 Rigidbody ballRb = ball.GetComponent<Rigidbody>();
                 if (ballRb != null)
                 {
-                    ballRb.velocity = direction * 30f;
+                    ballRb.linearVelocity = direction * 30f;
                 }
                 
                 Cannonball cannonball = ball.GetComponent<Cannonball>();
