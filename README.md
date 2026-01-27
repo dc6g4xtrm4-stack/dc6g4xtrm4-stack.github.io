@@ -14,7 +14,7 @@ This repository contains two main projects:
 
 ### 1. Flask Portfolio Website
 A Python Flask web application featuring:
-- Personal portfolio pages (About, Projects, Contact)
+- Personal portfolio pages (About, Projects)
 - Interactive browser-based games (Pong, Drawing Board, Modern Pirates)
 - Responsive design with sidebar navigation
 - GitHub Pages deployment

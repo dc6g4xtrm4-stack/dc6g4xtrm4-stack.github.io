@@ -7,7 +7,7 @@ Welcome! This repository contains two main projects:
 ## 🌐 Flask Portfolio Website - Quick Start
 
 ### Prerequisites
-- Python 3.7 or higher
+- Python 3.8 or higher
 - pip (Python package manager)
 
 ### Setup in 3 Steps
@@ -101,7 +101,7 @@ For detailed Unity game instructions, see:
 
 **Port already in use:**
 ```bash
-# Change the port in app.py, line 30:
+# Change the port in the app.run() call in app.py:
 app.run(debug=True, host='localhost', port=5001)
 ```
 
