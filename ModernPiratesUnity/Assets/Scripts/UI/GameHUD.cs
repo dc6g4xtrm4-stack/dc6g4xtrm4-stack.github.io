@@ -29,6 +29,17 @@ namespace ModernPirates.UI
         [SerializeField] private TextMeshProUGUI cargoText;
         [SerializeField] private TextMeshProUGUI lootCollectedText;
         
+        // Cached references for performance
+        private Combat.CombatManager cachedCombatManager;
+        private OpenWorld.OpenWorldShip cachedPlayerShip;
+
+        private void Start()
+        {
+            // Cache managers at start
+            cachedCombatManager = FindObjectOfType<Combat.CombatManager>();
+            cachedPlayerShip = FindObjectOfType<OpenWorld.OpenWorldShip>();
+        }
+        
         private void Update()
         {
             UpdateHUD();
@@ -104,11 +115,14 @@ namespace ModernPirates.UI
                 openWorldPanel.SetActive(false);
             }
             
-            // Find combat manager to get camera mode
-            Combat.CombatManager combatManager = FindObjectOfType<Combat.CombatManager>();
-            if (combatManager != null && cameraModeText != null)
+            // Use cached reference
+            if (cachedCombatManager == null)
             {
-                // This would require making currentCameraMode public in CombatManager
+                cachedCombatManager = FindObjectOfType<Combat.CombatManager>();
+            }
+            
+            if (cachedCombatManager != null && cameraModeText != null)
+            {
                 cameraModeText.text = "Press C to toggle camera";
             }
         }
@@ -133,11 +147,15 @@ namespace ModernPirates.UI
                 lootCollectedText.text = $"Loot: {data.lootCollected}";
             }
             
-            // Find player ship to get cargo info
-            OpenWorld.OpenWorldShip ship = FindObjectOfType<OpenWorld.OpenWorldShip>();
-            if (ship != null && cargoText != null)
+            // Use cached reference
+            if (cachedPlayerShip == null)
             {
-                cargoText.text = $"Cargo: {ship.currentCargo}/{ship.cargoCapacity}";
+                cachedPlayerShip = FindObjectOfType<OpenWorld.OpenWorldShip>();
+            }
+            
+            if (cachedPlayerShip != null && cargoText != null)
+            {
+                cargoText.text = $"Cargo: {cachedPlayerShip.currentCargo}/{cachedPlayerShip.cargoCapacity}";
             }
         }
 

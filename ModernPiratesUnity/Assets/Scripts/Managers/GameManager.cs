@@ -44,13 +44,8 @@ namespace ModernPirates
             // Initialize player data
             playerData = new PlayerData();
             
-            // Load saved data if exists
+            // Load saved data if exists (Steam initialization handled by SteamManager)
             LoadGameData();
-
-#if STEAM_ENABLED
-            // Initialize Steam
-            InitializeSteam();
-#endif
         }
 
         public void SwitchGameMode(GameMode mode)
@@ -95,7 +90,7 @@ namespace ModernPirates
             }
             
 #if STEAM_ENABLED
-            // Try to load from Steam Cloud
+            // Try to load from Steam Cloud (SteamManager handles initialization)
             string cloudData = SteamManager.Instance?.LoadFromCloud();
             if (!string.IsNullOrEmpty(cloudData))
             {
@@ -103,32 +98,6 @@ namespace ModernPirates
             }
 #endif
         }
-
-#if STEAM_ENABLED
-        private void InitializeSteam()
-        {
-            try
-            {
-                if (Steamworks.SteamAPI.Init())
-                {
-                    Debug.Log("Steam initialized successfully");
-                }
-                else
-                {
-                    Debug.LogError("Steam initialization failed");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Steam initialization exception: {e.Message}");
-            }
-        }
-
-        private void OnApplicationQuit()
-        {
-            Steamworks.SteamAPI.Shutdown();
-        }
-#endif
     }
 
     [System.Serializable]

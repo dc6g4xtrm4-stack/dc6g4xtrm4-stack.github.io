@@ -12,6 +12,7 @@ namespace ModernPirates.BoardGame
         [SerializeField] private int gridWidth = 80;
         [SerializeField] private int gridHeight = 20;
         [SerializeField] private float cellSize = 1f;
+        [SerializeField] private bool enableVisualGrid = false; // Toggle for grid visualization
 
         [Header("Prefabs")]
         [SerializeField] private GameObject cellPrefab;
@@ -51,9 +52,12 @@ namespace ModernPirates.BoardGame
                 {
                     Vector3 worldPos = new Vector3(x * cellSize, 0, y * cellSize);
                     
-                    // Create visual grid cell (optional - can be disabled for performance)
-                    // GameObject cell = Instantiate(cellPrefab, worldPos, Quaternion.identity);
-                    // cell.transform.parent = transform;
+                    // Create visual grid cell if enabled
+                    if (enableVisualGrid && cellPrefab != null)
+                    {
+                        GameObject cell = Instantiate(cellPrefab, worldPos, Quaternion.identity);
+                        cell.transform.parent = transform;
+                    }
                     
                     grid[x, y] = new GridCell(x, y, worldPos);
                 }
