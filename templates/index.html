@@ -195,11 +195,43 @@
 
       <!-- Modern Pirates -->
       <div class="page" id="modern-pirates">
-        <!-- Game Lobby Screen -->
-        <div id="piratesLobby" class="pirates-lobby">
+        <!-- Mode Selection Screen -->
+        <div id="piratesModeSelection" class="pirates-lobby">
           <div class="lobby-container">
             <h2>Modern Pirates</h2>
-            <p class="lobby-subtitle">Race to 25 points!</p>
+            <p class="lobby-subtitle">Choose Your Play Style</p>
+            
+            <div class="mode-selection" style="display: flex; flex-direction: column; gap: 20px; margin-top: 30px;">
+              <div class="mode-card" id="standardModeCard" style="background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+                <h3 style="color: #FFD700; margin: 0 0 10px 0;">🎲 Standard Play</h3>
+                <p style="margin: 0 0 10px 0; font-size: 14px;">Classic board game experience with a top-down view of the 20x80 grid. Navigate your ship, discover islands, and race to 25 points!</p>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px; color: #a0a0a0;">
+                  <li>Turn-based strategy gameplay</li>
+                  <li>Full board view with zoom controls</li>
+                  <li>Tactical ship movement and combat</li>
+                </ul>
+              </div>
+              
+              <div class="mode-card" id="openWorldModeCard" style="background: rgba(78, 205, 196, 0.1); border: 2px solid #4ECDC4; border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+                <h3 style="color: #4ECDC4; margin: 0 0 10px 0;">🌊 Open World Play</h3>
+                <p style="margin: 0 0 10px 0; font-size: 14px;">Immersive first-person exploration where the board game becomes your world map. Freely explore the seas and islands in real-time!</p>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px; color: #a0a0a0;">
+                  <li>First-person exploration and movement</li>
+                  <li>Real-time world navigation (WASD controls)</li>
+                  <li>Board grid shown as minimap</li>
+                </ul>
+              </div>
+            </div>
+            
+            <button id="backToMenuBtn" class="btn-secondary" style="margin-top: 20px; display: none;">← Back to Main Menu</button>
+          </div>
+        </div>
+        
+        <!-- Game Lobby Screen -->
+        <div id="piratesLobby" class="pirates-lobby" style="display: none;">
+          <div class="lobby-container">
+            <h2>Modern Pirates</h2>
+            <p class="lobby-subtitle" id="lobbyModeSubtitle">Race to 25 points!</p>
             
             <div class="lobby-section">
               <h3>Game ID: <span id="lobbyGameId">----</span></h3>
@@ -221,6 +253,8 @@
               <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Recent Games:</p>
               <div id="recentGamesList" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
+            
+            <button id="backToModeSelectionBtn" class="btn-secondary" style="margin-top: 20px;">← Back to Mode Selection</button>
           </div>
         </div>
         
@@ -297,6 +331,80 @@
           <!-- Game Canvas -->
           <div class="pirates-game-area">
             <canvas id="modernPiratesCanvas"></canvas>
+          </div>
+        </div>
+        
+        <!-- Open World Game Screen -->
+        <div id="piratesOpenWorld" class="modern-pirates-wrapper" style="display: none;">
+          <!-- First-Person View Area -->
+          <div class="openworld-main">
+            <canvas id="openWorldCanvas"></canvas>
+            
+            <!-- HUD Overlay -->
+            <div class="openworld-hud">
+              <div class="openworld-hud-top">
+                <div class="openworld-stat">
+                  <span class="openworld-stat-label">POSITION</span>
+                  <span class="openworld-stat-value" id="owPosition">0, 0</span>
+                </div>
+                <div class="openworld-stat">
+                  <span class="openworld-stat-label">POINTS</span>
+                  <span class="openworld-stat-value" id="owPoints">0/25</span>
+                </div>
+                <div class="openworld-stat">
+                  <span class="openworld-stat-label">WIND</span>
+                  <span class="openworld-stat-value" id="owWind">NW 3kt</span>
+                </div>
+              </div>
+              
+              <!-- Minimap -->
+              <div class="openworld-minimap">
+                <canvas id="minimapCanvas" width="200" height="800"></canvas>
+                <p style="font-size: 10px; margin: 5px 0 0 0; text-align: center;">Map View</p>
+              </div>
+              
+              <div class="openworld-hud-bottom">
+                <div class="openworld-controls">
+                  <span>WASD: Move | MOUSE: Look | M: Toggle Map | ESC: Menu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Sidebar for Open World -->
+          <div class="pirates-sidebar">
+            <div class="pirates-actions" style="margin-bottom: 20px;">
+              <button id="owNewGameBtn" class="btn-primary">New Game</button>
+              <button id="owToggleMapBtn" class="btn-secondary">Toggle Map</button>
+            </div>
+            
+            <div class="pirates-sidebar-header">
+              <h2>Open World Mode</h2>
+              <p>Explore the seas!</p>
+            </div>
+            
+            <div class="pirates-section">
+              <h3>⛵ Your Ship</h3>
+              <div id="owShipInfo">
+                <p>Position: <strong id="owShipPos">-</strong></p>
+                <p>Heading: <strong id="owHeading">N</strong></p>
+              </div>
+            </div>
+            
+            <div class="pirates-section">
+              <h3>🎯 Progress</h3>
+              <div id="owProgressDisplay">
+                <p>Points: <strong id="owPlayerPoints">0</strong> / 25</p>
+                <p>Islands Visited: <strong id="owIslandsVisited">0</strong></p>
+              </div>
+            </div>
+            
+            <div class="pirates-section">
+              <h3>🗺️ Nearby</h3>
+              <div id="owNearbyInfo">
+                <p style="font-size: 12px; color: #a0a0a0;">Nothing nearby...</p>
+              </div>
+            </div>
           </div>
         </div>
     </main>
