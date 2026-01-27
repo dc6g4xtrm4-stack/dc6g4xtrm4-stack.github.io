@@ -3,7 +3,9 @@ using UnityEngine;
 namespace ModernPirates.BoardGame
 {
     /// <summary>
-    /// Represents an island on the board game grid
+    /// Represents an island on the board game grid.
+    /// All visuals and materials are created programmatically based on island type.
+    /// No Unity Editor setup or material assets required.
     /// </summary>
     public class Island : MonoBehaviour
     {
@@ -13,14 +15,16 @@ namespace ModernPirates.BoardGame
         public int pointValue;
         public bool captured = false;
         
-        [Header("Visual")]
-        public Material harborMaterial;
-        public Material resourceMaterial;
-        public Material treasureMaterial;
-        public Material dangerMaterial;
-        
         private Renderer islandRenderer;
 
+        /// <summary>
+        /// Initializes the island with position and type.
+        /// Creates color-coded materials programmatically based on island type:
+        /// - Harbor: Blue (heals ships)
+        /// - Resource: Green (basic resources)
+        /// - Treasure: Gold/Yellow (valuable)
+        /// - Danger: Red (damages ships)
+        /// </summary>
         public void Initialize(int x, int y, IslandType type)
         {
             gridX = x;
@@ -47,28 +51,41 @@ namespace ModernPirates.BoardGame
             SetupVisuals();
         }
 
+        /// <summary>
+        /// Sets up island visuals programmatically.
+        /// Creates materials with color coding and appropriate sizes.
+        /// </summary>
         private void SetupVisuals()
         {
             islandRenderer = GetComponent<Renderer>();
             
-            // Set material based on type
+            // Create and assign material based on island type
             if (islandRenderer != null)
             {
+                Material islandMaterial = new Material(Shader.Find("Standard"));
+                
+                // Color code by island type
                 switch (islandType)
                 {
                     case IslandType.Harbor:
-                        if (harborMaterial != null) islandRenderer.material = harborMaterial;
+                        islandMaterial.color = new Color(0.3f, 0.5f, 0.8f); // Blue
                         break;
                     case IslandType.Resource:
-                        if (resourceMaterial != null) islandRenderer.material = resourceMaterial;
+                        islandMaterial.color = new Color(0.4f, 0.7f, 0.3f); // Green
                         break;
                     case IslandType.Treasure:
-                        if (treasureMaterial != null) islandRenderer.material = treasureMaterial;
+                        islandMaterial.color = new Color(0.9f, 0.8f, 0.2f); // Gold
                         break;
                     case IslandType.Danger:
-                        if (dangerMaterial != null) islandRenderer.material = dangerMaterial;
+                        islandMaterial.color = new Color(0.7f, 0.2f, 0.2f); // Red
                         break;
                 }
+                
+                // Add some material properties for visual interest
+                islandMaterial.SetFloat("_Metallic", 0.1f);
+                islandMaterial.SetFloat("_Glossiness", 0.3f);
+                
+                islandRenderer.material = islandMaterial;
             }
             
             // Set size based on importance

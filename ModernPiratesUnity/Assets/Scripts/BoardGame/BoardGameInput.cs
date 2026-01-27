@@ -3,26 +3,30 @@ using UnityEngine;
 namespace ModernPirates.BoardGame
 {
     /// <summary>
-    /// Handles player input for board game mode
+    /// Handles player input for board game mode.
+    /// Automatically finds required components - no Unity Editor setup needed.
     /// </summary>
     public class BoardGameInput : MonoBehaviour
     {
-        [SerializeField] private BoardGameManager gameManager;
-        [SerializeField] private Camera mainCamera;
-        [SerializeField] private LayerMask gridLayerMask;
+        private BoardGameManager gameManager;
+        private Camera mainCamera;
         
         private Ship playerShip;
 
         private void Start()
         {
+            // Find camera programmatically
+            mainCamera = Camera.main;
             if (mainCamera == null)
             {
-                mainCamera = Camera.main;
+                Debug.LogWarning("BoardGameInput: No main camera found!");
             }
             
+            // Find game manager programmatically
+            gameManager = FindObjectOfType<BoardGameManager>();
             if (gameManager == null)
             {
-                gameManager = FindObjectOfType<BoardGameManager>();
+                Debug.LogWarning("BoardGameInput: No BoardGameManager found in scene!");
             }
         }
 

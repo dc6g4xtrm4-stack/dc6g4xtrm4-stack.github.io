@@ -4,7 +4,9 @@ using System.Collections.Generic;
 namespace ModernPirates.BoardGame
 {
     /// <summary>
-    /// Manages the 80x20 board game mode with islands and ship movement
+    /// Manages the 80x20 board game mode with islands and ship movement.
+    /// This manager is fully programmatic and requires no Unity Editor setup.
+    /// All GameObjects (grid, islands, ships, camera, lighting) are created via code.
     /// </summary>
     public class BoardGameManager : MonoBehaviour
     {
@@ -13,11 +15,6 @@ namespace ModernPirates.BoardGame
         [SerializeField] private int gridHeight = 20;
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private bool enableVisualGrid = false; // Toggle for grid visualization
-
-        [Header("Prefabs")]
-        [SerializeField] private GameObject cellPrefab;
-        [SerializeField] private GameObject shipPrefab;
-        [SerializeField] private GameObject islandPrefab;
 
         [Header("Island Settings")]
         [SerializeField] private int numberOfIslands = 15;
@@ -35,6 +32,9 @@ namespace ModernPirates.BoardGame
 
         private void Start()
         {
+            // Ensure scene has required components (camera, lighting)
+            EnsureSceneSetup();
+            
             mainCamera = Camera.main;
             InitializeGrid();
             GenerateIslands();
@@ -42,6 +42,61 @@ namespace ModernPirates.BoardGame
             SpawnEnemyShips(3);
         }
 
+        /// <summary>
+        /// Ensures the scene has all required components (camera, lighting).
+        /// Creates them programmatically if they don't exist.
+        /// This eliminates the need for any manual Unity Editor setup.
+        /// </summary>
+        private void EnsureSceneSetup()
+        {
+            // Check for camera - create one if none exists or main camera is null
+            if (Camera.main == null)
+            {
+                GameObject cameraObj = new GameObject("Main Camera");
+                mainCamera = cameraObj.AddComponent<Camera>();
+                cameraObj.tag = "MainCamera";
+                
+                // Position camera for good overview of the board
+                cameraObj.transform.position = new Vector3(gridWidth * cellSize / 2f, 30f, -20f);
+                cameraObj.transform.rotation = Quaternion.Euler(60f, 0f, 0f);
+                
+                // Add audio listener (required for Unity)
+                cameraObj.AddComponent<AudioListener>();
+                
+                Debug.Log("Created main camera programmatically");
+            }
+            
+            // Check for directional light - create one if none exists
+            Light[] lights = FindObjectsOfType<Light>();
+            bool hasDirectionalLight = false;
+            foreach (var light in lights)
+            {
+                if (light.type == LightType.Directional)
+                {
+                    hasDirectionalLight = true;
+                    break;
+                }
+            }
+            
+            if (!hasDirectionalLight)
+            {
+                GameObject lightObj = new GameObject("Directional Light");
+                Light light = lightObj.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.color = Color.white;
+                light.intensity = 1f;
+                
+                // Angle the light for good visibility
+                lightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+                
+                Debug.Log("Created directional light programmatically");
+            }
+        }
+
+        /// <summary>
+        /// Initializes the game grid programmatically.
+        /// Creates visual grid cells if enabled using Unity primitives (no prefabs needed).
+        /// </summary>
         private void InitializeGrid()
         {
             grid = new GridCell[gridWidth, gridHeight];
@@ -52,18 +107,53 @@ namespace ModernPirates.BoardGame
                 {
                     Vector3 worldPos = new Vector3(x * cellSize, 0, y * cellSize);
                     
-                    // Create visual grid cell if enabled
-                    if (enableVisualGrid && cellPrefab != null)
+                    // Create visual grid cell if enabled (programmatically using primitives)
+                    if (enableVisualGrid)
                     {
-                        GameObject cell = Instantiate(cellPrefab, worldPos, Quaternion.identity);
+                        // Create a thin flat cube to represent the grid cell
+                        GameObject cell = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        cell.name = $"GridCell_{x}_{y}";
+                        cell.transform.position = worldPos;
+                        cell.transform.localScale = new Vector3(cellSize * 0.95f, 0.05f, cellSize * 0.95f);
                         cell.transform.parent = transform;
+                        
+                        // Create and assign a semi-transparent material
+                        Material cellMaterial = new Material(Shader.Find("Standard"));
+                        cellMaterial.color = new Color(0.3f, 0.5f, 0.7f, 0.3f); // Semi-transparent blue
+                        
+                        // Enable transparency (3 = Transparent rendering mode)
+                        cellMaterial.SetFloat("_Mode", 3);
+                        cellMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                        cellMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        cellMaterial.SetInt("_ZWrite", 0);
+                        cellMaterial.DisableKeyword("_ALPHATEST_ON");
+                        cellMaterial.EnableKeyword("_ALPHABLEND_ON");
+                        cellMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                        cellMaterial.renderQueue = 3000;
+                        
+                        Renderer renderer = cell.GetComponent<Renderer>();
+                        renderer.material = cellMaterial;
+                        
+                        // Keep collider for raycasting/interaction but make it a trigger
+                        // This allows mouse clicks to detect grid cells for movement
+                        Collider cellCollider = cell.GetComponent<Collider>();
+                        if (cellCollider != null)
+                        {
+                            cellCollider.isTrigger = true;
+                        }
                     }
                     
                     grid[x, y] = new GridCell(x, y, worldPos);
                 }
             }
+            
+            Debug.Log($"Grid initialized: {gridWidth}x{gridHeight} cells");
         }
 
+        /// <summary>
+        /// Generates islands programmatically using Unity primitives.
+        /// No prefabs required - creates cylinders with color-coded materials based on island type.
+        /// </summary>
         private void GenerateIslands()
         {
             for (int i = 0; i < numberOfIslands; i++)
@@ -80,21 +170,24 @@ namespace ModernPirates.BoardGame
                 }
                 
                 Vector3 worldPos = grid[x, y].worldPosition;
-                GameObject islandObj = Instantiate(islandPrefab, worldPos, Quaternion.identity);
+                IslandType islandType = GetRandomIslandType();
+                
+                // Create island GameObject programmatically using a primitive
+                GameObject islandObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                islandObj.name = $"Island_{islandType}_{x}_{y}";
+                islandObj.transform.position = worldPos;
                 islandObj.transform.parent = transform;
                 
-                Island island = islandObj.GetComponent<Island>();
-                if (island == null)
-                {
-                    island = islandObj.AddComponent<Island>();
-                }
-                
-                island.Initialize(x, y, GetRandomIslandType());
+                // Add Island component
+                Island island = islandObj.AddComponent<Island>();
+                island.Initialize(x, y, islandType);
                 islands.Add(island);
                 
                 grid[x, y].occupied = true;
                 grid[x, y].island = island;
             }
+            
+            Debug.Log($"Generated {numberOfIslands} islands programmatically");
         }
 
         private IslandType GetRandomIslandType()
@@ -107,6 +200,10 @@ namespace ModernPirates.BoardGame
             return IslandType.Danger;
         }
 
+        /// <summary>
+        /// Spawns the player ship programmatically using Unity primitives.
+        /// No prefab required - creates a cube with blue material to represent the player ship.
+        /// </summary>
         private void SpawnPlayerShip()
         {
             // Spawn at bottom left area
@@ -114,18 +211,25 @@ namespace ModernPirates.BoardGame
             int startY = Random.Range(2, 5);
             
             Vector3 worldPos = grid[startX, startY].worldPosition;
-            GameObject shipObj = Instantiate(shipPrefab, worldPos, Quaternion.identity);
             
-            playerShip = shipObj.GetComponent<Ship>();
-            if (playerShip == null)
-            {
-                playerShip = shipObj.AddComponent<Ship>();
-            }
+            // Create ship GameObject programmatically using a primitive
+            GameObject shipObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            shipObj.name = "PlayerShip";
+            shipObj.transform.position = worldPos + Vector3.up * 0.3f; // Slightly above grid
             
+            // Add Ship component
+            playerShip = shipObj.AddComponent<Ship>();
             playerShip.Initialize(startX, startY, true);
+            
             grid[startX, startY].occupied = true;
+            
+            Debug.Log($"Player ship spawned at ({startX}, {startY})");
         }
 
+        /// <summary>
+        /// Spawns enemy ships programmatically using Unity primitives.
+        /// No prefab required - creates cubes with red material to represent enemy ships.
+        /// </summary>
         private void SpawnEnemyShips(int count)
         {
             for (int i = 0; i < count; i++)
@@ -141,19 +245,21 @@ namespace ModernPirates.BoardGame
                 }
                 
                 Vector3 worldPos = grid[x, y].worldPosition;
-                GameObject enemyObj = Instantiate(shipPrefab, worldPos, Quaternion.identity);
                 
-                EnemyShip enemy = enemyObj.GetComponent<EnemyShip>();
-                if (enemy == null)
-                {
-                    enemy = enemyObj.AddComponent<EnemyShip>();
-                }
+                // Create enemy ship GameObject programmatically using a primitive
+                GameObject enemyObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                enemyObj.name = $"EnemyShip_{i}";
+                enemyObj.transform.position = worldPos + Vector3.up * 0.3f; // Slightly above grid
                 
+                // Add EnemyShip component
+                EnemyShip enemy = enemyObj.AddComponent<EnemyShip>();
                 enemy.Initialize(x, y, false);
                 enemyShips.Add(enemy);
                 
                 grid[x, y].occupied = true;
             }
+            
+            Debug.Log($"Spawned {count} enemy ships programmatically");
         }
 
         public void MovePlayerShip(int targetX, int targetY)

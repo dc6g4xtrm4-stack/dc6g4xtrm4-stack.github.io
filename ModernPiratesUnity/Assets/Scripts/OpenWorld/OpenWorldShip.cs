@@ -3,7 +3,9 @@ using UnityEngine;
 namespace ModernPirates.OpenWorld
 {
     /// <summary>
-    /// Controls the player ship in open world mode
+    /// Controls the player ship in open world mode.
+    /// Programmatically creates all required components (Rigidbody, Collider).
+    /// No prefabs or Unity Editor setup needed.
     /// </summary>
     public class OpenWorldShip : MonoBehaviour
     {
@@ -21,6 +23,11 @@ namespace ModernPirates.OpenWorld
         private Rigidbody rb;
         private bool initialized = false;
 
+        /// <summary>
+        /// Initializes the ship by programmatically adding required components.
+        /// Creates Rigidbody and Collider if they don't exist.
+        /// Configures physics properties for ship-like movement.
+        /// </summary>
         public void Initialize()
         {
             initialized = true;
@@ -31,19 +38,20 @@ namespace ModernPirates.OpenWorld
                 rb = gameObject.AddComponent<Rigidbody>();
             }
             
-            // Configure rigidbody
+            // Configure rigidbody for ship physics on water
             rb.mass = 1000f;
             rb.linearDamping = 1f;
             rb.angularDamping = 2f;
             rb.useGravity = false;
             
-            // Add collider if not present
+            // Get existing collider from CreatePrimitive (Cube) and set to trigger
             Collider collider = GetComponent<Collider>();
-            if (collider == null)
+            if (collider != null)
             {
-                BoxCollider box = gameObject.AddComponent<BoxCollider>();
-                box.isTrigger = true;
+                collider.isTrigger = true;
             }
+            
+            Debug.Log("OpenWorldShip initialized with all components created programmatically");
         }
 
         private void Update()

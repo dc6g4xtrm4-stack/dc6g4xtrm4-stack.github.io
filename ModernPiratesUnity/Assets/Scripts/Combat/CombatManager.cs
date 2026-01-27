@@ -3,27 +3,21 @@ using UnityEngine;
 namespace ModernPirates.Combat
 {
     /// <summary>
-    /// Manages the first/third person combat mode
+    /// Manages the first/third person combat mode.
+    /// Fully programmatic - creates all ships, camera, and lighting via code.
+    /// No Unity Editor setup or prefabs required.
     /// </summary>
     public class CombatManager : MonoBehaviour
     {
         [Header("Camera Settings")]
         [SerializeField] private CameraMode currentCameraMode = CameraMode.ThirdPerson;
-        [SerializeField] private Transform firstPersonCameraPosition;
-        [SerializeField] private Transform thirdPersonCameraPosition;
-        
-        [Header("Player Ship")]
-        [SerializeField] private GameObject playerShipPrefab;
-        private CombatShip playerShip;
-        
-        [Header("Enemy Ship")]
-        [SerializeField] private GameObject enemyShipPrefab;
-        private CombatShip enemyShip;
         
         [Header("Combat Settings")]
         [SerializeField] private float combatArenaSize = 200f;
         [SerializeField] private float waterLevel = 0f;
         
+        private CombatShip playerShip;
+        private CombatShip enemyShip;
         private Camera mainCamera;
         private bool combatActive = false;
         
@@ -35,36 +29,113 @@ namespace ModernPirates.Combat
 
         private void Start()
         {
+            // Ensure scene has required components
+            EnsureSceneSetup();
+            
             mainCamera = Camera.main;
             InitializeCombat();
         }
 
+        /// <summary>
+        /// Ensures the scene has all required components (camera, lighting).
+        /// Creates them programmatically if they don't exist.
+        /// This eliminates the need for any manual Unity Editor setup.
+        /// </summary>
+        private void EnsureSceneSetup()
+        {
+            // Check for camera - create one if none exists
+            if (Camera.main == null)
+            {
+                GameObject cameraObj = new GameObject("Main Camera");
+                mainCamera = cameraObj.AddComponent<Camera>();
+                cameraObj.tag = "MainCamera";
+                
+                // Position camera for combat view
+                cameraObj.transform.position = new Vector3(0f, 20f, -30f);
+                cameraObj.transform.rotation = Quaternion.Euler(30f, 0f, 0f);
+                
+                // Add audio listener
+                cameraObj.AddComponent<AudioListener>();
+                
+                Debug.Log("Created main camera programmatically for combat mode");
+            }
+            
+            // Check for directional light - create one if none exists
+            Light[] lights = FindObjectsOfType<Light>();
+            bool hasDirectionalLight = false;
+            foreach (var light in lights)
+            {
+                if (light.type == LightType.Directional)
+                {
+                    hasDirectionalLight = true;
+                    break;
+                }
+            }
+            
+            if (!hasDirectionalLight)
+            {
+                GameObject lightObj = new GameObject("Directional Light");
+                Light light = lightObj.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.color = Color.white;
+                light.intensity = 1f;
+                lightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+                
+                Debug.Log("Created directional light programmatically for combat mode");
+            }
+            
+            // Create ocean floor for visual reference
+            GameObject ocean = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ocean.name = "Ocean";
+            ocean.transform.position = new Vector3(0, waterLevel, 0);
+            ocean.transform.localScale = new Vector3(combatArenaSize / 10f, 1f, combatArenaSize / 10f);
+            
+            // Create ocean material
+            Material oceanMaterial = new Material(Shader.Find("Standard"));
+            oceanMaterial.color = new Color(0.1f, 0.3f, 0.5f); // Dark blue water
+            oceanMaterial.SetFloat("_Metallic", 0.8f);
+            oceanMaterial.SetFloat("_Glossiness", 0.9f);
+            Renderer oceanRenderer = ocean.GetComponent<Renderer>();
+            oceanRenderer.material = oceanMaterial;
+            
+            // Keep collider for physics - objects rest on ocean surface
+            // No need to remove collider as it provides the ocean "floor"
+        }
+
+        /// <summary>
+        /// Initializes combat by spawning player and enemy ships programmatically.
+        /// Ships are created from Unity primitives with appropriate materials.
+        /// </summary>
         private void InitializeCombat()
         {
-            // Spawn player ship
-            Vector3 playerSpawnPos = new Vector3(-50f, waterLevel, 0f);
-            GameObject playerObj = Instantiate(playerShipPrefab, playerSpawnPos, Quaternion.Euler(0, 90, 0));
-            playerShip = playerObj.GetComponent<CombatShip>();
-            if (playerShip == null)
-            {
-                playerShip = playerObj.AddComponent<CombatShip>();
-            }
+            // Spawn player ship programmatically
+            Vector3 playerSpawnPos = new Vector3(-50f, waterLevel + 0.5f, 0f);
+            GameObject playerObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            playerObj.name = "PlayerCombatShip";
+            playerObj.transform.position = playerSpawnPos;
+            playerObj.transform.rotation = Quaternion.Euler(0, 90, 0);
+            playerObj.transform.localScale = new Vector3(3f, 2f, 6f); // Ship-like proportions
+            
+            playerShip = playerObj.AddComponent<CombatShip>();
             playerShip.Initialize(true);
             
-            // Spawn enemy ship
-            Vector3 enemySpawnPos = new Vector3(50f, waterLevel, 0f);
-            GameObject enemyObj = Instantiate(enemyShipPrefab, enemySpawnPos, Quaternion.Euler(0, -90, 0));
-            enemyShip = enemyObj.GetComponent<CombatShip>();
-            if (enemyShip == null)
-            {
-                enemyShip = enemyObj.AddComponent<CombatShip>();
-            }
+            // Spawn enemy ship programmatically
+            Vector3 enemySpawnPos = new Vector3(50f, waterLevel + 0.5f, 0f);
+            GameObject enemyObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            enemyObj.name = "EnemyCombatShip";
+            enemyObj.transform.position = enemySpawnPos;
+            enemyObj.transform.rotation = Quaternion.Euler(0, -90, 0);
+            enemyObj.transform.localScale = new Vector3(3f, 2f, 6f);
+            
+            enemyShip = enemyObj.AddComponent<CombatShip>();
             enemyShip.Initialize(false);
             
             // Setup camera
             SetCameraMode(currentCameraMode);
             
             combatActive = true;
+            
+            Debug.Log("Combat initialized - all ships created programmatically");
         }
 
         private void Update()
