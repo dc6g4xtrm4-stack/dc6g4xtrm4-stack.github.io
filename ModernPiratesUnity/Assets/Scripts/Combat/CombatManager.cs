@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ModernPirates.Combat
 {
@@ -143,7 +144,7 @@ namespace ModernPirates.Combat
             if (!combatActive) return;
             
             // Toggle camera mode with C key
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
             {
                 ToggleCameraMode();
             }

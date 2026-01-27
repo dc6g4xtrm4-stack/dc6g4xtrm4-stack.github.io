@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 namespace ModernPirates.OpenWorld
@@ -292,7 +293,7 @@ namespace ModernPirates.OpenWorld
         private void Update()
         {
             // Toggle camera mode
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
             {
                 ToggleCameraMode();
             }
@@ -301,7 +302,7 @@ namespace ModernPirates.OpenWorld
             UpdateCamera();
             
             // Check for base building
-            if (Input.GetKeyDown(KeyCode.B))
+            if (Keyboard.current != null && Keyboard.current.bKey.wasPressedThisFrame)
             {
                 TryBuildBase();
             }

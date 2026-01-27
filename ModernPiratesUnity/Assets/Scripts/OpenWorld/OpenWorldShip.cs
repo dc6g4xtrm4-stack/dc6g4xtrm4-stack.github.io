@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace ModernPirates.OpenWorld
 {
@@ -68,14 +69,17 @@ namespace ModernPirates.OpenWorld
             float forward = 0f;
             float turn = 0f;
             
-            if (Input.GetKey(KeyCode.W))
-                forward = 1f;
-            if (Input.GetKey(KeyCode.S))
-                forward = -0.5f; // Slower reverse
-            if (Input.GetKey(KeyCode.A))
-                turn = -1f;
-            if (Input.GetKey(KeyCode.D))
-                turn = 1f;
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.wKey.isPressed)
+                    forward = 1f;
+                if (Keyboard.current.sKey.isPressed)
+                    forward = -0.5f; // Slower reverse
+                if (Keyboard.current.aKey.isPressed)
+                    turn = -1f;
+                if (Keyboard.current.dKey.isPressed)
+                    turn = 1f;
+            }
             
             MoveShip(forward, turn);
         }
@@ -101,7 +105,7 @@ namespace ModernPirates.OpenWorld
         private void DisplayInfo()
         {
             // Display ship info on screen (would be better with UI)
-            if (Input.GetKey(KeyCode.Tab))
+            if (Keyboard.current != null && Keyboard.current.tabKey.isPressed)
             {
                 Debug.Log($"Ship Status - Health: {health}/{maxHealth}, Cargo: {currentCargo}/{cargoCapacity}");
             }
