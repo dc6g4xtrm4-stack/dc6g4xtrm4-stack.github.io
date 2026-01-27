@@ -69,15 +69,16 @@ namespace ModernPirates.OpenWorld
             float forward = 0f;
             float turn = 0f;
             
-            if (Keyboard.current != null)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                if (Keyboard.current.wKey.isPressed)
+                if (keyboard.wKey.isPressed)
                     forward = 1f;
-                if (Keyboard.current.sKey.isPressed)
+                if (keyboard.sKey.isPressed)
                     forward = -0.5f; // Slower reverse
-                if (Keyboard.current.aKey.isPressed)
+                if (keyboard.aKey.isPressed)
                     turn = -1f;
-                if (Keyboard.current.dKey.isPressed)
+                if (keyboard.dKey.isPressed)
                     turn = 1f;
             }
             

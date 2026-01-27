@@ -92,15 +92,16 @@ namespace ModernPirates.Combat
             float forward = 0f;
             float turn = 0f;
             
-            if (Keyboard.current != null)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                if (Keyboard.current.wKey.isPressed)
+                if (keyboard.wKey.isPressed)
                     forward = 1f;
-                if (Keyboard.current.sKey.isPressed)
+                if (keyboard.sKey.isPressed)
                     forward = -1f;
-                if (Keyboard.current.aKey.isPressed)
+                if (keyboard.aKey.isPressed)
                     turn = -1f;
-                if (Keyboard.current.dKey.isPressed)
+                if (keyboard.dKey.isPressed)
                     turn = 1f;
             }
             
@@ -109,7 +110,7 @@ namespace ModernPirates.Combat
             
             // Fire cannons (Space or Left Click)
             bool firePressed = false;
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (keyboard != null && keyboard.spaceKey.wasPressedThisFrame)
                 firePressed = true;
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                 firePressed = true;

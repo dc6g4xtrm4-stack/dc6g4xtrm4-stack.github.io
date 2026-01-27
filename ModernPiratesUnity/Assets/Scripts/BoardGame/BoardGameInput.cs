@@ -82,15 +82,16 @@ namespace ModernPirates.BoardGame
             int deltaX = 0;
             int deltaY = 0;
             
-            if (Keyboard.current != null)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                if (Keyboard.current.upArrowKey.wasPressedThisFrame)
+                if (keyboard.upArrowKey.wasPressedThisFrame)
                     deltaY = 1;
-                if (Keyboard.current.downArrowKey.wasPressedThisFrame)
+                if (keyboard.downArrowKey.wasPressedThisFrame)
                     deltaY = -1;
-                if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+                if (keyboard.leftArrowKey.wasPressedThisFrame)
                     deltaX = -1;
-                if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+                if (keyboard.rightArrowKey.wasPressedThisFrame)
                     deltaX = 1;
             }
             
