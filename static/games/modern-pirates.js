@@ -280,8 +280,6 @@ function createNewGame(gameId) {
     
     showPiratesGame();
     startGameInitialization();
-    
-    startGameInitialization();
   } catch (e) {
     console.error("Error creating game:", e);
     alert("Failed to create game. Please try again.");
@@ -1328,8 +1326,11 @@ function setupOpenWorldGame() {
   
   if (toggleMapBtn) {
     toggleMapBtn.addEventListener("click", () => {
-      // Could implement full map overlay here
-      alert("Full map view - Feature coming soon!");
+      // Toggle minimap visibility
+      const minimap = document.querySelector(".openworld-minimap");
+      if (minimap) {
+        minimap.style.display = minimap.style.display === 'none' ? 'block' : 'none';
+      }
     });
   }
   
