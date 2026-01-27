@@ -18,10 +18,38 @@ const WIND_DIRECTIONS = {
 };
 
 const ISLAND_TYPES = {
-  HARBOR: { name: "Harbor", symbol: "🏚️", color: "#8B7355", points: 2, loot: [1, 2, 3] },
-  RESOURCE: { name: "Resource", symbol: "💎", color: "#4CAF50", points: 1, loot: [1, 2] },
-  TREASURE: { name: "Treasure", symbol: "🏴", color: "#FFD700", points: 3, loot: [3] },
-  DANGER: { name: "Reef", symbol: "⚠️", color: "#FF6B6B", points: 0, damage: 20 }
+  HARBOR: { 
+    name: "Harbor", 
+    symbol: "🏚️", 
+    color: "#8B7355", 
+    points: 2, 
+    loot: [1, 2, 3],
+    materials: { THATCH: 3, WOOD: 2 }
+  },
+  RESOURCE: { 
+    name: "Resource", 
+    symbol: "💎", 
+    color: "#4CAF50", 
+    points: 1, 
+    loot: [1, 2],
+    materials: { THATCH: 5, WOOD: 1 }
+  },
+  TREASURE: { 
+    name: "Treasure", 
+    symbol: "🏴", 
+    color: "#FFD700", 
+    points: 3, 
+    loot: [3],
+    materials: { WOOD: 3, STONE: 2, IRON: 1 }
+  },
+  DANGER: { 
+    name: "Reef", 
+    symbol: "⚠️", 
+    color: "#FF6B6B", 
+    points: 0, 
+    damage: 20,
+    materials: { STONE: 2 }
+  }
 };
 
 const CARDS = {
@@ -30,6 +58,286 @@ const CARDS = {
   TACK_ASSIST: { name: "Tack Assist", cost: 2, effect: "Tack easier" },
   TREASURE_MAP: { name: "Treasure Map", cost: 3, effect: "Reveal island" },
   RAMMING_SPEED: { name: "Ramming Speed", cost: 2, effect: "Attack bonus" }
+};
+
+// Material Hierarchy System
+const MATERIALS = {
+  THATCH: { 
+    name: "Thatch", 
+    tier: 1, 
+    symbol: "🌾", 
+    color: "#D4A574",
+    description: "Basic woven reeds"
+  },
+  WOOD: { 
+    name: "Wood", 
+    tier: 2, 
+    symbol: "🪵", 
+    color: "#8B4513",
+    description: "Sturdy timber planks"
+  },
+  STONE: { 
+    name: "Stone", 
+    tier: 3, 
+    symbol: "🪨", 
+    color: "#708090",
+    description: "Solid stone blocks"
+  },
+  IRON: { 
+    name: "Iron", 
+    tier: 4, 
+    symbol: "⚙️", 
+    color: "#A9A9A9",
+    description: "Forged iron fittings"
+  },
+  STEEL: { 
+    name: "Steel", 
+    tier: 5, 
+    symbol: "⚔️", 
+    color: "#C0C0C0",
+    description: "Reinforced steel plating"
+  },
+  TITANIUM: { 
+    name: "Titanium", 
+    tier: 6, 
+    symbol: "💎", 
+    color: "#E0E0E0",
+    description: "Advanced titanium alloy"
+  }
+};
+
+// Ship Upgrade System - Nautical Themed
+const SHIP_UPGRADES = {
+  // Tier 1 - Thatch
+  RAFT: {
+    name: "Raft",
+    tier: 1,
+    material: "THATCH",
+    requires: { THATCH: 10 },
+    stats: { speed: 1, hull: 20, cargo: 5 },
+    description: "⛵ Basic thatch raft - slow but seaworthy",
+    nautical: "Makeshift Raft"
+  },
+  
+  // Tier 2 - Wood
+  DINGHY: {
+    name: "Dinghy",
+    tier: 2,
+    material: "WOOD",
+    requires: { THATCH: 5, WOOD: 15 },
+    stats: { speed: 2, hull: 40, cargo: 10 },
+    description: "⛵ Small wooden boat - nimble explorer",
+    nautical: "Coastal Dinghy"
+  },
+  SLOOP: {
+    name: "Sloop",
+    tier: 2,
+    material: "WOOD",
+    requires: { WOOD: 25 },
+    stats: { speed: 3, hull: 50, cargo: 15 },
+    description: "⛵ Single-masted sloop - fast and agile",
+    nautical: "Swift Sloop"
+  },
+  
+  // Tier 3 - Stone
+  SCHOONER: {
+    name: "Schooner",
+    tier: 3,
+    material: "STONE",
+    requires: { WOOD: 15, STONE: 20 },
+    stats: { speed: 3, hull: 80, cargo: 25 },
+    description: "⛵ Two-masted schooner - balanced trader",
+    nautical: "Merchant Schooner"
+  },
+  
+  // Tier 4 - Iron
+  BRIGANTINE: {
+    name: "Brigantine",
+    tier: 4,
+    material: "IRON",
+    requires: { WOOD: 10, STONE: 15, IRON: 20 },
+    stats: { speed: 4, hull: 120, cargo: 30 },
+    description: "⛵ Iron-reinforced brig - formidable raider",
+    nautical: "War Brigantine"
+  },
+  FRIGATE: {
+    name: "Frigate",
+    tier: 4,
+    material: "IRON",
+    requires: { STONE: 10, IRON: 30 },
+    stats: { speed: 4, hull: 150, cargo: 35 },
+    description: "⛵ Naval frigate - armed warship",
+    nautical: "Battle Frigate"
+  },
+  
+  // Tier 5 - Steel
+  GALLEON: {
+    name: "Galleon",
+    tier: 5,
+    material: "STEEL",
+    requires: { IRON: 20, STEEL: 25 },
+    stats: { speed: 3, hull: 200, cargo: 50 },
+    description: "⛵ Steel-hulled galleon - treasure hauler",
+    nautical: "Treasure Galleon"
+  },
+  MAN_O_WAR: {
+    name: "Man o' War",
+    tier: 5,
+    material: "STEEL",
+    requires: { IRON: 15, STEEL: 35 },
+    stats: { speed: 4, hull: 250, cargo: 40 },
+    description: "⛵ Ship of the line - floating fortress",
+    nautical: "Imperial Man o' War"
+  },
+  
+  // Tier 6 - Titanium
+  IRONCLAD: {
+    name: "Ironclad",
+    tier: 6,
+    material: "TITANIUM",
+    requires: { STEEL: 25, TITANIUM: 30 },
+    stats: { speed: 5, hull: 350, cargo: 60 },
+    description: "⛵ Titanium ironclad - ultimate warship",
+    nautical: "Legendary Ironclad"
+  }
+};
+
+// Island Base Structures - Nautical Themed
+const BASE_STRUCTURES = {
+  // Tier 1 - Thatch
+  LEAN_TO: {
+    name: "Lean-To",
+    tier: 1,
+    material: "THATCH",
+    requires: { THATCH: 8 },
+    benefits: { storage: 10 },
+    description: "🏚️ Simple thatch shelter - basic storage",
+    nautical: "Beach Shanty"
+  },
+  
+  // Tier 2 - Wood
+  DOCK: {
+    name: "Dock",
+    tier: 2,
+    material: "WOOD",
+    requires: { THATCH: 5, WOOD: 12 },
+    benefits: { storage: 20, repair: 5 },
+    description: "⚓ Wooden dock - ship repairs",
+    nautical: "Harbor Dock"
+  },
+  WAREHOUSE: {
+    name: "Warehouse",
+    tier: 2,
+    material: "WOOD",
+    requires: { WOOD: 20 },
+    benefits: { storage: 40 },
+    description: "📦 Storage warehouse - large capacity",
+    nautical: "Cargo Warehouse"
+  },
+  
+  // Tier 3 - Stone
+  FORT: {
+    name: "Fort",
+    tier: 3,
+    material: "STONE",
+    requires: { WOOD: 10, STONE: 25 },
+    benefits: { defense: 50, storage: 30 },
+    description: "🏰 Stone fort - defensive structure",
+    nautical: "Coastal Fort"
+  },
+  LIGHTHOUSE: {
+    name: "Lighthouse",
+    tier: 3,
+    material: "STONE",
+    requires: { WOOD: 8, STONE: 18 },
+    benefits: { vision: 3 },
+    description: "🗼 Lighthouse - extended vision range",
+    nautical: "Navigation Beacon"
+  },
+  
+  // Tier 4 - Iron
+  SHIPYARD: {
+    name: "Shipyard",
+    tier: 4,
+    material: "IRON",
+    requires: { STONE: 15, IRON: 25 },
+    benefits: { buildSpeed: 2, repair: 15 },
+    description: "🏗️ Iron shipyard - faster construction",
+    nautical: "Naval Shipyard"
+  },
+  ARMORY: {
+    name: "Armory",
+    tier: 4,
+    material: "IRON",
+    requires: { STONE: 10, IRON: 20 },
+    benefits: { attack: 10, defense: 30 },
+    description: "⚔️ Weapons armory - combat bonus",
+    nautical: "Naval Armory"
+  },
+  
+  // Tier 5 - Steel
+  CITADEL: {
+    name: "Citadel",
+    tier: 5,
+    material: "STEEL",
+    requires: { IRON: 20, STEEL: 30 },
+    benefits: { defense: 100, storage: 60 },
+    description: "🏛️ Steel citadel - impenetrable base",
+    nautical: "Admiral's Citadel"
+  },
+  TRADE_PORT: {
+    name: "Trade Port",
+    tier: 5,
+    material: "STEEL",
+    requires: { IRON: 15, STEEL: 25 },
+    benefits: { income: 5, storage: 80 },
+    description: "🏪 Trade port - passive income",
+    nautical: "International Port"
+  },
+  
+  // Tier 6 - Titanium
+  NAVAL_HQ: {
+    name: "Naval Headquarters",
+    tier: 6,
+    material: "TITANIUM",
+    requires: { STEEL: 30, TITANIUM: 40 },
+    benefits: { all: 20, storage: 100 },
+    description: "🏢 Naval HQ - supreme command center",
+    nautical: "Fleet Command"
+  }
+};
+
+// Crafting recipes for materials (how to get higher tier materials)
+const CRAFTING_RECIPES = {
+  THATCH: {
+    // Thatch is gathered from islands
+    source: "Gather from islands with vegetation"
+  },
+  WOOD: {
+    requires: { THATCH: 3 },
+    output: 1,
+    description: "Process thatch into timber"
+  },
+  STONE: {
+    requires: { WOOD: 2 },
+    output: 1,
+    description: "Quarry stone with wood tools"
+  },
+  IRON: {
+    requires: { WOOD: 2, STONE: 3 },
+    output: 1,
+    description: "Smelt iron from stone"
+  },
+  STEEL: {
+    requires: { IRON: 3 },
+    output: 1,
+    description: "Forge steel from iron"
+  },
+  TITANIUM: {
+    requires: { STEEL: 4 },
+    output: 1,
+    description: "Refine titanium from steel"
+  }
 };
 
 // Storage & persistence
@@ -357,7 +665,20 @@ function setupGameCanvas() {
         hand: generateHand(),
         usedCards: [],
         islandsClaimed: [],
-        activeCard: null
+        activeCard: null,
+        // Building mechanics additions
+        materials: {
+          THATCH: 15,
+          WOOD: 5,
+          STONE: 0,
+          IRON: 0,
+          STEEL: 0,
+          TITANIUM: 0
+        },
+        currentShip: "RAFT",
+        structures: [],
+        unlockedShips: ["RAFT"],
+        unlockedStructures: ["LEAN_TO"]
       },
       {
         id: 2,
@@ -373,7 +694,20 @@ function setupGameCanvas() {
         hand: generateHand(),
         usedCards: [],
         islandsClaimed: [],
-        activeCard: null
+        activeCard: null,
+        // Building mechanics additions
+        materials: {
+          THATCH: 15,
+          WOOD: 5,
+          STONE: 0,
+          IRON: 0,
+          STEEL: 0,
+          TITANIUM: 0
+        },
+        currentShip: "RAFT",
+        structures: [],
+        unlockedShips: ["RAFT"],
+        unlockedStructures: ["LEAN_TO"]
       }
     ],
     
@@ -638,7 +972,18 @@ function checkIslandInteraction(player) {
     player.pointsBreakdown.islands += pointsEarned;
     island.claimedBy = player.id;
     
-    addMessage(`Looted ${island.name} for ${pointsEarned} points!`);
+    // Collect materials from island
+    const islandType = ISLAND_TYPES[island.type];
+    if (islandType.materials) {
+      let materialsCollected = [];
+      for (const [material, amount] of Object.entries(islandType.materials)) {
+        player.materials[material] = (player.materials[material] || 0) + amount;
+        materialsCollected.push(`${MATERIALS[material].symbol}${amount}`);
+      }
+      addMessage(`Looted ${island.name} for ${pointsEarned} pts + ${materialsCollected.join(', ')}!`);
+    } else {
+      addMessage(`Looted ${island.name} for ${pointsEarned} points!`);
+    }
     
     // Check win condition
     if (player.points >= modernPiratesGame.winThreshold) {
@@ -743,11 +1088,12 @@ CONTROLS:
 • Click to move ship (1-2 squares max)
 • Mouse wheel to zoom in/out
 • Zoom +/- buttons in sidebar
+• Click crafting/building options in sidebar
 
 POINTS:
 • Loot Islands: 1-3 points each
 • Win Battles: 1-3 points per victory
-• Upgrade Ships: 1 point per upgrade (max 3)
+• Build Ships & Bases: 1 point each
 
 SAILING:
 • Can't sail directly INTO the wind
@@ -759,17 +1105,42 @@ COMBAT:
 • Attacker wins and gains 1-3 points
 • Defender loses points
 
-ISLAND TYPES:
-🏚️ Harbor - 2 points (stable loot)
-💎 Resource - 1 point (quick grab)
-🏴 Treasure - 3 points (high reward!)
-⚠️ Reef - Damages you (-5 points)
+ISLAND TYPES & MATERIALS:
+🏚️ Harbor - 2 pts + Thatch & Wood
+💎 Resource - 1 pt + Thatch & Wood
+🏴 Treasure - 3 pts + Wood, Stone & Iron
+⚠️ Reef - Damages you (-5 pts) + Stone
+
+BUILDING MECHANICS:
+Material Hierarchy:
+🌾 Thatch → 🪵 Wood → 🪨 Stone → ⚙️ Iron → ⚔️ Steel → 💎 Titanium
+
+CRAFTING:
+• Convert lower tier materials to higher tiers
+• Example: 3 Thatch → 1 Wood
+• Click on crafting options to craft
+
+SHIP UPGRADES (Nautical Fleet):
+Tier 1: Makeshift Raft (Thatch)
+Tier 2: Coastal Dinghy, Swift Sloop (Wood)
+Tier 3: Merchant Schooner (Stone)
+Tier 4: War Brigantine, Battle Frigate (Iron)
+Tier 5: Treasure Galleon, Man o' War (Steel)
+Tier 6: Legendary Ironclad (Titanium)
+
+ISLAND BASES (Naval Infrastructure):
+Tier 1: Beach Shanty (Thatch)
+Tier 2: Harbor Dock, Cargo Warehouse (Wood)
+Tier 3: Coastal Fort, Navigation Beacon (Stone)
+Tier 4: Naval Shipyard, Naval Armory (Iron)
+Tier 5: Admiral's Citadel, Int'l Port (Steel)
+Tier 6: Fleet Command (Titanium)
 
 TIPS:
+• Gather materials by looting islands
+• Build up your fleet for better stats
+• Construct bases for bonuses
 • Plan your route around wind direction
-• Treasure islands concentrate near the top
-• Check the wind compass (left sidebar)
-• Block opponents from islands
 • First to 25 points wins!`);
 }
 
@@ -1056,7 +1427,8 @@ function updateUI() {
   }
   
   // Update sidebar stats
-  document.getElementById("shipClass").textContent = `Ship (${currentPlayer.ships} ship${currentPlayer.ships > 1 ? 's' : ''})`;
+  const shipInfo = SHIP_UPGRADES[currentPlayer.currentShip];
+  document.getElementById("shipClass").textContent = shipInfo ? shipInfo.nautical : `Ship (${currentPlayer.ships})`;
   document.getElementById("shipPos").textContent = `(${currentPlayer.gridX}, ${currentPlayer.gridY})`;
   document.getElementById("shipUpgrades").textContent = currentPlayer.upgrades;
   
@@ -1077,6 +1449,12 @@ function updateUI() {
   
   // Update card hand
   updateCardHand(currentPlayer);
+  
+  // Update materials display
+  updateMaterialsDisplay(currentPlayer);
+  
+  // Update building options
+  updateBuildingOptions(currentPlayer);
 }
 
 function drawWindCompass() {
@@ -1167,6 +1545,281 @@ function updateCardHand(player) {
   });
   
   cardDiv.innerHTML = html || "<p>No cards</p>";
+}
+
+function updateMaterialsDisplay(player) {
+  const materialsDiv = document.getElementById("materialsInventory");
+  if (!materialsDiv) return;
+  
+  let html = "";
+  for (const [matKey, matInfo] of Object.entries(MATERIALS)) {
+    const amount = player.materials[matKey] || 0;
+    if (amount > 0) {
+      html += `<div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <span>${matInfo.symbol} ${matInfo.name}</span>
+        <strong>${amount}</strong>
+      </div>`;
+    }
+  }
+  
+  materialsDiv.innerHTML = html || "<p style='color: #888; font-size: 12px;'>No materials</p>";
+}
+
+function updateBuildingOptions(player) {
+  // Update ships
+  const shipsDiv = document.getElementById("availableShips");
+  if (shipsDiv) {
+    const availableShips = getAvailableShips(player);
+    let html = "";
+    
+    availableShips.slice(0, 5).forEach(({ key, ship, canBuild }) => {
+      const reqText = Object.entries(ship.requires)
+        .map(([mat, amt]) => `${MATERIALS[mat].symbol}${amt}`)
+        .join(' ');
+      
+      html += `<div class="building-option ${canBuild ? 'can-build' : 'cannot-build'}" 
+                    data-type="ship" data-key="${key}"
+                    style="padding: 8px; margin: 4px 0; background: rgba(255,255,255,0.05); border-radius: 4px; cursor: ${canBuild ? 'pointer' : 'default'}; border-left: 3px solid ${canBuild ? '#4CAF50' : '#666'};">
+        <div style="font-weight: bold; font-size: 12px;">${ship.nautical}</div>
+        <div style="font-size: 10px; color: #aaa;">Tier ${ship.tier} - ${reqText}</div>
+      </div>`;
+    });
+    
+    shipsDiv.innerHTML = html || "<p style='color: #888; font-size: 11px;'>All ships built!</p>";
+    
+    // Add click handlers
+    shipsDiv.querySelectorAll('.building-option[data-type="ship"]').forEach(el => {
+      el.addEventListener('click', function() {
+        const shipKey = this.getAttribute('data-key');
+        if (this.classList.contains('can-build')) {
+          buildShip(player, shipKey);
+        }
+      });
+    });
+  }
+  
+  // Update structures
+  const structuresDiv = document.getElementById("availableStructures");
+  if (structuresDiv) {
+    const availableStructures = getAvailableStructures(player);
+    let html = "";
+    
+    availableStructures.slice(0, 5).forEach(({ key, structure, canBuild }) => {
+      const reqText = Object.entries(structure.requires)
+        .map(([mat, amt]) => `${MATERIALS[mat].symbol}${amt}`)
+        .join(' ');
+      
+      html += `<div class="building-option ${canBuild ? 'can-build' : 'cannot-build'}" 
+                    data-type="structure" data-key="${key}"
+                    style="padding: 8px; margin: 4px 0; background: rgba(255,255,255,0.05); border-radius: 4px; cursor: ${canBuild ? 'pointer' : 'default'}; border-left: 3px solid ${canBuild ? '#4CAF50' : '#666'};">
+        <div style="font-weight: bold; font-size: 12px;">${structure.nautical}</div>
+        <div style="font-size: 10px; color: #aaa;">Tier ${structure.tier} - ${reqText}</div>
+      </div>`;
+    });
+    
+    structuresDiv.innerHTML = html || "<p style='color: #888; font-size: 11px;'>All structures built!</p>";
+    
+    // Add click handlers
+    structuresDiv.querySelectorAll('.building-option[data-type="structure"]').forEach(el => {
+      el.addEventListener('click', function() {
+        const structureKey = this.getAttribute('data-key');
+        if (this.classList.contains('can-build')) {
+          buildStructure(player, structureKey);
+        }
+      });
+    });
+  }
+  
+  // Update crafting options
+  const craftingDiv = document.getElementById("craftingOptions");
+  if (craftingDiv) {
+    let html = "";
+    
+    for (const [matKey, matInfo] of Object.entries(MATERIALS)) {
+      const recipe = CRAFTING_RECIPES[matKey];
+      if (recipe && recipe.requires) {
+        const canCraft = canCraftMaterial(player, matKey);
+        const reqText = Object.entries(recipe.requires)
+          .map(([mat, amt]) => `${MATERIALS[mat].symbol}${amt}`)
+          .join(' ');
+        
+        html += `<div class="crafting-option ${canCraft ? 'can-craft' : 'cannot-craft'}" 
+                      data-material="${matKey}"
+                      style="padding: 6px; margin: 3px 0; background: rgba(255,255,255,0.05); border-radius: 3px; cursor: ${canCraft ? 'pointer' : 'default'}; border-left: 2px solid ${canCraft ? '#2196F3' : '#666'};">
+          <div style="font-size: 11px;">${matInfo.symbol} ${matInfo.name}: ${reqText}</div>
+        </div>`;
+      }
+    }
+    
+    craftingDiv.innerHTML = html || "<p style='color: #888; font-size: 11px;'>Gather materials first</p>";
+    
+    // Add click handlers
+    craftingDiv.querySelectorAll('.crafting-option').forEach(el => {
+      el.addEventListener('click', function() {
+        const matKey = this.getAttribute('data-material');
+        if (this.classList.contains('can-craft')) {
+          craftMaterial(player, matKey);
+        }
+      });
+    });
+  }
+}
+
+// Building Mechanics Functions
+
+function canCraftMaterial(player, materialType) {
+  const recipe = CRAFTING_RECIPES[materialType];
+  if (!recipe || !recipe.requires) return false;
+  
+  for (const [mat, amount] of Object.entries(recipe.requires)) {
+    if ((player.materials[mat] || 0) < amount) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function craftMaterial(player, materialType) {
+  const recipe = CRAFTING_RECIPES[materialType];
+  if (!recipe || !recipe.requires) {
+    addMessage(`❌ Cannot craft ${MATERIALS[materialType].name}`);
+    return false;
+  }
+  
+  if (!canCraftMaterial(player, materialType)) {
+    addMessage(`❌ Not enough materials to craft ${MATERIALS[materialType].name}`);
+    return false;
+  }
+  
+  // Consume materials
+  for (const [mat, amount] of Object.entries(recipe.requires)) {
+    player.materials[mat] -= amount;
+  }
+  
+  // Add crafted material
+  const output = recipe.output || 1;
+  player.materials[materialType] = (player.materials[materialType] || 0) + output;
+  
+  addMessage(`✅ Crafted ${output}x ${MATERIALS[materialType].symbol} ${MATERIALS[materialType].name}`);
+  return true;
+}
+
+function canBuildShip(player, shipKey) {
+  const ship = SHIP_UPGRADES[shipKey];
+  if (!ship) return false;
+  
+  // Check if already built
+  if (player.unlockedShips.includes(shipKey)) return false;
+  
+  // Check material requirements
+  for (const [mat, amount] of Object.entries(ship.requires)) {
+    if ((player.materials[mat] || 0) < amount) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function buildShip(player, shipKey) {
+  const ship = SHIP_UPGRADES[shipKey];
+  if (!ship) {
+    addMessage(`❌ Invalid ship type`);
+    return false;
+  }
+  
+  if (player.unlockedShips.includes(shipKey)) {
+    addMessage(`❌ Already built ${ship.name}`);
+    return false;
+  }
+  
+  if (!canBuildShip(player, shipKey)) {
+    addMessage(`❌ Not enough materials for ${ship.name}`);
+    return false;
+  }
+  
+  // Consume materials
+  for (const [mat, amount] of Object.entries(ship.requires)) {
+    player.materials[mat] -= amount;
+  }
+  
+  // Unlock ship
+  player.unlockedShips.push(shipKey);
+  player.currentShip = shipKey;
+  player.upgrades++;
+  player.points++;
+  player.pointsBreakdown.upgrades++;
+  
+  addMessage(`⛵ Built ${ship.nautical}!`);
+  return true;
+}
+
+function canBuildStructure(player, structureKey) {
+  const structure = BASE_STRUCTURES[structureKey];
+  if (!structure) return false;
+  
+  // Check if already built
+  if (player.structures.includes(structureKey)) return false;
+  
+  // Check material requirements
+  for (const [mat, amount] of Object.entries(structure.requires)) {
+    if ((player.materials[mat] || 0) < amount) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function buildStructure(player, structureKey) {
+  const structure = BASE_STRUCTURES[structureKey];
+  if (!structure) {
+    addMessage(`❌ Invalid structure type`);
+    return false;
+  }
+  
+  if (player.structures.includes(structureKey)) {
+    addMessage(`❌ Already built ${structure.name}`);
+    return false;
+  }
+  
+  if (!canBuildStructure(player, structureKey)) {
+    addMessage(`❌ Not enough materials for ${structure.name}`);
+    return false;
+  }
+  
+  // Consume materials
+  for (const [mat, amount] of Object.entries(structure.requires)) {
+    player.materials[mat] -= amount;
+  }
+  
+  // Build structure
+  player.structures.push(structureKey);
+  player.points++;
+  player.pointsBreakdown.upgrades++;
+  
+  addMessage(`🏗️ Built ${structure.nautical}!`);
+  return true;
+}
+
+function getAvailableShips(player) {
+  const available = [];
+  for (const [key, ship] of Object.entries(SHIP_UPGRADES)) {
+    if (!player.unlockedShips.includes(key)) {
+      const canBuild = canBuildShip(player, key);
+      available.push({ key, ship, canBuild });
+    }
+  }
+  return available.sort((a, b) => a.ship.tier - b.ship.tier);
+}
+
+function getAvailableStructures(player) {
+  const available = [];
+  for (const [key, structure] of Object.entries(BASE_STRUCTURES)) {
+    if (!player.structures.includes(key)) {
+      const canBuild = canBuildStructure(player, key);
+      available.push({ key, structure, canBuild });
+    }
+  }
+  return available.sort((a, b) => a.structure.tier - b.structure.tier);
 }
 
 function resetModernPirates() {
