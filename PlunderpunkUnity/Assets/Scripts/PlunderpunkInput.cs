@@ -82,6 +82,22 @@ namespace Plunderpunk
                         gameManager.MovePlayerShip(gridX, gridY);
                     }
                 }
+                else
+                {
+                    // Support clicking on Tilemap by converting ray to grid coordinates
+                    if (gameManager != null && gameManager != null && gameManager.GridWidth > 0)
+                    {
+                        Plane plane = new Plane(Vector3.up, Vector3.zero);
+                        float enter;
+                        if (plane.Raycast(ray, out enter))
+                        {
+                            Vector3 planePoint = ray.GetPoint(enter);
+                            int gridX = Mathf.RoundToInt(planePoint.x);
+                            int gridY = Mathf.RoundToInt(planePoint.z);
+                            gameManager.MovePlayerShip(gridX, gridY);
+                        }
+                    }
+                }
             }
         }
 
@@ -108,7 +124,15 @@ namespace Plunderpunk
             int deltaY = 0;
             
             var keyboard = Keyboard.current;
-            if (keyboard != null)
+            if (keyboard == null)
+            {
+                // Fallback to legacy Input for builds without the new InputSystem enabled
+                if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) deltaY = 1;
+                if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) deltaY = -1;
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) deltaX = -1;
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) deltaX = 1;
+            }
+            else
             {
                 if (keyboard.upArrowKey.wasPressedThisFrame)
                     deltaY = 1;

@@ -51,13 +51,25 @@ namespace Plunderpunk
             shipRenderer = GetComponent<Renderer>();
             if (shipRenderer != null)
             {
-                Material shipMaterial = new Material(Shader.Find("Standard"));
+                Material shipMaterial = new Material(GetSafeShader() ?? Shader.Find("Sprites/Default"));
                 shipMaterial.SetFloat("_Metallic", 0.3f);
                 shipMaterial.SetFloat("_Glossiness", 0.5f);
                 shipRenderer.material = shipMaterial;
             }
             
             transform.localScale = new Vector3(0.8f, 0.5f, 1.2f);
+        }
+
+        // Shader helper fallback for builds that may not include the "Standard" shader
+        private Shader GetSafeShader()
+        {
+            Shader s = Shader.Find("Standard");
+            if (s != null) return s;
+            s = Shader.Find("Universal Render Pipeline/Lit");
+            if (s != null) return s;
+            s = Shader.Find("Sprites/Default");
+            if (s != null) return s;
+            return Shader.Find("Unlit/Color");
         }
         #endregion
 
