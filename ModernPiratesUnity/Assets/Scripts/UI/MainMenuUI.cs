@@ -17,6 +17,7 @@ namespace ModernPirates.UI
         [SerializeField] private Button boardGameButton;
         [SerializeField] private Button combatButton;
         [SerializeField] private Button openWorldButton;
+        [SerializeField] private Button shipEditorButton;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button quitButton;
         
@@ -57,6 +58,11 @@ namespace ModernPirates.UI
                 openWorldButton.onClick.AddListener(OnOpenWorldClicked);
             }
             
+            if (shipEditorButton != null)
+            {
+                shipEditorButton.onClick.AddListener(OnShipEditorClicked);
+            }
+            
             if (settingsButton != null)
             {
                 settingsButton.onClick.AddListener(OnSettingsClicked);
@@ -84,6 +90,12 @@ namespace ModernPirates.UI
         {
             Debug.Log("Starting Open World Mode");
             GameManager.Instance?.SwitchGameMode(GameManager.GameMode.OpenWorld);
+        }
+
+        private void OnShipEditorClicked()
+        {
+            Debug.Log("Starting Ship Editor Mode");
+            GameManager.Instance?.SwitchGameMode(GameManager.GameMode.ShipEditor);
         }
 
         private void OnSettingsClicked()
