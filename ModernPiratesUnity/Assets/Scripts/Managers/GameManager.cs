@@ -21,7 +21,8 @@ namespace ModernPirates
             MainMenu,
             BoardGame,
             Combat,
-            OpenWorld
+            OpenWorld,
+            ShipEditor
         }
 
         private void Awake()
@@ -65,6 +66,9 @@ namespace ModernPirates
                     break;
                 case GameMode.OpenWorld:
                     SceneManager.LoadScene("OpenWorld");
+                    break;
+                case GameMode.ShipEditor:
+                    SceneManager.LoadScene("ShipEditor");
                     break;
             }
         }
