@@ -85,7 +85,6 @@ namespace ModernPirates.BoardGame
             var keyboard = Keyboard.current;
             if (keyboard != null)
             {
-                // Arrow keys
                 if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
                     deltaY = 1;
                 if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
