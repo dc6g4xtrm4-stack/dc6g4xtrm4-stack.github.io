@@ -68,9 +68,9 @@ Follow the prompts to authenticate with your GitHub account that has a valid Cop
 
 4. **Select Claude Sonnet 4.5** from the list of available models
 
-5. The CLI will now use Claude Sonnet 4.5 for all subsequent requests in that session
+5. The CLI will now use Claude Sonnet 4.5 for all subsequent requests
 
-> **Note**: The model selection persists for the current session. You'll need to select Claude Sonnet 4.5 again when starting a new session if you want to continue using it.
+> **Note**: You may need to re-select your preferred model when starting a new CLI session. The model preference may not persist across different terminal sessions.
 
 ## 💡 Using Claude Sonnet 4.5
 
@@ -97,25 +97,11 @@ gh copilot
 > How do I implement a binary search tree in JavaScript?
 ```
 
-## 🔧 Advanced Configuration
-
-### Using Your Own Anthropic API Key (Optional)
-
-If you want to use your own Anthropic API key (for more control or specific billing):
-
-1. In the CLI, type `/model`
-2. Select **"Manage Models"**
-3. Choose **"Anthropic"**
-4. When prompted, paste your Anthropic API key
-5. Select Claude Sonnet 4.5 from the available models
-
-> **Note**: This feature availability may vary depending on your subscription type and rollout status.
-
 ## 🎓 Best Practices
 
 1. **Choose the Right Model for the Task**:
    - Use Claude Sonnet 4.5 for complex reasoning and coding tasks
-   - Consider switching back to GPT-4 for tasks where it might perform better
+   - Consider switching to other available models for different types of tasks
    - Experiment with different models to find what works best for your workflow
 
 2. **Provide Clear Context**:
@@ -166,15 +152,17 @@ gh auth status
 - [Anthropic Claude Documentation](https://docs.anthropic.com/)
 - [GitHub Copilot Changelog](https://github.blog/changelog/)
 
-## 🆕 What's New in Claude Sonnet 4.5
+## 🆕 About Claude Sonnet 4.5
 
-Claude Sonnet 4.5 offers several advantages for coding tasks:
+Claude Sonnet 4.5 is Anthropic's advanced language model now available through GitHub Copilot. Key features include:
 
-- **Improved Code Understanding**: Better context awareness and code comprehension
-- **Enhanced Reasoning**: Superior logical reasoning for complex problem-solving
-- **Better Code Quality**: Generates more maintainable and well-structured code
-- **Improved Debugging**: More accurate in identifying and fixing bugs
-- **Up-to-date Knowledge**: Trained on more recent data compared to older models
+- **Advanced Reasoning**: Designed for complex problem-solving and multi-step tasks
+- **Code Generation**: Capable of generating code across multiple programming languages
+- **Large Context Window**: Can process and understand larger amounts of code at once
+- **Recent Training**: Trained on more recent data compared to earlier models
+- **Versatility**: Suitable for various coding tasks from debugging to architecture design
+
+For detailed performance benchmarks and capabilities, refer to [Anthropic's official documentation](https://docs.anthropic.com/).
 
 ## 📝 Quick Reference
 
