@@ -86,23 +86,13 @@ namespace ModernPirates.BoardGame
             if (keyboard != null)
             {
                 // Arrow keys
-                if (keyboard.upArrowKey.wasPressedThisFrame)
+                if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
                     deltaY = 1;
-                if (keyboard.downArrowKey.wasPressedThisFrame)
+                if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
                     deltaY = -1;
-                if (keyboard.leftArrowKey.wasPressedThisFrame)
+                if (keyboard.leftArrowKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame)
                     deltaX = -1;
-                if (keyboard.rightArrowKey.wasPressedThisFrame)
-                    deltaX = 1;
-                
-                // WASD keys
-                if (keyboard.wKey.wasPressedThisFrame)
-                    deltaY = 1;
-                if (keyboard.sKey.wasPressedThisFrame)
-                    deltaY = -1;
-                if (keyboard.aKey.wasPressedThisFrame)
-                    deltaX = -1;
-                if (keyboard.dKey.wasPressedThisFrame)
+                if (keyboard.rightArrowKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame)
                     deltaX = 1;
             }
             
