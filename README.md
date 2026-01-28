@@ -61,6 +61,7 @@ A minimal Unity project for testing and pipeline validation:
 
 - **[QUICKSTART.md](QUICKSTART.md)** - Get started in minutes!
 - **[FLASK_README.md](FLASK_README.md)** - Detailed Flask app documentation
+- **[GITHUB_COPILOT_CLAUDE_GUIDE.md](GITHUB_COPILOT_CLAUDE_GUIDE.md)** - Guide for using Claude Sonnet 4.5 with GitHub Copilot CLI
 - **[ModernPiratesUnity/README.md](ModernPiratesUnity/README.md)** - Modern Pirates Unity game documentation
 - **[ModernPiratesUnity/QUICKSTART.md](ModernPiratesUnity/QUICKSTART.md)** - Modern Pirates Unity setup guide
 - **[PlunderpunkUnity/README.md](PlunderpunkUnity/README.md)** - Plunderpunk Unity game documentation
@@ -95,6 +96,15 @@ See [QUICKSTART.md](QUICKSTART.md) for detailed instructions.
 - **Game Development**: Unity, C#, Canvas API
 - **Deployment**: GitHub Pages
 - **Version Control**: Git, GitHub
+
+## 🤖 GitHub Copilot & Claude Sonnet 4.5
+
+This project was developed with the assistance of GitHub Copilot. Want to use Claude Sonnet 4.5 with GitHub Copilot CLI?
+
+**👉 Check out the [GitHub Copilot Claude Guide](GITHUB_COPILOT_CLAUDE_GUIDE.md)** for a comprehensive tutorial on:
+- Installing and configuring GitHub Copilot CLI
+- Switching to Claude Sonnet 4.5 model
+- Best practices and troubleshooting tips
 
 ## 📝 License
 
