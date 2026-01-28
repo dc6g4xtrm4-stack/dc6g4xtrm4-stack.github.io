@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
 namespace Plunderpunk
@@ -29,6 +30,8 @@ namespace Plunderpunk
         [SerializeField] private int gridHeight = 20;
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private bool enableVisualGrid = false;
+        [SerializeField] private bool useTilemap = false; // default to GameObject quad grid for compatibility
+        [SerializeField] private Color tileColor = new Color(0.3f, 0.5f, 0.7f, 1f);
 
         [Header("Gameplay Settings")]
         [SerializeField] private int numberOfIslands = 15;
@@ -169,12 +172,23 @@ namespace Plunderpunk
                 {
                     Vector3 worldPos = new Vector3(x * cellSize, 0, y * cellSize);
                     
-                    if (enableVisualGrid)
+                    if (enableVisualGrid && !useTilemap)
                     {
                         CreateVisualGridCell(x, y, worldPos);
                     }
                     
                     grid[x, y] = new GridCell(x, y, worldPos);
+
+                    // If using tilemap, set tile quickly (disabled by default for builds)
+                    if (useTilemap)
+                    {
+                        SetTileAt(x, y);
+                    }
+                    else if (enableVisualGrid)
+                    {
+                        // Also create flat quad tiles for consistent visuals in builds
+                        CreateQuadTile(x, y, worldPos);
+                    }
                 }
             }
             
@@ -188,22 +202,25 @@ namespace Plunderpunk
         {
             GameObject cell = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cell.name = $"GridCell_{x}_{y}";
-            cell.transform.position = worldPos;
+            cell.transform.position = worldPos + Vector3.up * 0.025f;
             cell.transform.localScale = new Vector3(cellSize * 0.95f, 0.05f, cellSize * 0.95f);
             cell.transform.parent = transform;
             
-            Material cellMaterial = new Material(Shader.Find("Standard"));
+            Material cellMaterial = new Material(GetSafeShader() ?? Shader.Find("Sprites/Default"));
             cellMaterial.color = new Color(0.3f, 0.5f, 0.7f, 0.3f);
             
-            // Enable transparency
-            cellMaterial.SetFloat("_Mode", 3);
-            cellMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            cellMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            cellMaterial.SetInt("_ZWrite", 0);
-            cellMaterial.DisableKeyword("_ALPHATEST_ON");
-            cellMaterial.EnableKeyword("_ALPHABLEND_ON");
-            cellMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            cellMaterial.renderQueue = 3000;
+            // Enable transparency where supported
+            if (cellMaterial.HasProperty("_Mode"))
+            {
+                cellMaterial.SetFloat("_Mode", 3);
+                cellMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                cellMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                cellMaterial.SetInt("_ZWrite", 0);
+                cellMaterial.DisableKeyword("_ALPHATEST_ON");
+                cellMaterial.EnableKeyword("_ALPHABLEND_ON");
+                cellMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                cellMaterial.renderQueue = 3000;
+            }
             
             Renderer renderer = cell.GetComponent<Renderer>();
             renderer.material = cellMaterial;
@@ -213,6 +230,135 @@ namespace Plunderpunk
             {
                 cellCollider.isTrigger = true;
             }
+            
+            // Add grid outline
+            CreateGridOutline(cell, worldPos + Vector3.up * 0.025f, cellSize);
+        }
+
+        /// <summary>
+        /// Creates an outline around a grid cell using thin cubes as edges.
+        /// </summary>
+        private void CreateGridOutline(GameObject cell, Vector3 worldPos, float size)
+        {
+            float outlineThickness = 0.02f; // Thin lines
+            float outlineHeight = 0.05f; // Slightly raised above the grid cell
+            Color outlineColor = new Color(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray, semi-transparent
+            
+            // Create material for outlines
+            Material outlineMaterial = new Material(GetSafeShader() ?? Shader.Find("Sprites/Default"));
+            outlineMaterial.color = outlineColor;
+            
+            // Enable transparency where supported
+            if (outlineMaterial.HasProperty("_Mode"))
+            {
+                outlineMaterial.SetFloat("_Mode", 3);
+                outlineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                outlineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                outlineMaterial.SetInt("_ZWrite", 0);
+                outlineMaterial.DisableKeyword("_ALPHATEST_ON");
+                outlineMaterial.EnableKeyword("_ALPHABLEND_ON");
+                outlineMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                outlineMaterial.renderQueue = 3001; // Render after grid cells
+            }
+            
+            float halfSize = size * 0.95f / 2f; // Match the grid cell size (0.95f scale)
+            
+            // Create 4 edges (top, bottom, left, right) using thin cubes
+            CreateEdgeLine(cell, worldPos, new Vector3(-halfSize, outlineHeight, 0), new Vector3(size * 0.95f, outlineThickness, outlineThickness), outlineMaterial, "EdgeBottom");
+            CreateEdgeLine(cell, worldPos, new Vector3(halfSize, outlineHeight, 0), new Vector3(size * 0.95f, outlineThickness, outlineThickness), outlineMaterial, "EdgeTop");
+            CreateEdgeLine(cell, worldPos, new Vector3(0, outlineHeight, -halfSize), new Vector3(outlineThickness, outlineThickness, size * 0.95f), outlineMaterial, "EdgeLeft");
+            CreateEdgeLine(cell, worldPos, new Vector3(0, outlineHeight, halfSize), new Vector3(outlineThickness, outlineThickness, size * 0.95f), outlineMaterial, "EdgeRight");
+        }
+
+        /// <summary>
+        /// Creates a single edge line as a thin cube.
+        /// </summary>
+        private void CreateEdgeLine(GameObject parent, Vector3 basePos, Vector3 offset, Vector3 scale, Material material, string edgeName)
+        {
+            GameObject edge = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            edge.name = edgeName;
+            edge.transform.position = basePos + offset;
+            edge.transform.localScale = scale;
+            edge.transform.parent = parent.transform;
+            
+            Renderer edgeRenderer = edge.GetComponent<Renderer>();
+            edgeRenderer.material = material;
+            
+            // Remove collider from edges to avoid interference
+            Collider edgeCollider = edge.GetComponent<Collider>();
+            if (edgeCollider != null)
+            {
+                Destroy(edgeCollider);
+            }
+        }
+
+        // Tile helpers (no Tilemap dependency)
+        private Grid runtimeGridComponent;
+        private Tilemap runtimeTilemap;
+        private Tile runtimeTile;
+        private Sprite runtimeTileSprite;
+
+        private void EnsureTilemapExists()
+        {
+            if (runtimeTilemap != null) return;
+            GameObject gridObj = new GameObject("TilemapGrid");
+            gridObj.transform.parent = transform;
+            runtimeGridComponent = gridObj.AddComponent<Grid>();
+            // use X,Z scaling for grid cells so tiles align with world XZ plane
+            runtimeGridComponent.cellSize = new Vector3(cellSize, 1f, cellSize);
+            GameObject tilesObj = new GameObject("Tiles");
+            tilesObj.transform.parent = gridObj.transform;
+            tilesObj.transform.localPosition = Vector3.zero;
+            // rotate tilemap so its XY plane maps to world XZ
+            tilesObj.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            runtimeTilemap = tilesObj.AddComponent<Tilemap>();
+            tilesObj.AddComponent<TilemapRenderer>();
+            // Create a 1x1 white texture and sprite for the tile at runtime
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            runtimeTileSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+            runtimeTile = ScriptableObject.CreateInstance<Tile>();
+            runtimeTile.sprite = runtimeTileSprite;
+            runtimeTile.color = tileColor;
+        }
+
+        private void SetTileAt(int x, int y)
+        {
+            EnsureTilemapExists();
+            // if Tilemap not available, ignore; quads are used instead
+            // if (runtimeTilemap == null || runtimeTile == null) return;
+            Vector3Int pos = new Vector3Int(x, y, 0);
+            runtimeTilemap.SetTile(pos, runtimeTile);
+        }
+
+        private void CreateQuadTile(int x, int y, Vector3 worldPos)
+        {
+            GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = $"Tile_{x}_{y}";
+            // Quads face +Z by default; rotate to lie flat on XZ plane
+            quad.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            quad.transform.position = worldPos + Vector3.up * 0.01f;
+            quad.transform.localScale = new Vector3(cellSize, cellSize, 1f);
+            quad.transform.parent = transform;
+            Renderer r = quad.GetComponent<Renderer>();
+            Material m = new Material(GetSafeShader() ?? Shader.Find("Sprites/Default"));
+            m.color = tileColor;
+            r.material = m;
+            Collider c = quad.GetComponent<Collider>();
+            if (c != null) c.enabled = false;
+        }
+
+        // Shader helper fallback for builds that may not include the "Standard" shader
+        private Shader GetSafeShader()
+        {
+            Shader s = Shader.Find("Standard");
+            if (s != null) return s;
+            s = Shader.Find("Universal Render Pipeline/Lit");
+            if (s != null) return s;
+            s = Shader.Find("Sprites/Default");
+            if (s != null) return s;
+            return Shader.Find("Unlit/Color");
         }
 
         /// <summary>

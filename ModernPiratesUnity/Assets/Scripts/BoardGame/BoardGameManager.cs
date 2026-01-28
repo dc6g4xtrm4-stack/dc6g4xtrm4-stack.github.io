@@ -141,6 +141,9 @@ namespace ModernPirates.BoardGame
                         {
                             cellCollider.isTrigger = true;
                         }
+                        
+                        // Add grid outline
+                        CreateGridOutline(cell, worldPos, cellSize);
                     }
                     
                     grid[x, y] = new GridCell(x, y, worldPos);
@@ -148,6 +151,60 @@ namespace ModernPirates.BoardGame
             }
             
             Debug.Log($"Grid initialized: {gridWidth}x{gridHeight} cells");
+        }
+
+        /// <summary>
+        /// Creates an outline around a grid cell using thin cubes as edges.
+        /// </summary>
+        private void CreateGridOutline(GameObject cell, Vector3 worldPos, float size)
+        {
+            float outlineThickness = 0.02f; // Thin lines
+            float outlineHeight = 0.1f; // Slightly raised above the grid cell
+            Color outlineColor = new Color(0.2f, 0.2f, 0.2f, 0.8f); // Dark gray, semi-transparent
+            
+            // Create material for outlines
+            Material outlineMaterial = new Material(Shader.Find("Standard"));
+            outlineMaterial.color = outlineColor;
+            
+            // Enable transparency
+            outlineMaterial.SetFloat("_Mode", 3);
+            outlineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            outlineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            outlineMaterial.SetInt("_ZWrite", 0);
+            outlineMaterial.DisableKeyword("_ALPHATEST_ON");
+            outlineMaterial.EnableKeyword("_ALPHABLEND_ON");
+            outlineMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            outlineMaterial.renderQueue = 3001; // Render after grid cells
+            
+            float halfSize = size * 0.95f / 2f; // Match the grid cell size (0.95f scale)
+            
+            // Create 4 edges (top, bottom, left, right) using thin cubes
+            CreateEdgeLine(cell, worldPos, new Vector3(-halfSize, outlineHeight, 0), new Vector3(size * 0.95f, outlineThickness, outlineThickness), outlineMaterial, "EdgeBottom");
+            CreateEdgeLine(cell, worldPos, new Vector3(halfSize, outlineHeight, 0), new Vector3(size * 0.95f, outlineThickness, outlineThickness), outlineMaterial, "EdgeTop");
+            CreateEdgeLine(cell, worldPos, new Vector3(0, outlineHeight, -halfSize), new Vector3(outlineThickness, outlineThickness, size * 0.95f), outlineMaterial, "EdgeLeft");
+            CreateEdgeLine(cell, worldPos, new Vector3(0, outlineHeight, halfSize), new Vector3(outlineThickness, outlineThickness, size * 0.95f), outlineMaterial, "EdgeRight");
+        }
+
+        /// <summary>
+        /// Creates a single edge line as a thin cube.
+        /// </summary>
+        private void CreateEdgeLine(GameObject parent, Vector3 basePos, Vector3 offset, Vector3 scale, Material material, string edgeName)
+        {
+            GameObject edge = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            edge.name = edgeName;
+            edge.transform.position = basePos + offset;
+            edge.transform.localScale = scale;
+            edge.transform.parent = parent.transform;
+            
+            Renderer edgeRenderer = edge.GetComponent<Renderer>();
+            edgeRenderer.material = material;
+            
+            // Remove collider from edges to avoid interference
+            Collider edgeCollider = edge.GetComponent<Collider>();
+            if (edgeCollider != null)
+            {
+                Destroy(edgeCollider);
+            }
         }
 
         /// <summary>

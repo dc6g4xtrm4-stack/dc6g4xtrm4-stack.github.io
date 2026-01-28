@@ -75,7 +75,7 @@ namespace Plunderpunk
             
             if (islandRenderer != null)
             {
-                Material islandMaterial = new Material(Shader.Find("Standard"));
+                Material islandMaterial = new Material(GetSafeShader() ?? Shader.Find("Sprites/Default"));
                 
                 // Color code by island type
                 switch (islandType)
@@ -123,6 +123,18 @@ namespace Plunderpunk
             }
         }
         #endregion
+
+        // Shader helper fallback for builds that may not include the "Standard" shader
+        private Shader GetSafeShader()
+        {
+            Shader s = Shader.Find("Standard");
+            if (s != null) return s;
+            s = Shader.Find("Universal Render Pipeline/Lit");
+            if (s != null) return s;
+            s = Shader.Find("Sprites/Default");
+            if (s != null) return s;
+            return Shader.Find("Unlit/Color");
+        }
 
         #region Capture Mechanics
         /// <summary>
