@@ -78,13 +78,14 @@ namespace ModernPirates.BoardGame
                 return;
             }
             
-            // Arrow key movement (alternative to mouse)
+            // WASD and Arrow key movement (alternative to mouse)
             int deltaX = 0;
             int deltaY = 0;
             
             var keyboard = Keyboard.current;
             if (keyboard != null)
             {
+                // Arrow keys
                 if (keyboard.upArrowKey.wasPressedThisFrame)
                     deltaY = 1;
                 if (keyboard.downArrowKey.wasPressedThisFrame)
@@ -92,6 +93,16 @@ namespace ModernPirates.BoardGame
                 if (keyboard.leftArrowKey.wasPressedThisFrame)
                     deltaX = -1;
                 if (keyboard.rightArrowKey.wasPressedThisFrame)
+                    deltaX = 1;
+                
+                // WASD keys
+                if (keyboard.wKey.wasPressedThisFrame)
+                    deltaY = 1;
+                if (keyboard.sKey.wasPressedThisFrame)
+                    deltaY = -1;
+                if (keyboard.aKey.wasPressedThisFrame)
+                    deltaX = -1;
+                if (keyboard.dKey.wasPressedThisFrame)
                     deltaX = 1;
             }
             

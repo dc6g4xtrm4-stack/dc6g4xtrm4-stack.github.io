@@ -14,7 +14,7 @@ namespace ModernPirates.BoardGame
         [SerializeField] private int gridWidth = 80;
         [SerializeField] private int gridHeight = 20;
         [SerializeField] private float cellSize = 1f;
-        [SerializeField] private bool enableVisualGrid = false; // Toggle for grid visualization
+        [SerializeField] private bool enableVisualGrid = true; // Toggle for grid visualization
 
         [Header("Island Settings")]
         [SerializeField] private int numberOfIslands = 15;
