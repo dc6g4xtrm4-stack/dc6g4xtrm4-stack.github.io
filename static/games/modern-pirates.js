@@ -162,6 +162,7 @@ function showPiratesGame() {
 function initModeSelection() {
   const standardModeCard = document.getElementById("standardModeCard");
   const openWorldModeCard = document.getElementById("openWorldModeCard");
+  const shipEditorModeCard = document.getElementById("shipEditorModeCard");
   
   if (standardModeCard) {
     standardModeCard.addEventListener("click", () => {
@@ -184,6 +185,13 @@ function initModeSelection() {
       // Update lobby subtitle
       const subtitle = document.getElementById("lobbyModeSubtitle");
       if (subtitle) subtitle.textContent = "Open World - Explore the seas!";
+    });
+  }
+  
+  if (shipEditorModeCard) {
+    shipEditorModeCard.addEventListener("click", () => {
+      selectedGameMode = 'shipeditor';
+      showShipEditor();
     });
   }
 }
@@ -249,6 +257,23 @@ function initPiratesLobby() {
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       showModeSelection();
+    });
+  }
+}
+
+function initShipEditorEventListeners() {
+  const backToLobbyBtn = document.getElementById("backToLobbyFromEditor");
+  const testShipBtn = document.getElementById("testShipBtn");
+  
+  if (backToLobbyBtn) {
+    backToLobbyBtn.addEventListener("click", () => {
+      showModeSelection();
+    });
+  }
+  
+  if (testShipBtn) {
+    testShipBtn.addEventListener("click", () => {
+      alert(`✓ ${editorCurrentShip} is now your active ship!\n\nThis ship will be used in your next game.`);
     });
   }
 }
@@ -1667,3 +1692,342 @@ function renderMinimap() {
   ctx.lineTo(px + Math.sin(rad) * 10, py - Math.cos(rad) * 10);
   ctx.stroke();
 }
+
+// ============================================
+// SHIP EDITOR FUNCTIONALITY
+// ============================================
+
+let editorMaterials = {
+  THATCH: 50,
+  WOOD: 30,
+  STONE: 20,
+  IRON: 10,
+  STEEL: 5,
+  TITANIUM: 2
+};
+
+let editorCurrentShip = 'RAFT';
+let editorUnlockedShips = ['RAFT'];
+let shipEditorInitialized = false;
+
+// Show Ship Editor
+function showShipEditor() {
+  document.getElementById('piratesModeSelection').style.display = 'none';
+  document.getElementById('piratesLobby').style.display = 'none';
+  document.getElementById('piratesGame').style.display = 'none';
+  if (document.getElementById('piratesOpenWorld')) {
+    document.getElementById('piratesOpenWorld').style.display = 'none';
+  }
+  document.getElementById('piratesShipEditor').style.display = 'flex';
+  
+  initializeShipEditor();
+}
+
+// Initialize Ship Editor
+function initializeShipEditor() {
+  // Update materials display
+  updateMaterialsDisplay();
+  
+  // Update current ship info
+  updateCurrentShipDisplay();
+  
+  // Generate tech tree
+  generateShipTechTree();
+  
+  // Draw ship preview
+  drawShipPreview();
+  
+  // Initialize event listeners (only once)
+  if (!shipEditorInitialized) {
+    initShipEditorEventListeners();
+    shipEditorInitialized = true;
+  }
+}
+
+// Update materials display
+function updateMaterialsDisplay() {
+  document.getElementById('materialThatch').textContent = editorMaterials.THATCH;
+  document.getElementById('materialWood').textContent = editorMaterials.WOOD;
+  document.getElementById('materialStone').textContent = editorMaterials.STONE;
+  document.getElementById('materialIron').textContent = editorMaterials.IRON;
+  document.getElementById('materialSteel').textContent = editorMaterials.STEEL;
+  document.getElementById('materialTitanium').textContent = editorMaterials.TITANIUM;
+}
+
+// Update current ship display
+function updateCurrentShipDisplay() {
+  // Note: SHIP_UPGRADES is defined in games/modern-pirates.js, not in static version
+  // For the static version, we'll define a minimal ship data structure
+  const shipData = {
+    RAFT: { name: 'Raft', tier: 1, stats: { speed: 1, hull: 20, cargo: 5 } },
+    DINGHY: { name: 'Dinghy', tier: 2, stats: { speed: 2, hull: 40, cargo: 10 } },
+    SLOOP: { name: 'Sloop', tier: 2, stats: { speed: 3, hull: 50, cargo: 15 } },
+    SCHOONER: { name: 'Schooner', tier: 3, stats: { speed: 3, hull: 80, cargo: 25 } },
+    BRIGANTINE: { name: 'Brigantine', tier: 4, stats: { speed: 4, hull: 120, cargo: 30 } },
+    FRIGATE: { name: 'Frigate', tier: 4, stats: { speed: 4, hull: 150, cargo: 35 } },
+    GALLEON: { name: 'Galleon', tier: 5, stats: { speed: 3, hull: 200, cargo: 50 } },
+    MAN_O_WAR: { name: "Man o' War", tier: 5, stats: { speed: 4, hull: 250, cargo: 40 } },
+    IRONCLAD: { name: 'Ironclad', tier: 6, stats: { speed: 5, hull: 350, cargo: 60 } }
+  };
+  
+  const ship = shipData[editorCurrentShip] || shipData.RAFT;
+  
+  document.getElementById('editorCurrentShip').textContent = ship.name;
+  document.getElementById('editorShipTier').textContent = ship.tier;
+  document.getElementById('editorShipSpeed').textContent = ship.stats.speed;
+  document.getElementById('editorShipHull').textContent = ship.stats.hull;
+  document.getElementById('editorShipCargo').textContent = ship.stats.cargo;
+}
+
+// Generate Ship Tech Tree
+function generateShipTechTree() {
+  const techTreeContainer = document.getElementById('shipTechTree');
+  
+  const ships = [
+    { key: 'RAFT', name: 'Raft', tier: 1, emoji: '🛶', requires: { THATCH: 10 }, stats: { speed: 1, hull: 20, cargo: 5 } },
+    { key: 'DINGHY', name: 'Dinghy', tier: 2, emoji: '⛵', requires: { THATCH: 5, WOOD: 15 }, stats: { speed: 2, hull: 40, cargo: 10 } },
+    { key: 'SLOOP', name: 'Sloop', tier: 2, emoji: '⛵', requires: { WOOD: 25 }, stats: { speed: 3, hull: 50, cargo: 15 } },
+    { key: 'SCHOONER', name: 'Schooner', tier: 3, emoji: '⛵', requires: { WOOD: 15, STONE: 20 }, stats: { speed: 3, hull: 80, cargo: 25 } },
+    { key: 'BRIGANTINE', name: 'Brigantine', tier: 4, emoji: '⛵', requires: { WOOD: 10, STONE: 15, IRON: 20 }, stats: { speed: 4, hull: 120, cargo: 30 } },
+    { key: 'FRIGATE', name: 'Frigate', tier: 4, emoji: '⛵', requires: { STONE: 10, IRON: 30 }, stats: { speed: 4, hull: 150, cargo: 35 } },
+    { key: 'GALLEON', name: 'Galleon', tier: 5, emoji: '🚢', requires: { IRON: 20, STEEL: 25 }, stats: { speed: 3, hull: 200, cargo: 50 } },
+    { key: 'MAN_O_WAR', name: "Man o' War", tier: 5, emoji: '🚢', requires: { IRON: 15, STEEL: 35 }, stats: { speed: 4, hull: 250, cargo: 40 } },
+    { key: 'IRONCLAD', name: 'Ironclad', tier: 6, emoji: '🚢', requires: { STEEL: 25, TITANIUM: 30 }, stats: { speed: 5, hull: 350, cargo: 60 } }
+  ];
+  
+  techTreeContainer.innerHTML = ships.map(ship => {
+    const isUnlocked = editorUnlockedShips.includes(ship.key);
+    const isCurrent = editorCurrentShip === ship.key;
+    const canAfford = Object.entries(ship.requires).every(([mat, amt]) => editorMaterials[mat] >= amt);
+    
+    const tierColors = {
+      1: '#8B7355',
+      2: '#4CAF50',
+      3: '#808080',
+      4: '#C0C0C0',
+      5: '#FFD700',
+      6: '#00CED1'
+    };
+    
+    const borderColor = isCurrent ? '#8A2BE2' : (isUnlocked ? tierColors[ship.tier] : '#333');
+    const bgColor = isCurrent ? 'rgba(138, 43, 226, 0.2)' : (isUnlocked ? `rgba(78, 205, 196, 0.1)` : 'rgba(50, 50, 50, 0.3)');
+    
+    const requirementsHtml = Object.entries(ship.requires)
+      .map(([mat, amt]) => {
+        const has = editorMaterials[mat];
+        const color = has >= amt ? '#4CAF50' : '#FF6B6B';
+        const icons = { THATCH: '🌾', WOOD: '🪵', STONE: '🪨', IRON: '⚙️', STEEL: '🔩', TITANIUM: '💠' };
+        return `<span style="color: ${color};">${icons[mat]} ${amt}</span>`;
+      })
+      .join(', ');
+    
+    return `
+      <div class="ship-card" data-ship="${ship.key}" style="
+        background: ${bgColor};
+        border: 2px solid ${borderColor};
+        border-radius: 8px;
+        padding: 15px;
+        cursor: ${isUnlocked ? 'pointer' : 'not-allowed'};
+        opacity: ${isUnlocked ? '1' : '0.5'};
+        transition: all 0.3s;
+      ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h4 style="margin: 0; color: ${tierColors[ship.tier]};">${ship.emoji} ${ship.name}</h4>
+          <span style="font-size: 11px; color: #a0a0a0;">Tier ${ship.tier}</span>
+        </div>
+        <div style="font-size: 12px; margin-bottom: 8px;">
+          <div style="color: #a0a0a0;">⚡ Speed: ${ship.stats.speed} | 🛡️ Hull: ${ship.stats.hull} | 📦 Cargo: ${ship.stats.cargo}</div>
+        </div>
+        <div style="font-size: 11px; color: #a0a0a0; margin-bottom: 8px;">
+          Requires: ${requirementsHtml}
+        </div>
+        ${isCurrent ? '<div style="color: #8A2BE2; font-weight: bold; font-size: 12px;">✓ ACTIVE</div>' : 
+          (isUnlocked ? '<div style="color: #4ECDC4; font-size: 12px;">Click to equip</div>' : 
+          (canAfford ? '<div style="color: #FFD700; font-size: 12px;">Click to unlock</div>' : 
+          '<div style="color: #FF6B6B; font-size: 12px;">Insufficient materials</div>'))}
+      </div>
+    `;
+  }).join('');
+  
+  // Add click handlers
+  document.querySelectorAll('.ship-card').forEach(card => {
+    const shipKey = card.getAttribute('data-ship');
+    const ship = ships.find(s => s.key === shipKey);
+    
+    card.addEventListener('click', () => {
+      if (editorUnlockedShips.includes(shipKey)) {
+        // Equip ship
+        editorCurrentShip = shipKey;
+        updateCurrentShipDisplay();
+        generateShipTechTree();
+        drawShipPreview();
+      } else {
+        // Try to unlock
+        const canAfford = Object.entries(ship.requires).every(([mat, amt]) => editorMaterials[mat] >= amt);
+        if (canAfford) {
+          // Deduct materials
+          Object.entries(ship.requires).forEach(([mat, amt]) => {
+            editorMaterials[mat] -= amt;
+          });
+          
+          // Unlock ship
+          editorUnlockedShips.push(shipKey);
+          editorCurrentShip = shipKey;
+          
+          updateMaterialsDisplay();
+          updateCurrentShipDisplay();
+          generateShipTechTree();
+          drawShipPreview();
+          
+          // Show success message
+          alert(`🎉 ${ship.name} unlocked and equipped!`);
+        }
+      }
+    });
+    
+    // Hover effect
+    if (editorUnlockedShips.includes(shipKey)) {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'scale(1.02)';
+        card.style.boxShadow = '0 4px 12px rgba(78, 205, 196, 0.3)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'scale(1)';
+        card.style.boxShadow = 'none';
+      });
+    }
+  });
+}
+
+// Draw Ship Preview (Sea of Thieves inspired)
+function drawShipPreview() {
+  const canvas = document.getElementById('shipPreviewCanvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  
+  // Clear canvas
+  ctx.clearRect(0, 0, width, height);
+  
+  // Draw ocean background
+  const oceanGradient = ctx.createLinearGradient(0, 0, 0, height);
+  oceanGradient.addColorStop(0, '#1a3a52');
+  oceanGradient.addColorStop(0.5, '#2d5f7e');
+  oceanGradient.addColorStop(1, '#1a3a52');
+  ctx.fillStyle = oceanGradient;
+  ctx.fillRect(0, 0, width, height);
+  
+  // Draw waves
+  ctx.strokeStyle = 'rgba(78, 205, 196, 0.3)';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    for (let x = 0; x < width; x += 20) {
+      const y = height * 0.7 + Math.sin((x + i * 50) / 30) * 10 + i * 15;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  
+  // Ship position
+  const shipX = width / 2;
+  const shipY = height / 2;
+  
+  // Get ship data
+  const shipSizes = {
+    RAFT: { scale: 0.6, masts: 0 },
+    DINGHY: { scale: 0.8, masts: 1 },
+    SLOOP: { scale: 1.0, masts: 1 },
+    SCHOONER: { scale: 1.2, masts: 2 },
+    BRIGANTINE: { scale: 1.4, masts: 2 },
+    FRIGATE: { scale: 1.5, masts: 3 },
+    GALLEON: { scale: 1.7, masts: 3 },
+    MAN_O_WAR: { scale: 1.8, masts: 4 },
+    IRONCLAD: { scale: 2.0, masts: 2 }
+  };
+  
+  const shipData = shipSizes[editorCurrentShip] || shipSizes.RAFT;
+  const scale = shipData.scale;
+  
+  // Draw ship hull
+  ctx.fillStyle = '#8B4513';
+  ctx.strokeStyle = '#654321';
+  ctx.lineWidth = 3;
+  
+  ctx.beginPath();
+  // Hull shape (boat-like)
+  ctx.moveTo(shipX - 40 * scale, shipY + 30 * scale);
+  ctx.lineTo(shipX - 50 * scale, shipY);
+  ctx.lineTo(shipX - 40 * scale, shipY - 30 * scale);
+  ctx.lineTo(shipX + 40 * scale, shipY - 30 * scale);
+  ctx.lineTo(shipX + 50 * scale, shipY);
+  ctx.lineTo(shipX + 40 * scale, shipY + 30 * scale);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  
+  // Draw deck
+  ctx.fillStyle = '#A0826D';
+  ctx.fillRect(shipX - 35 * scale, shipY - 25 * scale, 70 * scale, 50 * scale);
+  
+  // Draw masts and sails
+  for (let i = 0; i < shipData.masts; i++) {
+    const mastX = shipX - 30 * scale + (i * 30 * scale);
+    const mastY = shipY;
+    
+    // Mast
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(mastX, mastY + 20 * scale);
+    ctx.lineTo(mastX, mastY - 60 * scale);
+    ctx.stroke();
+    
+    // Sail
+    ctx.fillStyle = editorCurrentShip === 'IRONCLAD' ? '#708090' : '#F5DEB3';
+    ctx.strokeStyle = '#D2B48C';
+    ctx.lineWidth = 2;
+    
+    ctx.beginPath();
+    ctx.moveTo(mastX, mastY - 55 * scale);
+    ctx.lineTo(mastX + 25 * scale, mastY - 40 * scale);
+    ctx.lineTo(mastX + 25 * scale, mastY - 10 * scale);
+    ctx.lineTo(mastX, mastY - 25 * scale);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+  
+  // Draw flag
+  ctx.fillStyle = '#DC143C';
+  ctx.fillRect(shipX - 40 * scale, shipY - 65 * scale, 15, 10);
+  
+  // Draw ship name
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 24px Arial';
+  ctx.textAlign = 'center';
+  const shipNames = {
+    RAFT: 'Makeshift Raft',
+    DINGHY: 'Coastal Dinghy',
+    SLOOP: 'Swift Sloop',
+    SCHOONER: 'Merchant Schooner',
+    BRIGANTINE: 'War Brigantine',
+    FRIGATE: 'Battle Frigate',
+    GALLEON: 'Treasure Galleon',
+    MAN_O_WAR: 'Imperial Man o\' War',
+    IRONCLAD: 'Legendary Ironclad'
+  };
+  ctx.fillText(shipNames[editorCurrentShip] || 'Unknown Ship', shipX, 50);
+  
+  // Draw tier badge
+  const tierColors = { 1: '#8B7355', 2: '#4CAF50', 3: '#808080', 4: '#C0C0C0', 5: '#FFD700', 6: '#00CED1' };
+  const tier = { RAFT: 1, DINGHY: 2, SLOOP: 2, SCHOONER: 3, BRIGANTINE: 4, FRIGATE: 4, GALLEON: 5, MAN_O_WAR: 5, IRONCLAD: 6 }[editorCurrentShip] || 1;
+  
+  ctx.fillStyle = tierColors[tier];
+  ctx.font = 'bold 16px Arial';
+  ctx.fillText(`Tier ${tier}`, shipX, 75);
+}
+
