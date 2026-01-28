@@ -30,6 +30,7 @@ This guide will help you quickly run the Modern Pirates Unity project with **ZER
      - For Board Game: Add `BoardGameManager` component
      - For Combat: Add `CombatManager` component
      - For Open World: Add `OpenWorldManager` component
+     - For Ship Editor: Add `ShipEditorManager` component
    - **Press Play ▶️**
 
 **Done! 🎉** The game will automatically create everything:
@@ -110,6 +111,21 @@ This guide will help you quickly run the Modern Pirates Unity project with **ZER
 - Brown player ship in center
 - Gold loot spheres scattered around
 - Use WASD to sail, collect loot
+
+#### 5. Test Ship Editor Mode
+
+1. Create new scene: File > New Scene
+2. Create empty GameObject
+3. Add `ShipEditorManager` component
+4. **Press Play ▶️**
+
+**What you'll see:**
+- Dark build area with grid floor
+- Brown ship base (hull) in center
+- Camera positioned at angle for building
+- Use keys 1-5 to select part types
+- Click to place parts on the ship
+- Arrow keys to rotate camera view
 
 ### Traditional Multi-Scene Setup (Optional)
 
@@ -198,6 +214,13 @@ All objects are color-coded for easy identification:
 - **C**: Toggle camera
 - **B**: Build base (near islands)
 - Collect yellow loot spheres
+
+### Ship Editor Mode
+- **1-5**: Select part type (Hull, Mast, Cannon, Sail, Decoration)
+- **Left Click**: Place selected part
+- **Arrow Keys**: Rotate camera around ship
+- **ESC**: Return to main menu
+- Build and customize your ship with various parts
 
 ## Steam Integration (Advanced)
 
