@@ -10,7 +10,7 @@ Welcome to my portfolio website and game development projects!
 
 ## 📁 What's Inside
 
-This repository contains three main projects:
+This repository contains four main projects:
 
 ### 1. Flask Portfolio Website
 A Python Flask web application featuring:
@@ -32,7 +32,21 @@ A standalone Unity game with multiple game modes:
 
 **Location**: `ModernPiratesUnity/`
 
-### 3. Unity Demo App
+### 3. Plunderpunk Unity Game
+**Tagline**: "Loot Louder. Sail Faster."
+
+A standalone Unity board game implementation based on Modern Pirates logic:
+- 80x20 grid-based board game
+- Island types: Harbor, Resource, Treasure, Danger
+- Dice-based ship combat with AI enemies
+- Fully programmatic setup (no Unity Editor configuration needed!)
+- Modular architecture for easy expansion
+
+**Tech Stack**: Unity 6000.3.5f2, C#
+
+**Location**: `PlunderpunkUnity/`
+
+### 4. Unity Demo App
 A minimal Unity project for testing and pipeline validation:
 - Simple rotating cube demonstration
 - Minimal dependencies
@@ -49,6 +63,7 @@ A minimal Unity project for testing and pipeline validation:
 - **[FLASK_README.md](FLASK_README.md)** - Detailed Flask app documentation
 - **[ModernPiratesUnity/README.md](ModernPiratesUnity/README.md)** - Modern Pirates Unity game documentation
 - **[ModernPiratesUnity/QUICKSTART.md](ModernPiratesUnity/QUICKSTART.md)** - Modern Pirates Unity setup guide
+- **[PlunderpunkUnity/README.md](PlunderpunkUnity/README.md)** - Plunderpunk Unity game documentation
 - **[DemoUnity/README.md](DemoUnity/README.md)** - Unity Demo project documentation
 
 ## 🎮 Play Now
