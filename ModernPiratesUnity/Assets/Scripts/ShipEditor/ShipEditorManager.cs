@@ -17,12 +17,9 @@ namespace ModernPirates.ShipEditor
         
         [Header("Ship Parts")]
         private List<ShipPart> placedParts = new List<ShipPart>();
-        private ShipPart selectedPart;
         
         [Header("Camera")]
         private Camera mainCamera;
-        private float cameraDistance = 15f;
-        private float cameraAngle = 45f;
         
         private GameObject shipBase;
         private GameObject previewPart;
@@ -152,31 +149,32 @@ namespace ModernPirates.ShipEditor
 
         private void HandleInput()
         {
+            // Check if Input System is available
+            if (Keyboard.current == null || Mouse.current == null)
+            {
+                return;
+            }
+
             // Part type selection
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
             {
-                currentPartType = PartType.Hull;
-                Debug.Log("Selected: Hull");
+                SetPartType(PartType.Hull);
             }
             else if (Keyboard.current.digit2Key.wasPressedThisFrame)
             {
-                currentPartType = PartType.Mast;
-                Debug.Log("Selected: Mast");
+                SetPartType(PartType.Mast);
             }
             else if (Keyboard.current.digit3Key.wasPressedThisFrame)
             {
-                currentPartType = PartType.Cannon;
-                Debug.Log("Selected: Cannon");
+                SetPartType(PartType.Cannon);
             }
             else if (Keyboard.current.digit4Key.wasPressedThisFrame)
             {
-                currentPartType = PartType.Sail;
-                Debug.Log("Selected: Sail");
+                SetPartType(PartType.Sail);
             }
             else if (Keyboard.current.digit5Key.wasPressedThisFrame)
             {
-                currentPartType = PartType.Decoration;
-                Debug.Log("Selected: Decoration");
+                SetPartType(PartType.Decoration);
             }
 
             // Place part on click
@@ -202,8 +200,29 @@ namespace ModernPirates.ShipEditor
             }
         }
 
+        private void SetPartType(PartType newType)
+        {
+            if (currentPartType != newType)
+            {
+                currentPartType = newType;
+                // Destroy old preview to create new one for the new type
+                if (previewPart != null)
+                {
+                    Destroy(previewPart);
+                    previewPart = null;
+                }
+                Debug.Log($"Selected: {currentPartType}");
+            }
+        }
+
         private void UpdatePreviewPart()
         {
+            // Check if Input System is available
+            if (Mouse.current == null || mainCamera == null)
+            {
+                return;
+            }
+
             // Show preview of part at mouse position
             Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
@@ -224,6 +243,15 @@ namespace ModernPirates.ShipEditor
                 );
                 
                 previewPart.transform.position = snappedPosition;
+                previewPart.SetActive(true);
+            }
+            else
+            {
+                // Hide preview when not over valid surface
+                if (previewPart != null)
+                {
+                    previewPart.SetActive(false);
+                }
             }
         }
 
@@ -290,13 +318,25 @@ namespace ModernPirates.ShipEditor
             if (part != null)
             {
                 part.name = isPreview ? "Preview" : type.ToString();
-                part.GetComponent<Renderer>().material = material;
                 
+                // Configure material for transparency if preview
                 if (isPreview)
                 {
-                    // Make preview semi-transparent
+                    // Set rendering mode to transparent
+                    material.SetFloat("_Mode", 3);
+                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    material.SetInt("_ZWrite", 0);
+                    material.DisableKeyword("_ALPHATEST_ON");
+                    material.EnableKeyword("_ALPHABLEND_ON");
+                    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.renderQueue = 3000;
+                    
+                    // Remove collider from preview to prevent interference
                     Destroy(part.GetComponent<Collider>());
                 }
+                
+                part.GetComponent<Renderer>().material = material;
             }
             
             return part;
