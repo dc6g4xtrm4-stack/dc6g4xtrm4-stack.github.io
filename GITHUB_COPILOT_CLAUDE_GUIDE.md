@@ -8,11 +8,10 @@ Before you can use Claude Sonnet 4.5 with GitHub Copilot CLI, ensure you have:
 
 1. **GitHub Copilot Subscription**: Claude Sonnet 4.5 is available to:
    - Copilot Pro users
-   - Copilot Pro+ users
    - Copilot Business users
    - Copilot Enterprise users
 
-   > **Note**: Claude Sonnet 4.5 is NOT available on the free tier.
+   > **Note**: Claude Sonnet 4.5 is NOT available on the Individual (free) tier.
 
 2. **Enterprise Users**: If you're part of an organization with GitHub Copilot Enterprise:
    - Your enterprise admin must enable Claude Sonnet 4.5 in the Copilot policy settings
@@ -22,12 +21,17 @@ Before you can use Claude Sonnet 4.5 with GitHub Copilot CLI, ensure you have:
 
 ## 🚀 Installation & Setup
 
-### Step 1: Install or Update GitHub Copilot CLI
+### Step 1: Install GitHub CLI and Copilot Extension
 
-If you haven't installed GitHub Copilot CLI yet, or need to update to the latest version:
+First, ensure you have the GitHub CLI (`gh`) installed. If not, install it from:
+- **macOS**: `brew install gh`
+- **Windows**: `winget install --id GitHub.cli` or download from [cli.github.com](https://cli.github.com/)
+- **Linux**: See [GitHub CLI installation docs](https://github.com/cli/cli#installation)
+
+Then install the GitHub Copilot CLI extension:
 
 ```bash
-npm install -g @github/copilot
+gh extension install github/gh-copilot
 ```
 
 To verify the installation:
@@ -38,7 +42,7 @@ gh copilot --version
 
 ### Step 2: Authenticate with GitHub
 
-If this is your first time using GitHub Copilot CLI:
+If this is your first time using GitHub CLI:
 
 ```bash
 gh auth login
@@ -66,15 +70,7 @@ Follow the prompts to authenticate with your GitHub account that has a valid Cop
 
 5. The CLI will now use Claude Sonnet 4.5 for all subsequent requests in that session
 
-### Method 2: Direct Command (if supported)
-
-Some versions of the CLI may support directly specifying the model:
-
-```bash
-gh copilot --model claude-sonnet-4.5
-```
-
-> **Note**: The exact command syntax may vary based on your CLI version. Use `/model` in an interactive session if the direct command doesn't work.
+> **Note**: The model selection persists for the current session. You'll need to select Claude Sonnet 4.5 again when starting a new session if you want to continue using it.
 
 ## 💡 Using Claude Sonnet 4.5
 
@@ -140,15 +136,15 @@ If you want to use your own Anthropic API key (for more control or specific bill
 - The feature is still rolling out to your account
 
 **Solutions:**
-- Verify your subscription tier (must be Pro, Pro+, Business, or Enterprise)
+- Verify your subscription tier (must be Pro, Business, or Enterprise)
 - Contact your GitHub admin if you're on an enterprise plan
-- Try updating your CLI: `npm install -g @github/copilot`
+- Try updating the Copilot extension: `gh extension upgrade gh-copilot`
 - Wait for the gradual rollout to reach your account
 
 ### CLI Not Recognizing /model Command
 
 **Solution:**
-- Update to the latest version of GitHub Copilot CLI
+- Update to the latest version of GitHub Copilot CLI extension: `gh extension upgrade gh-copilot`
 - Use `gh copilot --help` to see available commands for your version
 
 ### Authentication Issues
@@ -183,8 +179,16 @@ Claude Sonnet 4.5 offers several advantages for coding tasks:
 ## 📝 Quick Reference
 
 ```bash
-# Install/Update CLI
-npm install -g @github/copilot
+# Install GitHub CLI (if needed)
+# macOS: brew install gh
+# Windows: winget install --id GitHub.cli
+# Linux: see https://github.com/cli/cli#installation
+
+# Install Copilot extension
+gh extension install github/gh-copilot
+
+# Update Copilot extension
+gh extension upgrade gh-copilot
 
 # Authenticate
 gh auth login
