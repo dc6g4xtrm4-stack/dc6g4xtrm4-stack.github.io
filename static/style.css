@@ -990,3 +990,93 @@ a:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
+
+/* Pirates Lobby & Ship Editor Styles */
+.pirates-lobby {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--bg);
+}
+
+.lobby-container {
+  max-width: 900px;
+  width: 100%;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.lobby-container h2 {
+  margin: 0 0 10px 0;
+  font-size: 32px;
+  text-align: center;
+  color: var(--text);
+}
+
+.lobby-subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin: 0 0 30px 0;
+  font-size: 14px;
+}
+
+.lobby-section {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.lobby-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lobby-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+.lobby-form input {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 16px;
+  text-align: center;
+}
+
+.lobby-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Ship Editor Scrollbar */
+#shipTechTree::-webkit-scrollbar {
+  width: 8px;
+}
+
+#shipTechTree::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+#shipTechTree::-webkit-scrollbar-thumb {
+  background: rgba(78, 205, 196, 0.3);
+  border-radius: 4px;
+}
+
+#shipTechTree::-webkit-scrollbar-thumb:hover {
+  background: rgba(78, 205, 196, 0.5);
+}

@@ -221,6 +221,16 @@
                   <li>Board grid shown as minimap</li>
                 </ul>
               </div>
+              
+              <div class="mode-card" id="shipEditorModeCard" style="background: rgba(138, 43, 226, 0.1); border: 2px solid #8A2BE2; border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.3s;">
+                <h3 style="color: #8A2BE2; margin: 0 0 10px 0;">⚓ Ship Editor</h3>
+                <p style="margin: 0 0 10px 0; font-size: 14px;">Customize your fleet with Sea of Thieves-inspired graphics and Civilization-style tech tree upgrades. Build and upgrade ships from rafts to ironclads!</p>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px; color: #a0a0a0;">
+                  <li>Visual ship customization</li>
+                  <li>Tech tree progression system</li>
+                  <li>Material-based crafting</li>
+                </ul>
+              </div>
             </div>
             
             <button id="backToMenuBtn" class="btn-secondary" style="margin-top: 20px; display: none;">← Back to Main Menu</button>
@@ -255,6 +265,61 @@
             </div>
             
             <button id="backToModeSelectionBtn" class="btn-secondary" style="margin-top: 20px;">← Back to Mode Selection</button>
+          </div>
+        </div>
+        
+        <!-- Ship Editor Screen -->
+        <div id="piratesShipEditor" class="pirates-lobby" style="display: none;">
+          <div class="lobby-container">
+            <h2>⚓ Ship Editor</h2>
+            <p class="lobby-subtitle">Customize Your Fleet - Sea of Thieves meets Civilization</p>
+            
+            <!-- Ship Preview Canvas -->
+            <div style="margin: 30px 0; text-align: center;">
+              <canvas id="shipPreviewCanvas" width="600" height="400" style="background: linear-gradient(to bottom, #1a3a52 0%, #2d5f7e 50%, #1a3a52 100%); border: 2px solid #4ECDC4; border-radius: 8px; max-width: 100%;"></canvas>
+            </div>
+            
+            <!-- Ship Tech Tree -->
+            <div style="margin: 30px 0;">
+              <h3 style="color: #FFD700; margin-bottom: 20px;">⚔️ Ship Tech Tree</h3>
+              <div id="shipTechTree" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; max-height: 400px; overflow-y: auto; padding: 10px;">
+                <!-- Ship cards will be dynamically generated here -->
+              </div>
+            </div>
+            
+            <!-- Current Ship Info -->
+            <div style="margin: 30px 0; padding: 20px; background: rgba(78, 205, 196, 0.1); border: 2px solid #4ECDC4; border-radius: 8px;">
+              <h3 style="color: #4ECDC4; margin: 0 0 15px 0;">🚢 Current Ship</h3>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                  <p style="margin: 5px 0; font-size: 14px;"><strong>Ship:</strong> <span id="editorCurrentShip">Raft</span></p>
+                  <p style="margin: 5px 0; font-size: 14px;"><strong>Tier:</strong> <span id="editorShipTier">1</span></p>
+                </div>
+                <div>
+                  <p style="margin: 5px 0; font-size: 14px;"><strong>⚡ Speed:</strong> <span id="editorShipSpeed">1</span></p>
+                  <p style="margin: 5px 0; font-size: 14px;"><strong>🛡️ Hull:</strong> <span id="editorShipHull">20</span></p>
+                  <p style="margin: 5px 0; font-size: 14px;"><strong>📦 Cargo:</strong> <span id="editorShipCargo">5</span></p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Materials Inventory -->
+            <div style="margin: 30px 0; padding: 20px; background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 8px;">
+              <h3 style="color: #FFD700; margin: 0 0 15px 0;">💎 Materials Inventory</h3>
+              <div id="materialsInventory" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; font-size: 13px;">
+                <div><strong>🌾 Thatch:</strong> <span id="materialThatch">0</span></div>
+                <div><strong>🪵 Wood:</strong> <span id="materialWood">0</span></div>
+                <div><strong>🪨 Stone:</strong> <span id="materialStone">0</span></div>
+                <div><strong>⚙️ Iron:</strong> <span id="materialIron">0</span></div>
+                <div><strong>🔩 Steel:</strong> <span id="materialSteel">0</span></div>
+                <div><strong>💠 Titanium:</strong> <span id="materialTitanium">0</span></div>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+              <button id="backToLobbyFromEditor" class="btn-secondary" style="flex: 1;">← Back to Lobby</button>
+              <button id="testShipBtn" class="btn-primary" style="flex: 1;">🚢 Set as Active Ship</button>
+            </div>
           </div>
         </div>
         
