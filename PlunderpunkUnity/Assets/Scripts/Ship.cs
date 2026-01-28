@@ -275,9 +275,7 @@ namespace Plunderpunk
         {
             if (gameManager == null) return false;
             
-            // Access grid dimensions from game manager (these should be public or accessible)
-            // For now, we'll use a simple bounds check
-            return x >= 0 && y >= 0 && x < 80 && y < 20;
+            return x >= 0 && y >= 0 && x < gameManager.GridWidth && y < gameManager.GridHeight;
         }
     }
 }

@@ -234,8 +234,8 @@ The project is designed for easy expansion:
 
 ### Input Not Working
 - Ensure the `PlunderpunkInput` component is enabled in the scene
-- Check that Unity's Input System package is installed
 - Try clicking in the Game view to ensure it has focus
+- Check Console window for any input-related errors
 
 ## Development Workflow
 

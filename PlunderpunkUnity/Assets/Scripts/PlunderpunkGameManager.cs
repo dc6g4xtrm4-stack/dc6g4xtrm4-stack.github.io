@@ -40,6 +40,18 @@ namespace Plunderpunk
         public GameState currentState = GameState.Initializing;
         #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// Gets the grid width for external access (e.g., by enemy ships)
+        /// </summary>
+        public int GridWidth => gridWidth;
+        
+        /// <summary>
+        /// Gets the grid height for external access (e.g., by enemy ships)
+        /// </summary>
+        public int GridHeight => gridHeight;
+        #endregion
+
         #region Private Fields
         private GridCell[,] grid;
         private PlayerShip playerShip;
@@ -314,6 +326,13 @@ namespace Plunderpunk
         public void MovePlayerShip(int targetX, int targetY)
         {
             if (currentState != GameState.Playing) return;
+            
+            // Null check for player ship
+            if (playerShip == null)
+            {
+                Debug.LogWarning("[Move] Player ship not found!");
+                return;
+            }
             
             if (!IsValidMove(playerShip.gridX, playerShip.gridY, targetX, targetY))
             {

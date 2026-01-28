@@ -408,9 +408,12 @@ MonoBehaviour:
   gridWidth: 80
   gridHeight: 20
   cellSize: 1
+  enableVisualGrid: 0
   numberOfIslands: 15
-  playerPoints: 0
+  numberOfEnemies: 3
   targetPoints: 25
+  playerPoints: 0
+  currentState: 0
 --- !u!114 &1401356456
 MonoBehaviour:
   m_ObjectHideFlags: 0

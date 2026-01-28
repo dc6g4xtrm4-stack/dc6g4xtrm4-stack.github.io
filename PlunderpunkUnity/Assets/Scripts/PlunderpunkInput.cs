@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Plunderpunk
 {
@@ -7,6 +6,7 @@ namespace Plunderpunk
     /// Handles player input for Plunderpunk board game.
     /// Supports both mouse clicking and keyboard arrow keys.
     /// Automatically finds required components - no Editor setup needed.
+    /// Uses Unity's legacy Input system for maximum compatibility.
     /// </summary>
     public class PlunderpunkInput : MonoBehaviour
     {
@@ -65,9 +65,9 @@ namespace Plunderpunk
         /// </summary>
         private void HandleMouseInput()
         {
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            if (Input.GetMouseButtonDown(0)) // Left mouse button
             {
-                Vector2 mousePosition = Mouse.current.position.ReadValue();
+                Vector2 mousePosition = Input.mousePosition;
                 Ray ray = mainCamera.ScreenPointToRay(mousePosition);
                 RaycastHit hit;
                 
@@ -107,28 +107,25 @@ namespace Plunderpunk
             int deltaX = 0;
             int deltaY = 0;
             
-            var keyboard = Keyboard.current;
-            if (keyboard != null)
-            {
-                if (keyboard.upArrowKey.wasPressedThisFrame)
-                    deltaY = 1;
-                if (keyboard.downArrowKey.wasPressedThisFrame)
-                    deltaY = -1;
-                if (keyboard.leftArrowKey.wasPressedThisFrame)
-                    deltaX = -1;
-                if (keyboard.rightArrowKey.wasPressedThisFrame)
-                    deltaX = 1;
-                
-                // WASD alternative
-                if (keyboard.wKey.wasPressedThisFrame)
-                    deltaY = 1;
-                if (keyboard.sKey.wasPressedThisFrame)
-                    deltaY = -1;
-                if (keyboard.aKey.wasPressedThisFrame)
-                    deltaX = -1;
-                if (keyboard.dKey.wasPressedThisFrame)
-                    deltaX = 1;
-            }
+            // Arrow keys
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                deltaY = 1;
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                deltaY = -1;
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                deltaX = -1;
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                deltaX = 1;
+            
+            // WASD alternative
+            if (Input.GetKeyDown(KeyCode.W))
+                deltaY = 1;
+            if (Input.GetKeyDown(KeyCode.S))
+                deltaY = -1;
+            if (Input.GetKeyDown(KeyCode.A))
+                deltaX = -1;
+            if (Input.GetKeyDown(KeyCode.D))
+                deltaX = 1;
             
             if (deltaX != 0 || deltaY != 0)
             {
