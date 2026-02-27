@@ -904,6 +904,98 @@ const BIS_DATA = {
         ]
       }
     }
+  },
+
+  warlock: {
+    name: 'Warlock', icon: '📖', build: 'Arts of Chaos / Fire Caster',
+    slots: {
+      helm: {
+        bis: { name: "Horazon's Countenance", rarity: 'set', type: "Demonhead (Horazon's Splendor Set)",
+          props: ['+1 to Warlock Skill Levels', '+1% Bonus to AR per Character Level', '+10–20 to Strength', 'Magic Damage Reduced by 7–10'] },
+        alternatives: [
+          { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
+            props: ['+1 to All Skills', '+25% Faster Cast Rate', '-15–20% to Enemy Lightning Resistance', '+10–15% to Lightning Skill Damage'] },
+          { name: 'Coven', rarity: 'runeword', type: 'Runeword: Ist + Ral + Io (3-socket Helm)',
+            props: ['+1 to All Skills', '+20% Faster Cast Rate', '+30–50% Enhanced Defense', 'Fire Resist +30%'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
+        alternatives: [
+          { name: 'Crafted Caster Amulet', rarity: 'magic', type: 'Amulet',
+            props: ['+2 to Warlock Skills', '+20% Faster Cast Rate', 'All Resistances +10–20', '+5–10 Mana after each Kill'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Authority', rarity: 'runeword', type: 'Runeword: Hel + Shael + Ral (3-socket Body Armor)',
+          props: ['+2 to Warlock Skill Levels', '+20% Faster Hit Recovery', '+40–60% Enhanced Damage', 'Fire Resist +30%'] },
+        alternatives: [
+          { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
+            props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+          { name: "Horazon's Dominion", rarity: 'set', type: "Russet Armor (Horazon's Splendor Set)",
+            props: ['+2 to Demonic Binding Skills', '+75–100% Enhanced Defense', '+75–100 to Mana', 'All Resistances +15–25%'] }
+        ]
+      },
+      weapon: {
+        bis: { name: "Ars Al'Diabolos", rarity: 'unique', type: 'Blasphemous Grimoire (Elite)',
+          props: ['+2 to Arts of Chaos Skills', '+25% Faster Cast Rate', '+15–25% to Fire Skill Damage', '+3–5 to Apocalypse', 'Fire Resist +20–30%'] },
+        alternatives: [
+          { name: "Ars Dul'Mephistos", rarity: 'unique', type: 'Occult Tome (Elite Grimoire)',
+            props: ['+2 to Warlock Skill Levels', '+20–30% Faster Cast Rate', '-10–20% to Enemy Magic Resistance', '+70–115% Enhanced Defense'] },
+          { name: "Horazon's Secrets", rarity: 'set', type: "Occult Codex (Horazon's Splendor Set)",
+            props: ['+2 to Eldritch Weapons Skills', '+30% Faster Hit Recovery', '+20–30 to Vitality', '+30–50 to Life'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Vigilance', rarity: 'runeword', type: 'Runeword: Dol + Gul (2-socket Grimoire or Shield)',
+          props: ['+30% Faster Block Rate', '+20–40 to Life and Mana', 'All Resistances +25–35%'] },
+        alternatives: [
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality'] }
+        ]
+      },
+      gloves: {
+        bis: { name: "Horazon's Hold", rarity: 'set', type: "Demonhide Gloves (Horazon's Splendor Set)",
+          props: ['10% Chance of Crushing Blow', '+95–150 to Attack Rating', '+10–15 to Dexterity', 'Adds 140–270 Fire Damage'] },
+        alternatives: [
+          { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+            props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana', 'Slows Target by 10%'] },
+        alternatives: [
+          { name: "Gheed's Wager", rarity: 'unique', type: 'Troll Belt (Elite, New in Patch 3.0)',
+            props: ['+10–20% Faster Cast Rate', '+10–20% Faster Hit Recovery', '-3–7% to Enemy Magic Resistance', 'All Resistances +5–15', '+44–75% Extra Gold'] }
+        ]
+      },
+      boots: {
+        bis: { name: "Horazon's Legacy", rarity: 'set', type: "Mirrored Boots (Horazon's Splendor Set)",
+          props: ['+30% Faster Run/Walk', '+10–15 to Strength and Dexterity', '+20–30% Magic Resist', 'Cannot Be Frozen'] },
+        alternatives: [
+          { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+            props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+        alternatives: [
+          { name: 'Opalvein', rarity: 'unique', type: 'Ring (New in Patch 3.0)',
+            props: ['+10% Faster Cast Rate', 'All Resistances +6–8', '+1–3 Life after each Kill', '+1–3 Mana after each Kill'] }
+        ]
+      },
+      ring2: {
+        bis: { name: 'Opalvein', rarity: 'unique', type: 'Ring (New in Patch 3.0)',
+          props: ['+10% Faster Cast Rate', 'All Resistances +6–8', '2% Chance to cast level 15 Flame Wave on attack'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] }
+        ]
+      }
+    }
   }
 
 }; // end BIS_DATA
