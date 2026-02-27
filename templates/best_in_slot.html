@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D2R: Reign of the Warlock — Best in Slot</title>
+  <style>
+    :root {
+      --bg:       #0e0e12;
+      --surface:  #16161e;
+      --surface2: #1e1e2a;
+      --border:   #2a2a3a;
+      --text:     #d0d0d8;
+      --muted:    #888898;
+      --accent:   #c8a84b;
+      --have:     #4ab04a;
+      --unique:   #c89b3c;
+      --set:      #4ab04a;
+      --rare:     #c8c800;
+      --magic:    #7878ff;
+      --runeword: #d47a1e;
+      --normal:   #c8c8c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .site-header {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      padding: 11px 20px; background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .back-link { color: var(--accent); text-decoration: none; font-size: 13px; opacity: 0.75; white-space: nowrap; transition: opacity .15s; }
+    .back-link:hover { opacity: 1; }
+    .site-header h1 { font-size: 16px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .rarity-legend { display: flex; gap: 7px; margin-left: auto; flex-wrap: wrap; align-items: center; }
+    .rarity-legend span { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 3px; border: 1px solid currentColor; }
+    .leg-unique   { color: var(--unique); }
+    .leg-set      { color: var(--set); }
+    .leg-runeword { color: var(--runeword); }
+    .leg-rare     { color: var(--rare); }
+    .leg-magic    { color: var(--magic); }
+
+    /* ── Class Selector ─────────────────────────────────── */
+    .class-selector {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .class-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface2); color: var(--text); cursor: pointer; min-width: 86px;
+      transition: border-color .15s, background .15s, color .15s;
+    }
+    .class-btn .cb-icon  { font-size: 20px; line-height: 1; }
+    .class-btn .cb-name  { font-size: 12px; font-weight: 700; }
+    .class-btn .cb-build { font-size: 9px; color: var(--muted); white-space: nowrap; }
+    .class-btn:hover { border-color: var(--accent); }
+    .class-btn.active { border-color: var(--accent); background: rgba(200,168,75,.1); color: var(--accent); }
+    .class-btn.active .cb-build { color: rgba(200,168,75,.6); }
+
+    /* ── Main 2-col layout ──────────────────────────────── */
+    .bis-main { display: grid; grid-template-columns: 316px 1fr; min-height: calc(100vh - 108px); align-items: start; }
+
+    /* ── Left column ────────────────────────────────────── */
+    .char-col {
+      padding: 16px 12px; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      position: sticky; top: 0; max-height: 100vh; overflow-y: auto;
+    }
+    .build-info { text-align: center; width: 100%; }
+    .build-info-sub  { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .build-info-name { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 3px; }
+
+    /* Progress bar */
+    .prog-wrap { width: 100%; display: none; }
+    .prog-header { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 5px; }
+    .prog-header .prog-n { color: var(--have); font-weight: 700; }
+    .prog-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .prog-fill  { height: 100%; background: var(--have); border-radius: 2px; width: 0%; transition: width .4s ease; }
+
+    /* Slot grid */
+    .slot-grid-wrap { position: relative; width: 290px; }
+    .char-silhouette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .slot-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 88px); gap: 7px; }
+
+    .slot-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      gap: 2px; padding: 7px 4px 6px; min-height: 82px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: rgba(22,22,30,.9); color: var(--text);
+      cursor: pointer; font-size: 11px; text-align: center;
+      transition: border-color .15s, background .15s, box-shadow .15s;
+      position: relative; overflow: hidden;
+    }
+    .slot-btn .s-icon    { font-size: 18px; line-height: 1.1; }
+    .slot-btn .s-label   { font-size: 10px; font-weight: 700; letter-spacing: .3px; }
+    .slot-btn .s-preview {
+      font-size: 8.5px; max-width: 82px; overflow: hidden;
+      white-space: nowrap; text-overflow: ellipsis; line-height: 1.2;
+      opacity: 0; transition: opacity .2s;
+    }
+    .slot-btn.previewed .s-preview { opacity: 1; }
+    .slot-btn .s-have {
+      position: absolute; top: 3px; right: 5px;
+      font-size: 9px; color: var(--have); font-weight: 900; display: none;
+    }
+    .slot-btn.has-item .s-have    { display: block; }
+    .slot-btn.has-item            { border-color: rgba(74,176,74,.35); }
+    .slot-btn:hover               { border-color: var(--accent); background: rgba(200,168,75,.08); }
+    .slot-btn.selected            { border-color: var(--accent); background: rgba(200,168,75,.15); box-shadow: 0 0 10px rgba(200,168,75,.2); color: var(--accent); }
+    .slot-btn.selected .s-label  { color: var(--accent); }
+    .slot-btn.empty-cell          { visibility: hidden; pointer-events: none; }
+
+    /* ── Right: item panel ──────────────────────────────── */
+    .item-panel { padding: 20px 24px; min-width: 0; }
+
+    .panel-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 260px; color: var(--muted); font-size: 14px;
+      border: 1px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center;
+    }
+
+    /* Panel animation */
+    .panel-sec { display: none; }
+    .panel-sec.visible { display: block; animation: fadeUp .18s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Overview panel ─────────────────────────────────── */
+    .ov-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .ov-title  { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .collected-pill {
+      font-size: 11px; color: var(--have); border: 1px solid var(--have);
+      padding: 3px 10px; border-radius: 20px; background: rgba(74,176,74,.08); display: none;
+    }
+    .ov-list { display: flex; flex-direction: column; gap: 5px; }
+    .ov-row {
+      display: grid; grid-template-columns: 26px 62px 1fr auto;
+      align-items: center; gap: 10px; padding: 9px 14px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer; transition: border-color .15s, background .15s;
+    }
+    .ov-row:hover   { border-color: var(--accent); background: rgba(200,168,75,.05); }
+    .ov-row.ov-has  { border-left: 3px solid var(--have); }
+    .ov-icon { font-size: 16px; text-align: center; }
+    .ov-slot { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 700; }
+    .ov-item { font-size: 13px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+    /* Track button */
+    .track-btn {
+      padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); font-size: 10px;
+      cursor: pointer; white-space: nowrap; transition: all .15s;
+    }
+    .track-btn:hover  { border-color: var(--have); color: var(--have); }
+    .track-btn.tracked { border-color: var(--have); color: var(--have); background: rgba(74,176,74,.1); }
+
+    /* ── Detail panel ───────────────────────────────────── */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: none; border: none; color: var(--accent);
+      font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 16px; opacity: .75; transition: opacity .15s;
+    }
+    .back-btn:hover { opacity: 1; }
+    .slot-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 12px; }
+
+    .item-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+    .item-card.bis-card { border-color: var(--accent); background: rgba(200,168,75,.04); }
+    .item-card.alt-card { margin-bottom: 0; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .bis-badge {
+      display: inline-block; padding: 2px 7px; border-radius: 4px;
+      background: var(--accent); color: #0e0e12; font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .item-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .alt-card .item-name { font-size: 15px; }
+    .item-type { font-size: 11px; color: var(--muted); margin-bottom: 11px; }
+    .item-props { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .item-props li { font-size: 12px; color: var(--magic); padding-left: 13px; position: relative; }
+    .item-props li::before { content: '•'; position: absolute; left: 0; color: var(--accent); }
+    .alt-card .item-props li { font-size: 11px; }
+    .alts-heading { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 16px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .alt-list { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Rarity colours */
+    .rarity-unique   { color: var(--unique); }
+    .rarity-set      { color: var(--set); }
+    .rarity-rare     { color: var(--rare); }
+    .rarity-magic    { color: var(--magic); }
+    .rarity-runeword { color: var(--runeword); }
+    .rarity-normal   { color: var(--normal); }
+
+    /* Keyboard hint */
+    .kbd-hint { font-size: 10px; color: var(--muted); opacity: .6; text-align: center; }
+    .kbd-hint kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px; font-family: inherit; }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media (max-width: 760px) {
+      .bis-main { grid-template-columns: 1fr; }
+      .char-col { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+      .slot-grid-wrap { width: 100%; }
+      .slot-grid { grid-template-columns: repeat(3, 1fr); }
+      .rarity-legend { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <a href="/" class="back-link">← Back</a>
+  <h1>⚔️ D2R: Reign of the Warlock — Best in Slot</h1>
+  <div class="rarity-legend">
+    <span class="leg-unique">Unique</span>
+    <span class="leg-set">Set</span>
+    <span class="leg-runeword">Runeword</span>
+    <span class="leg-rare">Rare</span>
+    <span class="leg-magic">Magic</span>
+  </div>
+</header>
+
+<div class="class-selector" id="classSelector"></div>
+
+<div class="bis-main">
+
+  <!-- Left: Character Column -->
+  <div class="char-col">
+    <div class="build-info">
+      <div class="build-info-sub" id="buildSub">Select a class above</div>
+      <div class="build-info-name" id="buildName"></div>
+    </div>
+
+    <div class="prog-wrap" id="progWrap">
+      <div class="prog-header">
+        <span>Items Collected</span>
+        <span class="prog-n" id="progCount">0 / 10</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="slot-grid-wrap">
+      <svg class="char-silhouette" viewBox="0 0 290 304" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="145" cy="34" rx="20" ry="22" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.2"/>
+        <rect x="138" y="55" width="14" height="15" rx="3" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.16"/>
+        <path d="M93 70 L197 70 L184 200 L145 210 L106 200 Z" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.16"/>
+        <path d="M93 80 L50 108 L44 188" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.12"/>
+        <path d="M197 80 L240 108 L246 188" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.12"/>
+        <path d="M106 200 L98 270" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.12"/>
+        <path d="M184 200 L192 270" fill="none" stroke="#c8a84b" stroke-width="1.5" opacity="0.12"/>
+      </svg>
+      <div class="slot-grid" id="slotGrid"></div>
+    </div>
+
+    <div class="kbd-hint">
+      <kbd>↑↓←→</kbd> navigate &nbsp; <kbd>Esc</kbd> back
+    </div>
+  </div>
+
+  <!-- Right: Item Panel -->
+  <div class="item-panel">
+    <div class="panel-placeholder" id="panelPlaceholder">← Select a class above to view gear</div>
+
+    <!-- Overview panel -->
+    <div class="panel-sec" id="overviewPanel">
+      <div class="ov-header">
+        <div class="ov-title" id="ovTitle"></div>
+        <div class="collected-pill" id="collectedPill"></div>
+      </div>
+      <div class="ov-list" id="ovList"></div>
+    </div>
+
+    <!-- Detail panel -->
+    <div class="panel-sec" id="detailPanel">
+      <button class="back-btn" id="backBtn">← All Slots</button>
+      <div class="slot-title" id="slotTitle"></div>
+      <div id="bisContainer"></div>
+      <div class="alts-heading">Alternatives</div>
+      <div class="alt-list" id="altContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BIS DATA
+//  Rarity: 'unique' | 'set' | 'rare' | 'runeword' | 'magic' | 'normal'
+// ═══════════════════════════════════════════════════════════════════════════════
+const BIS_DATA = {
+
+  amazon: {
+    name: 'Amazon', icon: '🏹', build: 'Lightning Fury / Javazon',
+    slots: {
+      helm: {
+        bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+        alternatives: [
+          { name: "Harlequin Crest", rarity: 'unique', type: 'Shaman Headdress',
+            props: ['+2 to All Skills', '+1 to Vitality & Energy per level', 'Damage Reduced by 10%'] },
+          { name: "Andariel's Visage", rarity: 'unique', type: 'Demonhead',
+            props: ['+2 to All Skills', '+20% Increased Attack Speed', '+10% to Maximum Poison Resist'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
+          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%'] },
+        alternatives: [
+          { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+            props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        alternatives: [
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', 'All Resistances +65'] }
+        ]
+      },
+      weapon: {
+        bis: { name: 'Thunderstroke', rarity: 'unique', type: 'Matriarchal Javelin',
+          props: ['+2–3 to Amazon Skill Levels', '+20% Increased Attack Speed', '+190 to Lightning Damage', '-15% to Enemy Lightning Resistance'] },
+        alternatives: [
+          { name: "Titan's Revenge", rarity: 'unique', type: 'Ceremonial Javelin',
+            props: ['+2 to Amazon Skill Levels', '+30% Increased Attack Speed', '+180–240% Enhanced Damage', 'Replenishes Quantity'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
+          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+        alternatives: [
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Laying of Hands', rarity: 'set', type: "Bramble Mitts (Aldur's Watchtower Set)",
+          props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] },
+        alternatives: [
+          { name: "Dracul's Grasp", rarity: 'unique', type: 'Vampirebone Gloves',
+            props: ['5–10% Life Stolen per Hit', '+10–15 to Strength', '25% Chance of Open Wounds'] }
+        ]
+      },
+      belt: {
+        bis: { name: "Thundergod's Vigor", rarity: 'unique', type: 'War Belt',
+          props: ['+1 to Amazon Lightning Skills', '+20 to Strength', '+20 to Vitality', 'Lightning Absorb 20%', '+3–5% to Maximum Lightning Resist'] },
+        alternatives: [
+          { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+            props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality', 'Poison Resist +40–70%'] },
+        alternatives: [
+          { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] },
+          { name: 'Gore Rider', rarity: 'unique', type: 'War Boots',
+            props: ['+30% Faster Run/Walk', '+15% Chance of Crushing Blow', '+15% Chance of Open Wounds'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+        alternatives: [
+          { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
+            props: ['+150–250 to Attack Rating', 'Cannot be Frozen', 'Cold Absorb 20%'] }
+        ]
+      }
+    }
+  },
+
+  necromancer: {
+    name: 'Necromancer', icon: '💀', build: 'Summoner / Bone Spear',
+    slots: {
+      helm: {
+        bis: { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+          props: ['+2 to All Skills', '+1 to Vitality per level', '+1 to Energy per level', 'Damage Reduced by 10%', '50% Better Chance of Magic Items'] },
+        alternatives: [
+          { name: "Trang-Oul's Guise", rarity: 'set', type: "Bone Visage (Trang-Oul's Avatar Set)",
+            props: ['+2 to Necromancer Skill Levels', 'Replenish Life +10', 'Attacker Takes Damage 20'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
+        alternatives: [
+          { name: 'The Eye of Etlich', rarity: 'unique', type: 'Amulet',
+            props: ['+1–5 to Necromancer Skill Levels', '3–7% Life Stolen per Hit', 'Cold Resist +11–20%'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        alternatives: [
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', 'All Resistances +65', '+70% Enhanced Damage'] }
+        ]
+      },
+      weapon: {
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', 'All Resistances +30–40'] },
+        alternatives: [
+          { name: 'White', rarity: 'runeword', type: 'Runeword: Dol + Io (Wand)',
+            props: ['+3 to Poison and Bone Skills', '+20% Faster Cast Rate', '+13 to Mana after each Kill'] },
+          { name: 'Arm of King Leoric', rarity: 'unique', type: 'Tomb Wand',
+            props: ['+2 to Necromancer Skill Levels', '+50–80% Enhanced Damage', 'Raises skeleton on kill'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Homunculus', rarity: 'unique', type: 'Hierophant Trophy',
+          props: ['+2 to Necromancer Skill Levels', '+40% Faster Block Rate', '+4–5 to Mana After Each Kill', 'All Resistances +40'] },
+        alternatives: [
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+        ]
+      },
+      gloves: {
+        bis: { name: "Trang-Oul's Claws", rarity: 'set', type: "Heavy Bracers (Trang-Oul's Avatar Set)",
+          props: ['+2 to Curses (Necromancer Only)', '+20% Faster Cast Rate', 'Cold Resist +30%'] },
+        alternatives: [
+          { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+            props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+        alternatives: [
+          { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
+            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Marrowwalk', rarity: 'unique', type: 'Boneweave Boots',
+          props: ['+1–2 to Skeleton Mastery (Necromancer Only)', '+17 to Dexterity', 'Half Freeze Duration'] },
+        alternatives: [
+          { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      },
+      ring2: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      }
+    }
+  },
+
+  barbarian: {
+    name: 'Barbarian', icon: '⚔️', build: 'Whirlwind',
+    slots: {
+      helm: {
+        bis: { name: "Arreat's Face", rarity: 'unique', type: 'Slayer Guard',
+          props: ['+2 to Barbarian Skill Levels', '+20% Faster Hit Recovery', '+30% Bonus to Attack Rating', 'All Resistances +20', 'Replenish Life +10'] },
+        alternatives: [
+          { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
+          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%'] },
+        alternatives: [
+          { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+            props: ['+2 to All Skills', 'All Resistances +20–30'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Fortitude', rarity: 'runeword', type: 'Runeword: El + Sol + Dol + Lo (any Armor)',
+          props: ['+300% Enhanced Damage', '+15% to All Resistances', '+200% Enhanced Defense', '20% Faster Hit Recovery'] },
+        alternatives: [
+          { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
+            props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] }
+        ]
+      },
+      weapon: {
+        bis: { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral (Phase Blade)',
+          props: ['+340–400 Damage', '+30–40% Increased Attack Speed', '-25% to Enemy Poison Resistance', '+10–15 Life after each Kill'] },
+        alternatives: [
+          { name: 'Beast', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum (Axe)',
+            props: ['Level 9 Fanaticism Aura When Equipped', '+40% Increased Attack Speed', '+240–270% Enhanced Damage'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
+          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+        alternatives: [
+          { name: 'Beast (2nd Weapon)', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum',
+            props: ['Level 9 Fanaticism Aura', '+40% Increased Attack Speed'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts',
+          props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] },
+        alternatives: [
+          { name: "Dracul's Grasp", rarity: 'unique', type: 'Vampirebone Gloves',
+            props: ['5–10% Life Stolen per Hit', '+10–15 to Strength', '25% Chance of Open Wounds'] }
+        ]
+      },
+      belt: {
+        bis: { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
+          props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] },
+        alternatives: [
+          { name: 'String of Ears', rarity: 'unique', type: 'Demonhide Sash',
+            props: ['Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15', 'Life Stolen per Hit 6–8%'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Gore Rider', rarity: 'unique', type: 'War Boots',
+          props: ['+30% Faster Run/Walk', '+15% Chance of Crushing Blow', '+15% Chance of Open Wounds', '+10% Chance of Deadly Strike'] },
+        alternatives: [
+          { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+            props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
+          props: ['+150–250 to Attack Rating', 'Cannot be Frozen', 'Cold Absorb 20%', '+15–45 to Dexterity'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+        alternatives: [
+          { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+25% to Maximum Mana'] }
+        ]
+      }
+    }
+  },
+
+  sorceress: {
+    name: 'Sorceress', icon: '🔮', build: 'Blizzard / Fire Wall',
+    slots: {
+      helm: {
+        bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+        alternatives: [
+          { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+            props: ['+2 to All Skills', 'Damage Reduced by 10%', '50% Better Chance of Magic Items'] },
+          { name: "Tal Rasha's Horadric Crest", rarity: 'set', type: "Death Mask (Tal Rasha's Wrappings Set)",
+            props: ['+2 to Sorceress Skill Levels', '10% Life Stolen per Hit', '+45 to Life / +30 to Mana'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
+        alternatives: [
+          { name: "Tal Rasha's Adjudication", rarity: 'set', type: "Amulet (Tal Rasha's Wrappings Set)",
+            props: ['+2 to Sorceress Skill Levels', 'Lightning Resist +33%', '+42 to Life'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        alternatives: [
+          { name: "Tal Rasha's Guardianship", rarity: 'set', type: "Lacquered Plate (Tal Rasha's Wrappings Set)",
+            props: ['+400 Defense', 'Cold Resist +40%', 'Lightning Resist +40%', 'Magic Damage Reduced by 15'] },
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', 'All Resistances +65'] }
+        ]
+      },
+      weapon: {
+        bis: { name: "Death's Fathom", rarity: 'unique', type: 'Dimensional Shard',
+          props: ['+3 to Sorceress Skill Levels', '+20% Faster Cast Rate', '+15–30% to Cold Skill Damage', '-15 to -20% to Enemy Cold Resistance'] },
+        alternatives: [
+          { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
+            props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40'] },
+          { name: "Eschuta's Temper", rarity: 'unique', type: 'Elder Staff',
+            props: ['+1–3 to Sorceress Skill Levels', '+15–50% to Fire Skill Damage', '+15–50% to Lightning Skill Damage'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality', '+89–112 to Mana'] },
+        alternatives: [
+          { name: 'Lidless Wall', rarity: 'unique', type: 'Grim Shield',
+            props: ['+1 to All Skills', '+20% Faster Cast Rate', '+10–15 to Energy'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy'] },
+        alternatives: [
+          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
+            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+        alternatives: [
+          { name: "Tal Rasha's Fine-Spun Cloth", rarity: 'set', type: "Mesh Belt (Tal Rasha's Wrappings Set)",
+            props: ['+20 to Dexterity', '+30 to Mana', 'Magic Damage Reduced by 10–15'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+        alternatives: [
+          { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+        alternatives: [
+          { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+25% to Maximum Mana'] }
+        ]
+      }
+    }
+  },
+
+  paladin: {
+    name: 'Paladin', icon: '🛡️', build: 'Hammerdin / Holy Fire',
+    slots: {
+      helm: {
+        bis: { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+          props: ['+2 to All Skills', 'Damage Reduced by 10%', '+1 to Vitality per level', '+1 to Energy per level'] },
+        alternatives: [
+          { name: "Guillaume's Face", rarity: 'set', type: 'Winged Helm',
+            props: ['+30% Faster Hit Recovery', '+15% Increased Chance of Crushing Blow', '+35% Deadly Strike'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+        alternatives: [
+          { name: "Seraph's Hymn", rarity: 'unique', type: 'Amulet',
+            props: ['+1–2 to Paladin Skill Levels', '+1–2 to Defensive Auras', '+25–50% Damage to Demons/Undead'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        alternatives: [
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', 'All Resistances +65'] }
+        ]
+      },
+      weapon: {
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40', '+75% Damage to Demons'] },
+        alternatives: [
+          { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral',
+            props: ['+340–400 Damage', '+30–40% Increased Attack Speed'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Herald of Zakarum', rarity: 'set', type: 'Gilded Shield',
+          props: ['+2 to Paladin Skill Levels', '+2 to Combat Auras', 'All Resistances +50', '+30% Faster Block Rate'] },
+        alternatives: [
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+        alternatives: [
+          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
+            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+        alternatives: [
+          { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
+            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+        alternatives: [
+          { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+        alternatives: [
+          { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
+            props: ['Cannot be Frozen', 'Cold Absorb 20%', '+15–45 to Dexterity'] }
+        ]
+      }
+    }
+  },
+
+  druid: {
+    name: 'Druid', icon: '🌿', build: 'Wind Druid / Shapeshifter',
+    slots: {
+      helm: {
+        bis: { name: "Jalal's Mane", rarity: 'unique', type: 'Totemic Mask',
+          props: ['+2 to Druid Skill Levels', '+20% Faster Hit Recovery', '+30% Enhanced Defense', 'All Resistances +30', '+5 to Strength'] },
+        alternatives: [
+          { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+        alternatives: [
+          { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
+            props: ['+1 to All Skills', '+20% Increased Attack Speed'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        alternatives: [
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', 'All Resistances +65'] }
+        ]
+      },
+      weapon: {
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40'] },
+        alternatives: [
+          { name: 'Wizardspike', rarity: 'unique', type: 'Bone Knife',
+            props: ['+75% Faster Cast Rate', '+50 to Mana', 'All Resistances +75'] },
+          { name: 'Ribcracker', rarity: 'unique', type: 'Quarterstaff',
+            props: ['+200% Enhanced Damage', '+50% Faster Hit Recovery', '+50% Chance of Crushing Blow'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
+          props: ['25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+        alternatives: [
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+        alternatives: [
+          { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts',
+            props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+        alternatives: [
+          { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
+            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+          props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] },
+        alternatives: [
+          { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+            props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+        alternatives: [
+          { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
+            props: ['Cannot be Frozen', 'Cold Absorb 20%'] }
+        ]
+      }
+    }
+  },
+
+  assassin: {
+    name: 'Assassin', icon: '🗡️', build: 'Lightning Sentry Trapsin',
+    slots: {
+      helm: {
+        bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+        alternatives: [
+          { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
+            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+        ]
+      },
+      amulet: {
+        bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
+          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+        alternatives: [
+          { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
+            props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance'] }
+        ]
+      },
+      armor: {
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        alternatives: [
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
+            props: ['+2 to All Skills', 'All Resistances +65'] }
+        ]
+      },
+      weapon: {
+        bis: { name: "Bartuc's Cut-Throat", rarity: 'unique', type: 'Greater Talons',
+          props: ['+2 to Assassin Skill Levels', '+20% Faster Cast Rate', '+1 to Martial Arts', '+1 to Shadow Disciplines'] },
+        alternatives: [
+          { name: 'Chaos', rarity: 'runeword', type: 'Runeword: Fal + Ohm + Um (Katar)',
+            props: ['+1 to Whirlwind', '+35% Whirlwind Damage', '+290–340% Enhanced Damage', 'Ignores Target Defense'] },
+          { name: 'Jade Talon', rarity: 'unique', type: 'Wrist Sword',
+            props: ['+2 to Assassin Skill Levels', '+20% Faster Cast Rate', 'All Resistances +40–50'] }
+        ]
+      },
+      shield: {
+        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
+          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality'] },
+        alternatives: [
+          { name: 'Homunculus', rarity: 'unique', type: 'Hierophant Trophy',
+            props: ['+2 to Necromancer Skills', '+40% Faster Block Rate', 'All Resistances +40'] }
+        ]
+      },
+      gloves: {
+        bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+        alternatives: [
+          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
+            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+        ]
+      },
+      belt: {
+        bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+        alternatives: [
+          { name: 'String of Ears', rarity: 'unique', type: 'Demonhide Sash',
+            props: ['Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15'] }
+        ]
+      },
+      boots: {
+        bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
+          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+        alternatives: [
+          { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
+            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+        ]
+      },
+      ring1: {
+        bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+        alternatives: [
+          { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+        ]
+      },
+      ring2: {
+        bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
+          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+        alternatives: [
+          { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
+            props: ['Cannot be Frozen', 'Cold Absorb 20%'] }
+        ]
+      }
+    }
+  }
+
+}; // end BIS_DATA
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+const SLOT_LAYOUT = [
+  [null,     'helm',   null   ],
+  ['ring1',  'amulet', 'ring2'],
+  ['weapon', 'armor',  'shield'],
+  ['gloves', 'belt',   'boots']
+];
+// Display order for the overview list (top→bottom, anatomical)
+const SLOT_ORDER = ['helm','amulet','armor','weapon','shield','gloves','belt','boots','ring1','ring2'];
+
+const SLOT_INFO = {
+  helm:   { label: 'Helm',    icon: '⛑️' },
+  amulet: { label: 'Amulet',  icon: '📿' },
+  armor:  { label: 'Armor',   icon: '🧥' },
+  weapon: { label: 'Weapon',  icon: '⚔️' },
+  shield: { label: 'Shield',  icon: '🛡️' },
+  gloves: { label: 'Gloves',  icon: '🧤' },
+  belt:   { label: 'Belt',    icon: '⚙️' },
+  boots:  { label: 'Boots',   icon: '👢' },
+  ring1:  { label: 'Ring 1',  icon: '💍' },
+  ring2:  { label: 'Ring 2',  icon: '💍' }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let activeClass = null;
+let activeSlot  = null;
+
+// ─── localStorage tracking ────────────────────────────────────────────────────
+const TKEY = 'd2r-bis';
+
+function getTracking()          { try { return JSON.parse(localStorage.getItem(TKEY)) || {}; } catch { return {}; } }
+function getTracked(cls, slot)  { const t = getTracking(); return (t[cls] && t[cls][slot]) || null; }
+
+function setTracked(cls, slot, item) {
+  const t = getTracking();
+  if (!t[cls]) t[cls] = {};
+  t[cls][slot] = item;
+  localStorage.setItem(TKEY, JSON.stringify(t));
+}
+
+function clearTracked(cls, slot) {
+  const t = getTracking();
+  if (t[cls]) { delete t[cls][slot]; if (!Object.keys(t[cls]).length) delete t[cls]; }
+  localStorage.setItem(TKEY, JSON.stringify(t));
+}
+
+function collectedCount(cls) {
+  const t = getTracking();
+  return Object.keys(t[cls] || {}).length;
+}
+
+// ─── URL hash ─────────────────────────────────────────────────────────────────
+function readHash() {
+  const parts = location.hash.replace('#', '').split('/');
+  return { classKey: parts[0] || null, slotKey: parts[1] || null };
+}
+
+function writeHash(cls, slot) {
+  const h = cls ? (slot ? `${cls}/${slot}` : cls) : '';
+  history.replaceState(null, '', h ? `#${h}` : location.pathname + location.search);
+}
+
+// ─── Build static UI ─────────────────────────────────────────────────────────
+function buildClassSelector() {
+  const sel = document.getElementById('classSelector');
+  Object.entries(BIS_DATA).forEach(([key, cls]) => {
+    const btn = document.createElement('button');
+    btn.className = 'class-btn';
+    btn.dataset.class = key;
+    btn.innerHTML = `<span class="cb-icon">${cls.icon}</span><span class="cb-name">${cls.name}</span><span class="cb-build">${cls.build}</span>`;
+    btn.addEventListener('click', () => selectClass(key));
+    sel.appendChild(btn);
+  });
+}
+
+function buildSlotGrid() {
+  const grid = document.getElementById('slotGrid');
+  SLOT_LAYOUT.forEach(row => {
+    row.forEach(slotKey => {
+      const btn = document.createElement('button');
+      if (!slotKey) {
+        btn.className = 'slot-btn empty-cell';
+        btn.setAttribute('aria-hidden', 'true');
+        grid.appendChild(btn);
+        return;
+      }
+      const info = SLOT_INFO[slotKey];
+      btn.className = 'slot-btn';
+      btn.dataset.slot = slotKey;
+      btn.setAttribute('tabindex', '0');
+      btn.innerHTML = `<span class="s-have">✓</span><span class="s-icon">${info.icon}</span><span class="s-label">${info.label}</span><span class="s-preview"></span>`;
+      btn.addEventListener('click', () => selectSlot(slotKey));
+      grid.appendChild(btn);
+    });
+  });
+}
+
+// ─── Update slot button previews & have-indicators ────────────────────────────
+function updateSlotPreviews(cls) {
+  document.querySelectorAll('.slot-btn[data-slot]').forEach(btn => {
+    const slotKey  = btn.dataset.slot;
+    const slotData = BIS_DATA[cls].slots[slotKey];
+    const preview  = btn.querySelector('.s-preview');
+    preview.textContent = slotData.bis.name;
+    preview.className   = `s-preview rarity-${slotData.bis.rarity}`;
+    btn.classList.add('previewed');
+    btn.title = `BiS: ${slotData.bis.name} (${slotData.bis.rarity})`;
+    btn.classList.toggle('has-item', !!getTracked(cls, slotKey));
+  });
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+function updateProgress(cls) {
+  const count = collectedCount(cls);
+  const total = SLOT_ORDER.length;
+  document.getElementById('progCount').textContent = `${count} / ${total}`;
+  document.getElementById('progFill').style.width  = `${(count / total) * 100}%`;
+  document.getElementById('progWrap').style.display = 'block';
+
+  const pill = document.getElementById('collectedPill');
+  if (count > 0) {
+    pill.textContent    = `${count} / ${total} collected`;
+    pill.style.display  = 'inline-block';
+  } else {
+    pill.style.display  = 'none';
+  }
+}
+
+// ─── Panel switcher ───────────────────────────────────────────────────────────
+function showPanel(id) {
+  ['overviewPanel', 'detailPanel'].forEach(p => {
+    const el = document.getElementById(p);
+    el.classList.remove('visible');
+  });
+  document.getElementById('panelPlaceholder').style.display = 'none';
+  // rAF so removing+adding visible restarts the CSS animation
+  requestAnimationFrame(() => document.getElementById(id).classList.add('visible'));
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+function selectClass(cls, slot) {
+  activeClass = cls;
+  activeSlot  = null;
+
+  document.querySelectorAll('.class-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.class === cls));
+
+  const c = BIS_DATA[cls];
+  document.getElementById('buildSub').textContent  = 'Selected Build';
+  document.getElementById('buildName').textContent = `${c.icon} ${c.name} — ${c.build}`;
+
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  updateSlotPreviews(cls);
+  updateProgress(cls);
+  showOverview(cls);
+
+  if (slot && BIS_DATA[cls].slots[slot]) {
+    selectSlot(slot);
+    return;
+  }
+  writeHash(cls, null);
+}
+
+function selectSlot(slot) {
+  if (!activeClass) return;
+  activeSlot = slot;
+  document.querySelectorAll('.slot-btn').forEach(b =>
+    b.classList.toggle('selected', b.dataset.slot === slot));
+  showDetail(activeClass, slot);
+  writeHash(activeClass, slot);
+}
+
+function backToOverview() {
+  activeSlot = null;
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  showOverview(activeClass);
+  writeHash(activeClass, null);
+}
+
+// ─── Overview panel ───────────────────────────────────────────────────────────
+function showOverview(cls) {
+  const c = BIS_DATA[cls];
+  document.getElementById('ovTitle').textContent = `${c.icon} ${c.name} — ${c.build}`;
+
+  document.getElementById('ovList').innerHTML = SLOT_ORDER.map(slotKey => {
+    const info     = SLOT_INFO[slotKey];
+    const slotData = c.slots[slotKey];
+    const tracked  = getTracked(cls, slotKey);
+    const hasIt    = !!tracked;
+    const allItems = [slotData.bis, ...slotData.alternatives];
+    const dispItem    = hasIt ? tracked : slotData.bis.name;
+    const dispRarity  = hasIt
+      ? (allItems.find(i => i.name === tracked)?.rarity || 'normal')
+      : slotData.bis.rarity;
+    return `
+      <div class="ov-row${hasIt ? ' ov-has' : ''}" data-slot="${slotKey}">
+        <span class="ov-icon">${info.icon}</span>
+        <span class="ov-slot">${info.label}</span>
+        <span class="ov-item rarity-${dispRarity}">${dispItem}</span>
+        <button class="track-btn${hasIt ? ' tracked' : ''}"
+                data-class="${cls}" data-slot="${slotKey}"
+                data-item="${hasIt ? tracked : slotData.bis.name}">
+          ${hasIt ? '✓ Have' : '○ Need'}
+        </button>
+      </div>`;
+  }).join('');
+
+  updateProgress(cls);
+  showPanel('overviewPanel');
+}
+
+// ─── Detail panel ─────────────────────────────────────────────────────────────
+function showDetail(cls, slot) {
+  const slotData = BIS_DATA[cls].slots[slot];
+  document.getElementById('slotTitle').textContent = SLOT_INFO[slot].label;
+  document.getElementById('bisContainer').innerHTML  = itemCardHTML(slotData.bis, cls, slot, true);
+  document.getElementById('altContainer').innerHTML  = slotData.alternatives.map(it => itemCardHTML(it, cls, slot, false)).join('');
+  showPanel('detailPanel');
+}
+
+function itemCardHTML(item, cls, slot, isBis) {
+  const tracked   = getTracked(cls, slot);
+  const isTracked = tracked === item.name;
+  const props = item.props.length
+    ? `<ul class="item-props">${item.props.map(p => `<li>${p}</li>`).join('')}</ul>`
+    : '';
+  return `
+    <div class="item-card ${isBis ? 'bis-card' : 'alt-card'}">
+      <div class="card-top">
+        ${isBis ? '<span class="bis-badge">Best in Slot</span>' : '<span></span>'}
+        <button class="track-btn${isTracked ? ' tracked' : ''}"
+                data-class="${cls}" data-slot="${slot}" data-item="${item.name}">
+          ${isTracked ? '✓ Have' : '○ Need'}
+        </button>
+      </div>
+      <div class="item-name rarity-${item.rarity}">${item.name}</div>
+      <div class="item-type">${item.type}</div>
+      ${props}
+    </div>`;
+}
+
+// ─── Track toggle (surgical DOM update — no full re-render) ───────────────────
+function toggleItem(cls, slot, itemName) {
+  const current = getTracked(cls, slot);
+  if (current === itemName) clearTracked(cls, slot);
+  else                      setTracked(cls, slot, itemName);
+
+  const tracked   = getTracked(cls, slot);  // re-read after mutation
+  const hasIt     = !!tracked;
+  const slotData  = BIS_DATA[cls].slots[slot];
+  const allItems  = [slotData.bis, ...slotData.alternatives];
+
+  // 1. Update every track-btn for this slot in the DOM
+  document.querySelectorAll(`.track-btn[data-class="${cls}"][data-slot="${slot}"]`).forEach(btn => {
+    const isThis = tracked === btn.dataset.item;
+    btn.classList.toggle('tracked', isThis);
+    btn.textContent = isThis ? '✓ Have' : '○ Need';
+  });
+
+  // 2. Update the overview row (item text + border + track-btn data-item)
+  const row = document.querySelector(`.ov-row[data-slot="${slot}"]`);
+  if (row) {
+    row.classList.toggle('ov-has', hasIt);
+    const itemSpan = row.querySelector('.ov-item');
+    if (itemSpan) {
+      const dispName   = hasIt ? tracked : slotData.bis.name;
+      const dispRarity = hasIt ? (allItems.find(i => i.name === tracked)?.rarity || 'normal') : slotData.bis.rarity;
+      itemSpan.textContent = dispName;
+      itemSpan.className   = `ov-item rarity-${dispRarity}`;
+    }
+    // Keep overview track btn pointing to the right item for next click
+    const ovBtn = row.querySelector('.track-btn');
+    if (ovBtn) ovBtn.dataset.item = hasIt ? tracked : slotData.bis.name;
+  }
+
+  // 3. Slot diagram have-indicator
+  const slotBtn = document.querySelector(`.slot-btn[data-slot="${slot}"]`);
+  if (slotBtn) slotBtn.classList.toggle('has-item', hasIt);
+
+  // 4. Progress
+  updateProgress(cls);
+}
+
+// ─── Event delegation ─────────────────────────────────────────────────────────
+function setupEvents() {
+  // Overview: track-btn clicks + row clicks → slot detail
+  document.getElementById('overviewPanel').addEventListener('click', e => {
+    const tBtn = e.target.closest('.track-btn');
+    if (tBtn) { e.stopPropagation(); toggleItem(tBtn.dataset.class, tBtn.dataset.slot, tBtn.dataset.item); return; }
+    const row = e.target.closest('.ov-row');
+    if (row) selectSlot(row.dataset.slot);
+  });
+
+  // Detail: track-btn clicks
+  document.getElementById('detailPanel').addEventListener('click', e => {
+    const tBtn = e.target.closest('.track-btn');
+    if (tBtn) toggleItem(tBtn.dataset.class, tBtn.dataset.slot, tBtn.dataset.item);
+  });
+
+  // Back button
+  document.getElementById('backBtn').addEventListener('click', backToOverview);
+}
+
+// ─── Keyboard navigation ─────────────────────────────────────────────────────
+function setupKeyboard() {
+  const flat = SLOT_LAYOUT.flat(); // 12 cells, some null
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && activeSlot) { backToOverview(); return; }
+    if (!['ArrowRight','ArrowLeft','ArrowUp','ArrowDown'].includes(e.key)) return;
+    const focused = document.activeElement;
+    if (!focused?.classList.contains('slot-btn') || !focused.dataset.slot) return;
+    e.preventDefault();
+    const idx   = flat.indexOf(focused.dataset.slot);
+    const delta = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 3, ArrowUp: -3 }[e.key];
+    let next = idx + delta;
+    // Skip null cells (up to 2 steps)
+    for (let i = 0; i < 2 && next >= 0 && next < flat.length && flat[next] === null; i++)
+      next += delta > 0 ? 1 : -1;
+    if (next < 0 || next >= flat.length || !flat[next]) return;
+    document.querySelector(`.slot-btn[data-slot="${flat[next]}"]`)?.focus();
+  });
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+function init() {
+  buildClassSelector();
+  buildSlotGrid();
+  setupEvents();
+  setupKeyboard();
+
+  const { classKey, slotKey } = readHash();
+  if (classKey && BIS_DATA[classKey]) {
+    selectClass(classKey, slotKey && BIS_DATA[classKey].slots[slotKey] ? slotKey : null);
+  }
+
+  window.addEventListener('hashchange', () => {
+    const { classKey: c, slotKey: s } = readHash();
+    if (c && BIS_DATA[c]) {
+      selectClass(c, s && BIS_DATA[c].slots[s] ? s : null);
+    }
+  });
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voice Chat – Jack Koehler</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    /* ── Layout ──────────────────────────────────────────────────── */
+    .voice-wrapper {
+      display: flex;
+      height: 100vh;
+      background: var(--bg);
+    }
+
+    /* ── Login screen ────────────────────────────────────────────── */
+    .voice-login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+    }
+    .login-card {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      width: 360px;
+      max-width: 90vw;
+    }
+    .login-card h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.4rem;
+    }
+    .login-card p {
+      margin: 0 0 28px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .login-card input {
+      width: 100%;
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .login-card input:focus {
+      border-color: var(--accent);
+    }
+    .login-card button {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 11px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .login-card button:hover { filter: brightness(1.15); }
+    .login-error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────────────── */
+    .voice-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: #111;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .voice-sidebar-top {
+      padding: 20px 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .voice-sidebar-top .back-link {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 14px;
+    }
+    .voice-sidebar-top .back-link:hover { color: var(--text); }
+    .voice-sidebar-top h2 {
+      margin: 0 0 4px 0;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .self-tag {
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+    .self-tag strong { color: #60a5fa; }
+
+    /* ── Channel list ────────────────────────────────────────────── */
+    .channels-section {
+      padding: 12px 8px;
+      flex: 1;
+    }
+    .channels-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 0 8px;
+      margin-bottom: 4px;
+    }
+    .channel-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+    .channel-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    .channel-btn.active {
+      background: rgba(59,130,246,0.18);
+      color: var(--text);
+    }
+    .channel-btn .ch-icon { font-size: 1rem; }
+    .channel-btn .ch-name { flex: 1; }
+    .channel-btn .ch-count {
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 9px;
+      padding: 1px 6px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* ── Voice controls bar (bottom of sidebar) ─────────────────── */
+    .voice-controls {
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .in-channel-tag {
+      font-size: 0.78rem;
+      color: #4ade80;
+    }
+    .in-channel-tag span { color: var(--text); font-weight: 600; }
+    .btn-mute, .btn-leave {
+      border: none;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .btn-mute {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+    .btn-mute:hover { filter: brightness(1.3); }
+    .btn-mute.muted {
+      background: rgba(239,68,68,0.25);
+      color: #f87171;
+    }
+    .btn-leave {
+      background: rgba(239,68,68,0.15);
+      color: #f87171;
+    }
+    .btn-leave:hover { background: rgba(239,68,68,0.3); }
+
+    /* ── Main area ───────────────────────────────────────────────── */
+    .voice-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    .voice-placeholder {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+    }
+    .voice-placeholder .ph-icon { font-size: 3rem; margin-bottom: 12px; }
+    .voice-placeholder p { font-size: 0.95rem; }
+
+    .channel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .channel-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    .channel-header .ch-live-count {
+      font-size: 0.8rem;
+      background: rgba(74,222,128,0.15);
+      color: #4ade80;
+      border-radius: 9px;
+      padding: 2px 8px;
+    }
+
+    /* ── Member cards ────────────────────────────────────────────── */
+    .members-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .member-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px 16px;
+      background: #1a1a1a;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      width: 120px;
+      transition: border-color 0.15s;
+    }
+    .member-card.speaking {
+      border-color: #4ade80;
+      box-shadow: 0 0 12px rgba(74,222,128,0.25);
+    }
+    .member-card.muted-card .member-avatar {
+      opacity: 0.55;
+    }
+    .member-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .member-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .member-status {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .member-card.speaking .member-status { color: #4ade80; }
+    .member-card.muted-card .member-status { color: #f87171; }
+
+    .no-members {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    /* ── Mic permission banner ───────────────────────────────────── */
+    .mic-banner {
+      display: none;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: #fbbf24;
+      margin-bottom: 20px;
+    }
+    .mic-banner.visible { display: block; }
+  </style>
+</head>
+<body>
+
+{% if not authenticated %}
+<!-- ── Login ──────────────────────────────────────────────────────────────── -->
+<div class="voice-login">
+  <div class="login-card">
+    <h2>Voice Chat</h2>
+    <p>Enter your name and the room password to join.</p>
+    {% if error %}
+    <div class="login-error">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="/voice">
+      <input type="text" name="username" placeholder="Your display name" maxlength="32" autocomplete="off" />
+      <input type="password" name="password" placeholder="Password" autocomplete="off" />
+      <button type="submit">Join Voice Chat</button>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<!-- ── App ────────────────────────────────────────────────────────────────── -->
+<div class="voice-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="voice-sidebar">
+    <div class="voice-sidebar-top">
+      <a href="/" class="back-link">← Back to site</a>
+      <h2>Voice Channels</h2>
+      <div class="self-tag">Joined as <strong>{{ username }}</strong></div>
+    </div>
+
+    <div class="channels-section">
+      <div class="channels-label">Channels</div>
+      <button class="channel-btn" id="ch-btn-general" data-channel="general">
+        <span class="ch-icon">🔊</span>
+        <span class="ch-name">General</span>
+        <span class="ch-count" id="count-general">0</span>
+      </button>
+      <button class="channel-btn" id="ch-btn-gaming" data-channel="gaming">
+        <span class="ch-icon">🎮</span>
+        <span class="ch-name">Gaming</span>
+        <span class="ch-count" id="count-gaming">0</span>
+      </button>
+    </div>
+
+    <div class="voice-controls" id="voice-controls" style="display:none">
+      <div class="in-channel-tag">Connected – <span id="ctrl-ch-name"></span></div>
+      <button class="btn-mute" id="mute-btn">🎤 Mute</button>
+      <button class="btn-leave" id="leave-btn">Disconnect</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="voice-main">
+    <div class="mic-banner" id="mic-banner">
+      Microphone access was denied. Others won't hear you, but you can still listen.
+    </div>
+
+    <div class="voice-placeholder" id="placeholder">
+      <div class="ph-icon">🔊</div>
+      <p>Pick a channel on the left to join voice chat.</p>
+    </div>
+
+    <div id="channel-view" style="display:none">
+      <div class="channel-header">
+        <span style="font-size:1.4rem" id="view-ch-icon"></span>
+        <h2 id="view-ch-name"></h2>
+        <span class="ch-live-count" id="live-count">0 connected</span>
+      </div>
+      <div class="members-grid" id="members-grid"></div>
+      <p class="no-members" id="no-members" style="display:none">No one else here yet. Waiting for others to join…</p>
+    </div>
+  </main>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  const MY_NAME = {{ username | tojson }};
+  const ICE_CONFIG = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' }
+    ]
+  };
+
+  let socket = null;
+  let localStream = null;
+  let isMuted = false;
+  let currentChannel = null;
+  const peers = {}; // { sid: RTCPeerConnection }
+  const pendingCandidates = {}; // { sid: [candidate, ...] }
+
+  const CHANNEL_META = {
+    general: { name: 'General', icon: '🔊' },
+    gaming:  { name: 'Gaming',  icon: '🎮' }
+  };
+
+  // ── DOM refs ───────────────────────────────────────────────────────────────
+  const placeholder   = document.getElementById('placeholder');
+  const channelView   = document.getElementById('channel-view');
+  const membersGrid   = document.getElementById('members-grid');
+  const noMembers     = document.getElementById('no-members');
+  const voiceControls = document.getElementById('voice-controls');
+  const ctrlChName    = document.getElementById('ctrl-ch-name');
+  const viewChName    = document.getElementById('view-ch-name');
+  const viewChIcon    = document.getElementById('view-ch-icon');
+  const liveCount     = document.getElementById('live-count');
+  const muteBtn       = document.getElementById('mute-btn');
+  const leaveBtn      = document.getElementById('leave-btn');
+  const micBanner     = document.getElementById('mic-banner');
+
+  // ── Mic ───────────────────────────────────────────────────────────────────
+  async function getMic() {
+    if (localStream) return localStream;
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      setupSpeakingDetection(localStream, 'self');
+    } catch (e) {
+      micBanner.classList.add('visible');
+      // create a silent stream so WebRTC still works
+      const ctx = new AudioContext();
+      const dest = ctx.createMediaStreamDestination();
+      localStream = dest.stream;
+    }
+    return localStream;
+  }
+
+  // ── Speaking detection ────────────────────────────────────────────────────
+  function setupSpeakingDetection(stream, memberId) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      ctx.createMediaStreamSource(stream).connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      setInterval(() => {
+        analyser.getByteFrequencyData(data);
+        const avg = data.reduce((a, b) => a + b, 0) / data.length;
+        const card = document.querySelector(`[data-member="${memberId}"]`);
+        if (card) card.classList.toggle('speaking', avg > 12);
+      }, 100);
+    } catch (_) {}
+  }
+
+  // ── Member cards ──────────────────────────────────────────────────────────
+  function initials(name) {
+    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
+  }
+
+  function addMemberCard(sid, username, isSelf) {
+    if (document.querySelector(`[data-member="${sid}"]`)) return;
+    const card = document.createElement('div');
+    card.className = 'member-card';
+    card.dataset.member = sid;
+    card.innerHTML = `
+      <div class="member-avatar">${initials(username)}</div>
+      <div class="member-name">${escHtml(username)}${isSelf ? ' (you)' : ''}</div>
+      <div class="member-status">listening</div>
+    `;
+    membersGrid.appendChild(card);
+    updateNoMembers();
+  }
+
+  function removeMemberCard(sid) {
+    const card = document.querySelector(`[data-member="${sid}"]`);
+    if (card) card.remove();
+    updateNoMembers();
+  }
+
+  function clearMemberCards() {
+    membersGrid.innerHTML = '';
+    updateNoMembers();
+  }
+
+  function updateNoMembers() {
+    const count = membersGrid.querySelectorAll('.member-card').length;
+    noMembers.style.display = count === 0 ? '' : 'none';
+    const n = count;
+    liveCount.textContent = n + ' connected';
+  }
+
+  function setMemberMuted(sid, muted) {
+    const card = document.querySelector(`[data-member="${sid}"]`);
+    if (!card) return;
+    card.classList.toggle('muted-card', muted);
+    card.querySelector('.member-status').textContent = muted ? 'muted' : 'listening';
+  }
+
+  function escHtml(str) {
+    return str.replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ── Channel UI ────────────────────────────────────────────────────────────
+  function showChannelView(channel) {
+    const meta = CHANNEL_META[channel];
+    placeholder.style.display = 'none';
+    channelView.style.display = '';
+    viewChName.textContent = meta.name;
+    viewChIcon.textContent = meta.icon;
+    ctrlChName.textContent = meta.name;
+    voiceControls.style.display = '';
+    document.querySelectorAll('.channel-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.channel === channel);
+    });
+  }
+
+  function resetToPlaceholder() {
+    placeholder.style.display = '';
+    channelView.style.display = 'none';
+    voiceControls.style.display = 'none';
+    clearMemberCards();
+    document.querySelectorAll('.channel-btn').forEach(b => b.classList.remove('active'));
+    currentChannel = null;
+  }
+
+  function updateCountBadge(counts) {
+    for (const [ch, n] of Object.entries(counts)) {
+      const el = document.getElementById(`count-${ch}`);
+      if (el) el.textContent = n;
+    }
+  }
+
+  // ── WebRTC helpers ────────────────────────────────────────────────────────
+  function createPC(remoteSid) {
+    const pc = new RTCPeerConnection(ICE_CONFIG);
+    peers[remoteSid] = pc;
+
+    // Add local audio
+    if (localStream) {
+      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+    }
+
+    pc.onicecandidate = e => {
+      if (e.candidate) {
+        socket.emit('webrtc_ice', { to: remoteSid, candidate: e.candidate.toJSON() });
+      }
+    };
+
+    pc.ontrack = e => {
+      const stream = e.streams[0];
+      // Play remote audio
+      let audio = document.getElementById(`audio-${remoteSid}`);
+      if (!audio) {
+        audio = document.createElement('audio');
+        audio.id = `audio-${remoteSid}`;
+        audio.autoplay = true;
+        audio.style.display = 'none';
+        document.body.appendChild(audio);
+      }
+      audio.srcObject = stream;
+      setupSpeakingDetection(stream, remoteSid);
+    };
+
+    pc.onconnectionstatechange = () => {
+      if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+        closePeer(remoteSid);
+      }
+    };
+
+    return pc;
+  }
+
+  async function closePeer(sid) {
+    if (peers[sid]) {
+      peers[sid].close();
+      delete peers[sid];
+    }
+    delete pendingCandidates[sid];
+    const audio = document.getElementById(`audio-${sid}`);
+    if (audio) audio.remove();
+    removeMemberCard(sid);
+  }
+
+  async function closeAllPeers() {
+    for (const sid of Object.keys(peers)) {
+      await closePeer(sid);
+    }
+  }
+
+  async function flushCandidates(sid) {
+    const pc = peers[sid];
+    if (!pc || !pendingCandidates[sid]) return;
+    for (const c of pendingCandidates[sid]) {
+      try { await pc.addIceCandidate(c); } catch (_) {}
+    }
+    delete pendingCandidates[sid];
+  }
+
+  // ── Socket.IO ──────────────────────────────────────────────────────────────
+  function connectSocket() {
+    socket = io({ transports: ['websocket', 'polling'] });
+
+    socket.on('connect', () => {
+      console.log('Socket connected', socket.id);
+    });
+
+    socket.on('channel_counts', counts => updateCountBadge(counts));
+
+    // We joined a channel — initiate offers to existing peers
+    socket.on('channel_joined', async data => {
+      currentChannel = data.channel;
+      showChannelView(data.channel);
+      clearMemberCards();
+      addMemberCard('self', MY_NAME, true);
+      await getMic();
+      for (const peer of data.peers) {
+        addMemberCard(peer.sid, peer.username, false);
+        const pc = createPC(peer.sid);
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        socket.emit('webrtc_offer', { to: peer.sid, offer: pc.localDescription.toJSON() });
+      }
+    });
+
+    // Someone else joined — they'll offer us; just add their card
+    socket.on('user_joined', async data => {
+      addMemberCard(data.sid, data.username, false);
+      if (!localStream) await getMic();
+    });
+
+    // Receive an offer from a peer
+    socket.on('webrtc_offer', async data => {
+      const { from_sid, username, offer } = data;
+      if (!peers[from_sid]) createPC(from_sid);
+      const pc = peers[from_sid];
+      // Add local stream if not already done
+      if (localStream && pc.getSenders().length === 0) {
+        localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+      }
+      await pc.setRemoteDescription(offer);
+      await flushCandidates(from_sid);
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      socket.emit('webrtc_answer', { to: from_sid, answer: pc.localDescription.toJSON() });
+    });
+
+    // Receive an answer
+    socket.on('webrtc_answer', async data => {
+      const pc = peers[data.from_sid];
+      if (pc && pc.signalingState !== 'stable') {
+        await pc.setRemoteDescription(data.answer);
+        await flushCandidates(data.from_sid);
+      }
+    });
+
+    // ICE candidates
+    socket.on('webrtc_ice', async data => {
+      const pc = peers[data.from_sid];
+      const candidate = new RTCIceCandidate(data.candidate);
+      if (pc && pc.remoteDescription) {
+        try { await pc.addIceCandidate(candidate); } catch (_) {}
+      } else {
+        if (!pendingCandidates[data.from_sid]) pendingCandidates[data.from_sid] = [];
+        pendingCandidates[data.from_sid].push(candidate);
+      }
+    });
+
+    // A user left
+    socket.on('user_left', data => {
+      closePeer(data.sid);
+    });
+  }
+
+  // ── Mute / Leave ──────────────────────────────────────────────────────────
+  muteBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    if (localStream) {
+      localStream.getAudioTracks().forEach(t => { t.enabled = !isMuted; });
+    }
+    muteBtn.textContent = isMuted ? '🔇 Unmute' : '🎤 Mute';
+    muteBtn.classList.toggle('muted', isMuted);
+    setMemberMuted('self', isMuted);
+  });
+
+  leaveBtn.addEventListener('click', () => {
+    socket.emit('leave_channel');
+    closeAllPeers();
+    if (localStream) {
+      localStream.getTracks().forEach(t => t.stop());
+      localStream = null;
+    }
+    resetToPlaceholder();
+    isMuted = false;
+    muteBtn.textContent = '🎤 Mute';
+    muteBtn.classList.remove('muted');
+  });
+
+  // ── Channel buttons ───────────────────────────────────────────────────────
+  document.querySelectorAll('.channel-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const channel = btn.dataset.channel;
+      if (channel === currentChannel) return;
+      // Leave current if in one
+      if (currentChannel) {
+        socket.emit('leave_channel');
+        await closeAllPeers();
+      }
+      socket.emit('join_channel', { channel });
+    });
+  });
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  connectSocket();
+})();
+</script>
+{% endif %}
+</body>
+</html>
