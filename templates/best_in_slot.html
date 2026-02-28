@@ -293,86 +293,86 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
-          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage', '+200 Defense'] },
         alternatives: [
           { name: "Harlequin Crest", rarity: 'unique', type: 'Shaman Headdress',
-            props: ['+2 to All Skills', '+1 to Vitality & Energy per level', 'Damage Reduced by 10%'] },
+            props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] },
           { name: "Andariel's Visage", rarity: 'unique', type: 'Demonhead',
-            props: ['+2 to All Skills', '+20% Increased Attack Speed', '+10% to Maximum Poison Resist'] }
+            props: ['+2 to All Skills', '+20% Increased Attack Speed', '8–10% Life Stolen per Hit', '+10% to Maximum Poison Resist', 'Fire Resist -30%', 'Level 3 Venom (20 Charges)'] }
         ]
       },
       amulet: {
         bis: { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
-          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%'] },
+          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%', 'Adds 1–30 Lightning Damage', '+(0.375 per Level) Deadly Strike'] },
         alternatives: [
           { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
             props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', '+70% Enhanced Damage', 'All Resistances +65'] }
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', '+20% Faster Hit Recovery', '+20 to Strength', 'All Resistances +65', 'Damage Reduced by 8%', '25% Better Chance of Getting Magic Items'] }
         ]
       },
       weapon: {
         bis: { name: 'Thunderstroke', rarity: 'unique', type: 'Matriarchal Javelin',
-          props: ['+2–3 to Amazon Skill Levels', '+20% Increased Attack Speed', '+190 to Lightning Damage', '-15% to Enemy Lightning Resistance'] },
+          props: ['+2–3 to Amazon Skill Levels', '+20% Increased Attack Speed', '+150–200% Enhanced Damage', '-15% to Enemy Lightning Resistance', '+3 to Charged Strike (Amazon only)', '+3 to Lightning Fury (Amazon only)', '+3 to Lightning Strike (Amazon only)'] },
         alternatives: [
           { name: "Titan's Revenge", rarity: 'unique', type: 'Ceremonial Javelin',
-            props: ['+2 to Amazon Skill Levels', '+30% Increased Attack Speed', '+180–240% Enhanced Damage', 'Replenishes Quantity'] }
+            props: ['+2 to Amazon Skill Levels', '+30% Increased Attack Speed', '+180–240% Enhanced Damage', '6% Life Stolen per Hit', 'Replenishes Quantity (1 per Second)', '+30 to Dexterity', 'Freeze Target +2'] }
         ]
       },
       shield: {
         bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
-          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%', '+30 to Strength', 'Lightning Resist +60%', '+220 Defense'] },
         alternatives: [
-          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality'] }
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] }
         ]
       },
       gloves: {
-        bis: { name: 'Laying of Hands', rarity: 'set', type: "Bramble Mitts (Aldur's Watchtower Set)",
-          props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] },
+        bis: { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts (The Disciple Set)',
+          props: ['8% Faster Hit Recovery', '+20% Increased Attack Speed', '+350% Damage to Demons', 'Fire Resist +50%', '+25 Defense'] },
         alternatives: [
           { name: "Dracul's Grasp", rarity: 'unique', type: 'Vampirebone Gloves',
-            props: ['5–10% Life Stolen per Hit', '+10–15 to Strength', '25% Chance of Open Wounds'] }
+            props: ['+90–120% Enhanced Defense', '+10–15 to Strength', '25% Chance of Open Wounds', '5–10% Life Stolen per Hit', '+5 Life after each Kill', 'Level 10 Life Tap (15 Charges)'] }
         ]
       },
       belt: {
         bis: { name: "Thundergod's Vigor", rarity: 'unique', type: 'War Belt',
-          props: ['+1 to Amazon Lightning Skills', '+20 to Strength', '+20 to Vitality', 'Lightning Absorb 20%', '+3–5% to Maximum Lightning Resist'] },
+          props: ['+1 to Amazon Lightning Skills', '+20 to Strength', '+20 to Vitality', 'Lightning Absorb 20%', '+3–5% to Maximum Lightning Resist', '10% Chance to Cast Level 7 Fist of the Heavens When Struck'] },
         alternatives: [
           { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-            props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] }
+            props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] }
         ]
       },
       boots: {
         bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality', 'Poison Resist +40–70%'] },
+          props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] },
         alternatives: [
           { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] },
+            props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] },
           { name: 'Gore Rider', rarity: 'unique', type: 'War Boots',
-            props: ['+30% Faster Run/Walk', '+15% Chance of Crushing Blow', '+15% Chance of Open Wounds'] }
+            props: ['+180–200% Enhanced Defense', '+30% Faster Run/Walk', '15% Chance of Crushing Blow', '10% Chance of Open Wounds', '10% Chance of Deadly Strike', 'Adds 23–32 Damage', 'Requirements -25%'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
-            props: ['+150–250 to Attack Rating', 'Cannot be Frozen', 'Cold Absorb 20%'] }
+            props: ['+150–250 to Attack Rating', 'Adds 15–45 Cold Damage', 'Cannot be Frozen', '+15–45 to Dexterity', 'Cold Absorb 20%'] }
         ]
       }
     }
@@ -383,10 +383,10 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-          props: ['+2 to All Skills', '+1 to Vitality per level', '+1 to Energy per level', 'Damage Reduced by 10%', '50% Better Chance of Magic Items'] },
+          props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] },
         alternatives: [
           { name: "Trang-Oul's Guise", rarity: 'set', type: "Bone Visage (Trang-Oul's Avatar Set)",
-            props: ['+2 to Necromancer Skill Levels', 'Replenish Life +10', 'Attacker Takes Damage 20'] }
+            props: ['+2 to Necromancer Skill Levels', 'Replenish Life +10', 'Attacker Takes Damage of 20', '+25 Defense'] }
         ]
       },
       amulet: {
@@ -394,73 +394,73 @@ const BIS_DATA = {
           props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
         alternatives: [
           { name: 'The Eye of Etlich', rarity: 'unique', type: 'Amulet',
-            props: ['+1–5 to Necromancer Skill Levels', '3–7% Life Stolen per Hit', 'Cold Resist +11–20%'] }
+            props: ['+1–5 to Necromancer Skill Levels', '3–7% Life Stolen per Hit', 'Cold Resist +11–20%', 'Adds 1–3 Cold Damage'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', 'All Resistances +65', '+70% Enhanced Damage'] }
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', '+20% Faster Hit Recovery', '+20 to Strength', 'All Resistances +65', 'Damage Reduced by 8%', '25% Better Chance of Getting Magic Items'] }
         ]
       },
       weapon: {
-        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
-          props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', 'All Resistances +30–40'] },
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (4-socket Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', '+100 to Attack Rating Against Demons', 'Adds 3–14 Cold Damage', '7% Mana Stolen per Hit', '+10 to Dexterity', 'Replenish Life +20', 'Increase Maximum Mana 15%', 'All Resistances +30–40', 'Level 4 Oak Sage (25 Charges)', 'Level 14 Raven (60 Charges)'] },
         alternatives: [
-          { name: 'White', rarity: 'runeword', type: 'Runeword: Dol + Io (Wand)',
-            props: ['+3 to Poison and Bone Skills', '+20% Faster Cast Rate', '+13 to Mana after each Kill'] },
+          { name: 'White', rarity: 'runeword', type: 'Runeword: Dol + Io (2-socket Wand)',
+            props: ['+3 to Poison and Bone Skills (Necromancer only)', '+20% Faster Cast Rate', '+13 to Mana after each Kill', '+10 to Vitality', 'Increase Maximum Mana 10%', 'Hit Causes Monster to Flee 25%'] },
           { name: 'Arm of King Leoric', rarity: 'unique', type: 'Tomb Wand',
-            props: ['+2 to Necromancer Skill Levels', '+50–80% Enhanced Damage', 'Raises skeleton on kill'] }
+            props: ['+2 to Necromancer Skill Levels', '+2 to Summoning Skills (Necromancer only)', '+50–80% Enhanced Damage', 'Raises Skeleton on Kill', 'Level 3 Raise Skeleton (23 Charges)'] }
         ]
       },
       shield: {
         bis: { name: 'Homunculus', rarity: 'unique', type: 'Hierophant Trophy',
-          props: ['+2 to Necromancer Skill Levels', '+40% Faster Block Rate', '+4–5 to Mana After Each Kill', 'All Resistances +40'] },
+          props: ['+150–200% Enhanced Defense', '+2 to Necromancer Skill Levels', '+2 to Curses (Necromancer only)', '40% Increased Chance of Blocking', '30% Faster Block Rate', 'All Resistances +40', '+20 to Energy', 'Regenerate Mana 33%', '+5 to Mana After Each Kill'] },
         alternatives: [
-          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] }
         ]
       },
       gloves: {
         bis: { name: "Trang-Oul's Claws", rarity: 'set', type: "Heavy Bracers (Trang-Oul's Avatar Set)",
-          props: ['+2 to Curses (Necromancer Only)', '+20% Faster Cast Rate', 'Cold Resist +30%'] },
+          props: ['+2 to Curses (Necromancer only)', '+20% Faster Cast Rate', 'Cold Resist +30%', '+25% Poison Skill Damage', '+30 Defense'] },
         alternatives: [
           { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
-            props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] }
+            props: ['+1 to Fire Skills (Sorceress only)', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy', 'Adds 1–6 Fire Damage'] }
         ]
       },
       belt: {
         bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] },
         alternatives: [
           { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
-            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13'] }
+            props: ['+105–150% Enhanced Defense', '+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] }
         ]
       },
       boots: {
         bis: { name: 'Marrowwalk', rarity: 'unique', type: 'Boneweave Boots',
-          props: ['+1–2 to Skeleton Mastery (Necromancer Only)', '+17 to Dexterity', 'Half Freeze Duration'] },
+          props: ['+170–200% Enhanced Defense', '+10 to Strength', '+17 to Dexterity', 'Regenerate Mana 10%', 'Half Freeze Duration', '+1–2 to Skeleton Mastery (Necromancer only)', 'Level 33 Bone Armor (13 Charges)', 'Level 12 Bone Spear (13 Charges)'] },
         alternatives: [
           { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+            props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       }
     }
@@ -471,82 +471,82 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: "Arreat's Face", rarity: 'unique', type: 'Slayer Guard',
-          props: ['+2 to Barbarian Skill Levels', '+20% Faster Hit Recovery', '+30% Bonus to Attack Rating', 'All Resistances +20', 'Replenish Life +10'] },
+          props: ['+2 to Barbarian Skill Levels', '+2 to Combat Skills (Barbarian only)', 'All Resistances +30', '20% Deadly Strike', '+30% Faster Hit Recovery', '+150–200% Enhanced Defense'] },
         alternatives: [
-          { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+          { name: "Guillaume's Face", rarity: 'set', type: "Winged Helm (Orphan's Call Set)",
+            props: ['+120% Enhanced Defense', '+30% Faster Hit Recovery', '15% Deadly Strike', '35% Chance of Crushing Blow', '+15 to Strength'] }
         ]
       },
       amulet: {
         bis: { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
-          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%'] },
+          props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%', 'Adds 1–30 Lightning Damage', '+(0.375 per Level) Deadly Strike'] },
         alternatives: [
           { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
-            props: ['+2 to All Skills', 'All Resistances +20–30'] }
+            props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] }
         ]
       },
       armor: {
-        bis: { name: 'Fortitude', rarity: 'runeword', type: 'Runeword: El + Sol + Dol + Lo (any Armor)',
-          props: ['+300% Enhanced Damage', '+15% to All Resistances', '+200% Enhanced Defense', '20% Faster Hit Recovery'] },
+        bis: { name: 'Fortitude', rarity: 'runeword', type: 'Runeword: El + Sol + Dol + Lo (4-socket Armor)',
+          props: ['20% Chance to Cast Level 15 Chilling Armor when Struck', '+25% Faster Cast Rate', '+300% Enhanced Damage', '+200% Enhanced Defense', '+15 Defense', '+(1–1.5 per Level) to Life', 'Replenish Life +7', '+5% to Maximum Lightning Resist', 'All Resistances +25–30', 'Damage Reduced by 7', '12% Damage Taken Goes to Mana'] },
         alternatives: [
-          { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
-            props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] }
+          { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+            props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana'] }
         ]
       },
       weapon: {
-        bis: { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral (Phase Blade)',
-          props: ['+340–400 Damage', '+30–40% Increased Attack Speed', '-25% to Enemy Poison Resistance', '+10–15 Life after each Kill'] },
+        bis: { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral (5-socket Phase Blade)',
+          props: ['35% Chance to Cast Level 15 Venom On Striking', '+30–40% Increased Attack Speed', 'Damage +340–400', "Ignore Target's Defense", '-25% Target Defense', 'Adds 5–30 Fire Damage', '-20–25% to Enemy Poison Resistance', '20% Deadly Strike', 'Prevent Monster Heal', '+2 to Mana After Each Kill', '+10–15 Life After Each Kill'] },
         alternatives: [
-          { name: 'Beast', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum (Axe)',
-            props: ['Level 9 Fanaticism Aura When Equipped', '+40% Increased Attack Speed', '+240–270% Enhanced Damage'] }
+          { name: 'Beast', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum (5-socket Axe)',
+            props: ['Level 9 Fanaticism Aura When Equipped', '+40% Increased Attack Speed', '+240–270% Enhanced Damage', '20% Chance of Crushing Blow', '25% Chance of Open Wounds', '+3 to Werebear', '+3 to Lycanthropy', 'Prevent Monster Heal', '+25–40 to Strength', '+10 to Energy', '+2 to Mana After Each Kill', 'Level 13 Summon Grizzly (5 Charges)'] }
         ]
       },
       shield: {
         bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
-          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%', '+30 to Strength', 'Lightning Resist +60%', '+220 Defense'] },
         alternatives: [
-          { name: 'Beast (2nd Weapon)', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum',
-            props: ['Level 9 Fanaticism Aura', '+40% Increased Attack Speed'] }
+          { name: 'Beast (Off-Hand)', rarity: 'runeword', type: 'Runeword: Ber + Tir + Um + Mal + Lum (5-socket Axe)',
+            props: ['Level 9 Fanaticism Aura When Equipped', '+40% Increased Attack Speed', '20% Chance of Crushing Blow', '+25–40 to Strength'] }
         ]
       },
       gloves: {
-        bis: { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts',
-          props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] },
+        bis: { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts (The Disciple Set)',
+          props: ['8% Faster Hit Recovery', '+20% Increased Attack Speed', '+350% Damage to Demons', 'Fire Resist +50%', '+25 Defense'] },
         alternatives: [
           { name: "Dracul's Grasp", rarity: 'unique', type: 'Vampirebone Gloves',
-            props: ['5–10% Life Stolen per Hit', '+10–15 to Strength', '25% Chance of Open Wounds'] }
+            props: ['+90–120% Enhanced Defense', '+10–15 to Strength', '25% Chance of Open Wounds', '5–10% Life Stolen per Hit', '+5 Life after each Kill', 'Level 10 Life Tap (15 Charges)'] }
         ]
       },
       belt: {
         bis: { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
-          props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] },
+          props: ['+105–150% Enhanced Defense', '+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] },
         alternatives: [
           { name: 'String of Ears', rarity: 'unique', type: 'Demonhide Sash',
-            props: ['Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15', 'Life Stolen per Hit 6–8%'] }
+            props: ['+150–180% Enhanced Defense', '+15 to Dexterity', 'Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15', '6–8% Life Stolen per Hit'] }
         ]
       },
       boots: {
         bis: { name: 'Gore Rider', rarity: 'unique', type: 'War Boots',
-          props: ['+30% Faster Run/Walk', '+15% Chance of Crushing Blow', '+15% Chance of Open Wounds', '+10% Chance of Deadly Strike'] },
+          props: ['+180–200% Enhanced Defense', '+30% Faster Run/Walk', '15% Chance of Crushing Blow', '10% Chance of Open Wounds', '10% Chance of Deadly Strike', 'Adds 23–32 Damage', 'Requirements -25%'] },
         alternatives: [
           { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-            props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] }
+            props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] }
         ]
       },
       ring1: {
         bis: { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
-          props: ['+150–250 to Attack Rating', 'Cannot be Frozen', 'Cold Absorb 20%', '+15–45 to Dexterity'] },
+          props: ['+150–250 to Attack Rating', 'Adds 15–45 Cold Damage', 'Cannot be Frozen', '+15–45 to Dexterity', 'Cold Absorb 20%'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+25% to Maximum Mana'] }
+            props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] }
         ]
       }
     }
@@ -557,12 +557,12 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
-          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage', '+200 Defense'] },
         alternatives: [
           { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-            props: ['+2 to All Skills', 'Damage Reduced by 10%', '50% Better Chance of Magic Items'] },
+            props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] },
           { name: "Tal Rasha's Horadric Crest", rarity: 'set', type: "Death Mask (Tal Rasha's Wrappings Set)",
-            props: ['+2 to Sorceress Skill Levels', '10% Life Stolen per Hit', '+45 to Life / +30 to Mana'] }
+            props: ['+2 to Sorceress Skill Levels', '10% Life Stolen per Hit', '10% Mana Stolen per Hit', 'All Resistances +15', '+60 to Life', '+30 to Mana'] }
         ]
       },
       amulet: {
@@ -570,75 +570,75 @@ const BIS_DATA = {
           props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
         alternatives: [
           { name: "Tal Rasha's Adjudication", rarity: 'set', type: "Amulet (Tal Rasha's Wrappings Set)",
-            props: ['+2 to Sorceress Skill Levels', 'Lightning Resist +33%', '+42 to Life'] }
+            props: ['+2 to Sorceress Skill Levels', 'Lightning Resist +33%', 'Adds 3–32 Lightning Damage', '+42 to Mana', '+50 to Life'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (any Armor)',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+750–775 Defense'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
           { name: "Tal Rasha's Guardianship", rarity: 'set', type: "Lacquered Plate (Tal Rasha's Wrappings Set)",
-            props: ['+400 Defense', 'Cold Resist +40%', 'Lightning Resist +40%', 'Magic Damage Reduced by 15'] },
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', 'All Resistances +65'] }
+            props: ['+400 Defense', 'Requirements -60%', 'Magic Damage Reduced by 15', 'Cold Resist +40%', 'Lightning Resist +40%', 'Fire Resist +40%', '88% Better Chance of Getting Magic Items'] },
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', 'All Resistances +65', 'Damage Reduced by 8%'] }
         ]
       },
       weapon: {
         bis: { name: "Death's Fathom", rarity: 'unique', type: 'Dimensional Shard',
-          props: ['+3 to Sorceress Skill Levels', '+20% Faster Cast Rate', '+15–30% to Cold Skill Damage', '-15 to -20% to Enemy Cold Resistance'] },
+          props: ['+3 to Sorceress Skill Levels', '+20% Faster Cast Rate', '+15–30% to Cold Skill Damage', 'Lightning Resist +25–40%', 'Fire Resist +25–40%'] },
         alternatives: [
-          { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
-            props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40'] },
-          { name: "Eschuta's Temper", rarity: 'unique', type: 'Elder Staff',
-            props: ['+1–3 to Sorceress Skill Levels', '+15–50% to Fire Skill Damage', '+15–50% to Lightning Skill Damage'] }
+          { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (4-socket Flail)',
+            props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', 'Adds 3–14 Cold Damage', '7% Mana Stolen per Hit', '+10 to Dexterity', 'Increase Maximum Mana 15%', 'All Resistances +30–40', 'Level 4 Oak Sage (25 Charges)'] },
+          { name: "Eschuta's Temper", rarity: 'unique', type: 'Eldritch Orb',
+            props: ['+1–3 to Sorceress Skill Levels', '+40% Faster Cast Rate', '+10–20% to Fire Skill Damage', '+10–20% to Lightning Skill Damage', '+20–30 to Energy'] }
         ]
       },
       shield: {
-        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality', '+89–112 to Mana'] },
+        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] },
         alternatives: [
           { name: 'Lidless Wall', rarity: 'unique', type: 'Grim Shield',
-            props: ['+1 to All Skills', '+20% Faster Cast Rate', '+10–15 to Energy'] }
+            props: ['+80–130% Enhanced Defense', '+1 to All Skills', 'Increase Maximum Mana 10%', '+20% Faster Cast Rate', '+3–5 to Mana After Each Kill', '+10 to Energy'] }
         ]
       },
       gloves: {
         bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
-          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy'] },
+          props: ['+1 to Fire Skills (Sorceress only)', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy', 'Adds 1–6 Fire Damage'] },
         alternatives: [
-          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
-            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+          { name: "Trang-Oul's Claws", rarity: 'set', type: "Heavy Bracers (Trang-Oul's Avatar Set)",
+            props: ['+20% Faster Cast Rate', 'Cold Resist +30%', '+25% Poison Skill Damage', '+2 to Curses (Necromancer only)', '+30 Defense'] }
         ]
       },
       belt: {
         bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] },
         alternatives: [
           { name: "Tal Rasha's Fine-Spun Cloth", rarity: 'set', type: "Mesh Belt (Tal Rasha's Wrappings Set)",
-            props: ['+20 to Dexterity', '+30 to Mana', 'Magic Damage Reduced by 10–15'] }
+            props: ['+20 to Dexterity', '+30 to Mana', '37% Damage Taken Goes to Mana', 'Magic Damage Reduced by 10–15', 'Requirements -20%'] }
         ]
       },
       boots: {
         bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+          props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] },
         alternatives: [
           { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] }
+            props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level', '3–5% Life Stolen per Hit'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+25% to Maximum Mana'] }
+            props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] }
         ]
       }
     }
@@ -649,82 +649,82 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-          props: ['+2 to All Skills', 'Damage Reduced by 10%', '+1 to Vitality per level', '+1 to Energy per level'] },
+          props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] },
         alternatives: [
-          { name: "Guillaume's Face", rarity: 'set', type: 'Winged Helm',
-            props: ['+30% Faster Hit Recovery', '+15% Increased Chance of Crushing Blow', '+35% Deadly Strike'] }
+          { name: "Guillaume's Face", rarity: 'set', type: "Winged Helm (Orphan's Call Set)",
+            props: ['+120% Enhanced Defense', '+30% Faster Hit Recovery', '15% Deadly Strike', '35% Chance of Crushing Blow', '+15 to Strength'] }
         ]
       },
       amulet: {
         bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
-          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
         alternatives: [
           { name: "Seraph's Hymn", rarity: 'unique', type: 'Amulet',
-            props: ['+1–2 to Paladin Skill Levels', '+1–2 to Defensive Auras', '+25–50% Damage to Demons/Undead'] }
+            props: ['+1–2 to Paladin Skill Levels', '+1–2 to Defensive Auras (Paladin only)', '+25–50% Damage to Demons', '+25–50% Damage to Undead', '+150–250 to Attack Rating Against Demons', '+150–250 to Attack Rating Against Undead'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', 'All Resistances +65'] }
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', '+20% Faster Hit Recovery', '+20 to Strength', 'All Resistances +65', 'Damage Reduced by 8%', '25% Better Chance of Getting Magic Items'] }
         ]
       },
       weapon: {
-        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
-          props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40', '+75% Damage to Demons'] },
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (4-socket Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', '+100 to Attack Rating Against Demons', 'Adds 3–14 Cold Damage', '7% Mana Stolen per Hit', '+10 to Dexterity', 'Replenish Life +20', 'Increase Maximum Mana 15%', 'All Resistances +30–40', 'Level 4 Oak Sage (25 Charges)', 'Level 14 Raven (60 Charges)'] },
         alternatives: [
-          { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral',
-            props: ['+340–400 Damage', '+30–40% Increased Attack Speed'] }
+          { name: 'Grief', rarity: 'runeword', type: 'Runeword: Eth + Tir + Lo + Mal + Ral (5-socket Phase Blade)',
+            props: ['35% Chance to Cast Level 15 Venom On Striking', '+30–40% Increased Attack Speed', 'Damage +340–400', "Ignore Target's Defense", '-25% Target Defense', 'Adds 5–30 Fire Damage', '20% Deadly Strike', 'Prevent Monster Heal', '+2 to Mana After Each Kill'] }
         ]
       },
       shield: {
         bis: { name: 'Herald of Zakarum', rarity: 'set', type: 'Gilded Shield',
-          props: ['+2 to Paladin Skill Levels', '+2 to Combat Auras', 'All Resistances +50', '+30% Faster Block Rate'] },
+          props: ['+2 to Paladin Skill Levels', '+2 to Combat Auras (Paladin only)', '+50% Enhanced Defense', '+10 to Strength', 'All Resistances +50', '50% Increased Chance of Blocking', '30% Faster Block Rate'] },
         alternatives: [
-          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] }
         ]
       },
       gloves: {
         bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
-          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy', 'Adds 1–6 Fire Damage'] },
         alternatives: [
-          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
-            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+          { name: "Dracul's Grasp", rarity: 'unique', type: 'Vampirebone Gloves',
+            props: ['+90–120% Enhanced Defense', '+10–15 to Strength', '25% Chance of Open Wounds', '5–10% Life Stolen per Hit', '+5 Life after each Kill', 'Level 10 Life Tap (15 Charges)'] }
         ]
       },
       belt: {
         bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] },
         alternatives: [
           { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
-            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%'] }
+            props: ['+105–150% Enhanced Defense', '+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] }
         ]
       },
       boots: {
         bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+          props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] },
         alternatives: [
           { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+            props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
-            props: ['Cannot be Frozen', 'Cold Absorb 20%', '+15–45 to Dexterity'] }
+            props: ['+150–250 to Attack Rating', 'Adds 15–45 Cold Damage', 'Cannot be Frozen', '+15–45 to Dexterity', 'Cold Absorb 20%'] }
         ]
       }
     }
@@ -735,84 +735,84 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: "Jalal's Mane", rarity: 'unique', type: 'Totemic Mask',
-          props: ['+2 to Druid Skill Levels', '+20% Faster Hit Recovery', '+30% Enhanced Defense', 'All Resistances +30', '+5 to Strength'] },
+          props: ['+2 to Druid Skill Levels', '+20% Faster Hit Recovery', '20% Bonus to Attack Rating', '+30% Enhanced Defense', 'All Resistances +30', '+5 to Strength'] },
         alternatives: [
           { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+            props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] }
         ]
       },
       amulet: {
         bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
-          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
         alternatives: [
           { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
-            props: ['+1 to All Skills', '+20% Increased Attack Speed'] }
+            props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%', 'Adds 1–30 Lightning Damage', '+(0.375 per Level) Deadly Strike'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', 'All Resistances +65'] }
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', '+20% Faster Hit Recovery', '+20 to Strength', 'All Resistances +65', 'Damage Reduced by 8%', '25% Better Chance of Getting Magic Items'] }
         ]
       },
       weapon: {
-        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (Flail)',
-          props: ['+3 to All Skills', '+40% Faster Cast Rate', 'All Resistances +30–40'] },
+        bis: { name: 'Heart of the Oak', rarity: 'runeword', type: 'Runeword: Ko + Vex + Pul + Thul (4-socket Flail)',
+          props: ['+3 to All Skills', '+40% Faster Cast Rate', '+75% Damage to Demons', '+100 to Attack Rating Against Demons', 'Adds 3–14 Cold Damage', '7% Mana Stolen per Hit', '+10 to Dexterity', 'Replenish Life +20', 'Increase Maximum Mana 15%', 'All Resistances +30–40', 'Level 4 Oak Sage (25 Charges)', 'Level 14 Raven (60 Charges)'] },
         alternatives: [
           { name: 'Wizardspike', rarity: 'unique', type: 'Bone Knife',
-            props: ['+75% Faster Cast Rate', '+50 to Mana', 'All Resistances +75'] },
+            props: ['+50 to Mana', '+75% Faster Cast Rate', 'Cannot be Frozen', 'All Resistances +75', 'Regenerate Mana 15%'] },
           { name: 'Ribcracker', rarity: 'unique', type: 'Quarterstaff',
-            props: ['+200% Enhanced Damage', '+50% Faster Hit Recovery', '+50% Chance of Crushing Blow'] }
+            props: ['+200–230% Enhanced Damage', '+50% Faster Hit Recovery', '+50% Faster Cast Rate', '50% Chance of Crushing Blow', '+100 to Attack Rating', '+10 to Dexterity'] }
         ]
       },
       shield: {
         bis: { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
-          props: ['25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%'] },
+          props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%', '+30 to Strength', 'Lightning Resist +60%', '+220 Defense'] },
         alternatives: [
-          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana'] }
+          { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+            props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] }
         ]
       },
       gloves: {
         bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
-          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy', 'Adds 1–6 Fire Damage'] },
         alternatives: [
-          { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts',
-            props: ['+350% Damage to Demons', '+20% Increased Attack Speed', 'Fire Resist +50%'] }
+          { name: 'Laying of Hands', rarity: 'set', type: 'Bramble Mitts (The Disciple Set)',
+            props: ['8% Faster Hit Recovery', '+20% Increased Attack Speed', '+350% Damage to Demons', 'Fire Resist +50%', '+25 Defense'] }
         ]
       },
       belt: {
         bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] },
         alternatives: [
           { name: "Verdungo's Hearty Cord", rarity: 'unique', type: 'Mithril Coil',
-            props: ['+30–40 to Vitality', 'Damage Reduced by 10–15%'] }
+            props: ['+105–150% Enhanced Defense', '+30–40 to Vitality', 'Damage Reduced by 10–15%', 'Replenish Life +10–13', '+8–10% to Maximum Stamina'] }
         ]
       },
       boots: {
         bis: { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-          props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life', 'Fire Resist +20%'] },
+          props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] },
         alternatives: [
           { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-            props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] }
+            props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
-            props: ['Cannot be Frozen', 'Cold Absorb 20%'] }
+            props: ['+150–250 to Attack Rating', 'Adds 15–45 Cold Damage', 'Cannot be Frozen', '+15–45 to Dexterity', 'Cold Absorb 20%'] }
         ]
       }
     }
@@ -823,84 +823,84 @@ const BIS_DATA = {
     slots: {
       helm: {
         bis: { name: "Griffon's Eye", rarity: 'unique', type: 'Diadem',
-          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage'] },
+          props: ['+1 to All Skills', '+25% Faster Cast Rate', '-25% to Enemy Lightning Resistance', '+15% to Lightning Skill Damage', '+200 Defense'] },
         alternatives: [
           { name: 'Harlequin Crest', rarity: 'unique', type: 'Shaman Headdress',
-            props: ['+2 to All Skills', 'Damage Reduced by 10%'] }
+            props: ['+2 to All Skills', '+(1.5 per Level) +1–148 to Life', '+(1.5 per Level) +1–148 to Mana', 'Damage Reduced by 10%', '50% Better Chance of Getting Magic Items', '+2 to All Attributes'] }
         ]
       },
       amulet: {
         bis: { name: "Mara's Kaleidoscope", rarity: 'unique', type: 'Amulet',
-          props: ['+2 to All Skills', 'All Resistances +20–30'] },
+          props: ['+2 to All Skills', 'All Resistances +20–30', '+5 to All Attributes'] },
         alternatives: [
           { name: "Highlord's Wrath", rarity: 'unique', type: 'Amulet',
-            props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance'] }
+            props: ['+1 to All Skills', '+20% Increased Attack Speed', '-25% to Enemy Lightning Resistance', 'Lightning Absorb 5%', 'Adds 1–30 Lightning Damage', '+(0.375 per Level) Deadly Strike'] }
         ]
       },
       armor: {
-        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber',
-          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport'] },
+        bis: { name: 'Enigma', rarity: 'runeword', type: 'Runeword: Jah + Ith + Ber (3-socket Armor)',
+          props: ['+2 to All Skills', '+45% Faster Run/Walk', '+1 to Teleport', '+(0.75 per Level) 0–74 to Strength', 'Increase Maximum Life 5%', 'Damage Reduced by 8%', '15% Damage Taken Goes to Mana', '25% Better Chance of Getting Magic Items'] },
         alternatives: [
-          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist',
-            props: ['+2 to All Skills', 'All Resistances +65'] }
+          { name: 'Chains of Honor', rarity: 'runeword', type: 'Runeword: Dol + Um + Ber + Ist (4-socket Armor)',
+            props: ['+2 to All Skills', '+70% Enhanced Damage', '+20% Increased Attack Speed', '+20% Faster Hit Recovery', '+20 to Strength', 'All Resistances +65', 'Damage Reduced by 8%', '25% Better Chance of Getting Magic Items'] }
         ]
       },
       weapon: {
         bis: { name: "Bartuc's Cut-Throat", rarity: 'unique', type: 'Greater Talons',
-          props: ['+2 to Assassin Skill Levels', '+20% Faster Cast Rate', '+1 to Martial Arts', '+1 to Shadow Disciplines'] },
+          props: ['+2 to Assassin Skill Levels', '+20% Faster Cast Rate', '+1 to Martial Arts (Assassin only)', '+1 to Shadow Disciplines (Assassin only)', '+75–150% Enhanced Damage', '4–6% Life Stolen per Hit', '+20 to Strength', '+20 to Dexterity'] },
         alternatives: [
-          { name: 'Chaos', rarity: 'runeword', type: 'Runeword: Fal + Ohm + Um (Katar)',
-            props: ['+1 to Whirlwind', '+35% Whirlwind Damage', '+290–340% Enhanced Damage', 'Ignores Target Defense'] },
+          { name: 'Chaos', rarity: 'runeword', type: 'Runeword: Fal + Ohm + Um (3-socket Katar)',
+            props: ['+1 to Whirlwind', '+35% Whirlwind Damage', '+290–340% Enhanced Damage', "Ignores Target's Defense", 'Adds 216–471 Magic Damage', '25% Chance of Open Wounds', '+1 to Berserk', '+1 to Zeal', 'Prevent Monster Heal', '+10 to Dexterity'] },
           { name: 'Jade Talon', rarity: 'unique', type: 'Wrist Sword',
-            props: ['+2 to Assassin Skill Levels', '+20% Faster Cast Rate', 'All Resistances +40–50'] }
+            props: ['+2 to Assassin Skill Levels', '+2 to Martial Arts (Assassin only)', '+2 to Shadow Disciplines (Assassin only)', '+20% Faster Cast Rate', '+100–150% Enhanced Defense', 'All Resistances +40–50', '+1 to Mana After Each Kill'] }
         ]
       },
       shield: {
-        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (Monarch)',
-          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+250 to Mana', '+22 to Vitality'] },
+        bis: { name: 'Spirit', rarity: 'runeword', type: 'Runeword: Tal + Thul + Ort + Amn (4-socket Monarch)',
+          props: ['+2 to All Skills', '+25–35% Faster Cast Rate', '+55% Faster Hit Recovery', '+250 Defense vs. Missile', '+22 to Vitality', '+89–112 to Mana', 'Cold/Lightning/Poison Resist +35%', 'Attacker Takes Damage of 14'] },
         alternatives: [
-          { name: 'Homunculus', rarity: 'unique', type: 'Hierophant Trophy',
-            props: ['+2 to Necromancer Skills', '+40% Faster Block Rate', 'All Resistances +40'] }
+          { name: 'Stormshield', rarity: 'unique', type: 'Monarch',
+            props: ['+35% Faster Block Rate', '25% Increased Chance of Blocking', 'Cold Absorb 35%', 'Damage Reduced by 35%', '+30 to Strength', 'Lightning Resist +60%', '+220 Defense'] }
         ]
       },
       gloves: {
         bis: { name: 'Magefist', rarity: 'unique', type: 'Light Gauntlets',
-          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%'] },
+          props: ['+1 to Fire Skills', '+20% Faster Cast Rate', 'Regenerate Mana 25%', '+5 to Energy', 'Adds 1–6 Fire Damage'] },
         alternatives: [
-          { name: "Trang-Oul's Claws", rarity: 'set', type: 'Heavy Bracers',
-            props: ['+20% Faster Cast Rate', 'Cold Resist +30%'] }
+          { name: "Trang-Oul's Claws", rarity: 'set', type: "Heavy Bracers (Trang-Oul's Avatar Set)",
+            props: ['+2 to Curses (Necromancer only)', '+20% Faster Cast Rate', 'Cold Resist +30%', '+25% Poison Skill Damage', '+30 Defense'] }
         ]
       },
       belt: {
         bis: { name: 'Arachnid Mesh', rarity: 'unique', type: 'Spiderweb Sash',
-          props: ['+1 to All Skills', '+20% Faster Cast Rate', '+5% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+20% Faster Cast Rate', 'Slows Target by 10%', '+5% to Maximum Mana', '+90–120% Enhanced Defense', 'Level 3 Venom (11 Charges)'] },
         alternatives: [
           { name: 'String of Ears', rarity: 'unique', type: 'Demonhide Sash',
-            props: ['Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15'] }
+            props: ['+150–180% Enhanced Defense', '+15 to Dexterity', 'Damage Reduced by 10–15%', 'Magic Damage Reduced by 10–15', '6–8% Life Stolen per Hit'] }
         ]
       },
       boots: {
         bis: { name: 'Sandstorm Trek', rarity: 'unique', type: 'Scarabshell Boots',
-          props: ['+15% Faster Run/Walk', '+15% Faster Hit Recovery', '+20 to Strength', '+20 to Vitality'] },
+          props: ['+140–170% Enhanced Defense', '+20 to Strength', '+20 to Vitality', '50% Slower Stamina Drain', '+15% Faster Run/Walk', '+15% Faster Hit Recovery', 'Repairs 1 Durability per Second'] },
         alternatives: [
           { name: 'Waterwalk', rarity: 'unique', type: 'Sharkskin Boots',
-            props: ['+20% Faster Run/Walk', '+15 Life per Level', '+100 to Life'] }
+            props: ['+20% Faster Run/Walk', '+100 to Life', '7% Chance of Getting Magic Items', 'Adds 15–25 Fire Damage', 'Fire Resist +20%'] }
         ]
       },
       ring1: {
         bis: { name: 'Stone of Jordan', rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+25% to Maximum Mana'] },
+          props: ['+1 to All Skills', '+25% to Maximum Mana', 'Adds 1–12 Lightning Damage', '+20 to Mana'] },
         alternatives: [
           { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-            props: ['+1 to All Skills', '+0.5 Life per Level'] }
+            props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] }
         ]
       },
       ring2: {
         bis: { name: "Bul-Kathos' Wedding Band", rarity: 'unique', type: 'Ring',
-          props: ['+1 to All Skills', '+0.5 Life per Level'] },
+          props: ['+1 to All Skills', '+(0.5 per Level) 0–49 to Life', '3–5% Life Stolen per Hit', '+50 Maximum Stamina'] },
         alternatives: [
           { name: 'Raven Frost', rarity: 'unique', type: 'Ring',
-            props: ['Cannot be Frozen', 'Cold Absorb 20%'] }
+            props: ['+150–250 to Attack Rating', 'Adds 15–45 Cold Damage', 'Cannot be Frozen', '+15–45 to Dexterity', 'Cold Absorb 20%'] }
         ]
       }
     }
